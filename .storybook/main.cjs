@@ -1,6 +1,5 @@
 let vitePlugin = require( '@sveltejs/vite-plugin-svelte' );
-console.log('vitePlugin');
-console.log(vitePlugin);
+let svelteProprocess = require( 'svelte-preprocess' )
 
 module.exports = {
   "stories": [
@@ -19,6 +18,7 @@ module.exports = {
   },
   "svelteOptions": {
     "preprocess": vitePlugin.vitePreprocess()
+    // "preprocess": svelteProprocess()
   },
   "features": {
     "storyStoreV7": true

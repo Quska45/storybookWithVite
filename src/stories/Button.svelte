@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import './button.css';
   import { createEventDispatcher } from 'svelte';
   /**
@@ -31,6 +31,11 @@
   function onClick(event) {
     dispatch('click', event);
   }
+
+  let count: number = 0;
+  const increment = () => {
+    count += 1
+  };
 </script>
 
 <button
@@ -39,4 +44,10 @@
   {style}
   on:click={onClick}>
   {label}
+  Hello world!
+</button>
+<button
+  on:click={increment}
+>
+  Clicks: {count}
 </button>
