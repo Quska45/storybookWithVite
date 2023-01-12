@@ -1,7 +1,7 @@
 import { Renderer } from "../Core/Basic/Renderer";
 import type { Vector } from "../Core/Math/Vector";
 import type { Object2D } from "../Core/Object2D/Object2D";
-import { Scene } from "../Core/Object2D/Scene";
+import { Quadrant, Scene } from "../Core/Object2D/Scene";
 import { Line } from "../Core/Object2D/Shape/Line";
 import { Text } from "../Core/Object2D/Shape/Text";
 
@@ -39,7 +39,7 @@ export class Engine {
             return null;
         };
 
-        let line = new Line( id );
+        let line = new Line( id, firstCoordinate, secondCoordinate );
         this.scene.add( line );
 
         return line;
@@ -53,6 +53,8 @@ export class Engine {
         };
 
         let text = new Text( id, textStr );
+        text.position.x = position.x;
+        text.position.y = position.y;
         this.scene.add( text );
 
         return text;
@@ -61,5 +63,9 @@ export class Engine {
     getObjectById( id: string ): Object2D{
         let targetObject2d = this.scene.getObjectById( id );
         return targetObject2d ? targetObject2d : null;
+    };
+
+    setQuadrant( quadrant: Quadrant ){
+        this.scene.setCSD( quadrant );
     };
 };

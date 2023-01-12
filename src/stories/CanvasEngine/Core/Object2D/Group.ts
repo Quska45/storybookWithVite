@@ -2,7 +2,7 @@ import { Object2D } from "./Object2D";
 
 export class Group extends Object2D {
     parent;
-    children: Object2D[];
+    children: Object2D[] = [];
     isGroup: boolean = true;
 
     constructor( id: string ){

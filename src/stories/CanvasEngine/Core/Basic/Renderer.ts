@@ -22,7 +22,7 @@ export class Renderer {
     render( scene: Scene ){
         this.ctx.clearRect( 0, 0, this.canvas.width, this.canvas.height );
         scene.children.forEach(( child: Object2D ) => {
-            child.drawn( this.ctx );
+            child.drawn( this.ctx, scene.quadrant, this.canvas );
         });
     };
 };

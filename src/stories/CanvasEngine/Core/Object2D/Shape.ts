@@ -9,6 +9,9 @@ export class Shape extends Object2D {
         super( id );
     };
 
+    /**
+     * context에 대한 기본 적인 속성을 적용시키는 기능
+    */
     applyPaint( ctx: CanvasRenderingContext2D ){
         ctx.fillStyle = this.fillStyle;
         ctx.strokeStyle = this.strokeStyle;
