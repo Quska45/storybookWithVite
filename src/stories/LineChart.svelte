@@ -8,7 +8,6 @@
         let engine = new Engine( '#canvasTarget' );
 
         engine.setQuadrant( Quadrant.quadrant1 );
-        engine.renderer.ctx.save()
         engine.addLine( 'testLine', new Vector(0,0), new Vector(50,50) );
         engine.addText('1', 'abcdef', new Vector(50,50));
         // engine.renderer.ctx.restore()

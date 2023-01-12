@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/svelte';
 import LineChart from '../src/stories/LineChart.svelte'
 import { Engine } from '../src/stories/CanvasEngine/API/Engine'
 import { Vector } from '../src/stories/CanvasEngine/Core/Math/Vector';
+import __getEvents from 'jest-canvas-mock';
 
 describe('LineChart Container load test', ()=>{
     // test("LineChart load test by pure screen object", () => {
@@ -24,21 +25,26 @@ describe('LineChart Container load test', ()=>{
 });
 
 describe('canvas load test', () => {
+    let lineChart;
+    beforeEach(() => {
+        lineChart = render(LineChart);
+    });
+
     test("canvas load test by dom", () => {
-        let lineChart = render(LineChart);
         let canvas = lineChart.container.querySelector( 'canvas' );
     
         expect(canvas).toBeInTheDocument();
     });
 
     test('canvas draw test', async () => {
-        let lineChart = render(LineChart);
         let engine = new Engine( '#canvasTarget' );
 
-        engine.addLine( 'testLine', new Vector(1,1), new Vector(5,5) );
+        engine.addLine( 'testLine', new Vector(2,2), new Vector(5,5) );
         engine.run();
-    
-        // expect(canvas).toBeInTheDocument();
+
+        const events = (engine.renderer.ctx as CanvasRenderingContext2D).__getEvents();
+        
+        expect( events ).toMatchSnapshot();
     });
 });
 

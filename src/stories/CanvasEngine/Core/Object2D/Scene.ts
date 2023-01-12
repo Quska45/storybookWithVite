@@ -9,7 +9,7 @@ export const enum Quadrant {
 };
 
 export class Scene extends Group {
-    quadrant: Quadrant;
+    quadrant: Quadrant = Quadrant.quadrant2;
 
     constructor( id: string ){
         super( id );
