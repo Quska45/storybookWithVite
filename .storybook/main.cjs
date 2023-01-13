@@ -1,5 +1,6 @@
 let vitePlugin = require( '@sveltejs/vite-plugin-svelte' );
-let svelteProprocess = require( 'svelte-preprocess' )
+let svelteProprocess = require( 'svelte-preprocess' );
+let vite = require('vite');
 
 module.exports = {
   "stories": [
@@ -31,7 +32,7 @@ module.exports = {
         path: require.resolve('path-browserify'),
       },
     };
-
-    return config;
+    
+    return vite.mergeConfig(config, { base: "./" });
   },
 }
