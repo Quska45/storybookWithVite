@@ -6,14 +6,13 @@ export default {
   title: 'Example/LineChart',
   component: LineChart,
   argTypes: {
-    backgroundColor: { control: 'color' },
-    label: { control: 'text' },
-    onClick: { action: 'onClick' },
-    primary: { control: 'boolean' },
-    size: {
+    containerId: {
       control: { type: 'select' },
-      options: ['small', 'medium', 'large'],
+      options: ['canvasContainer1', 'canvasContainer2', 'canvasContainer3'],
     },
+    config: {
+      control: 'object'
+    }
   },
 };
 
@@ -29,8 +28,10 @@ const Template = (args) => ({
 // More on args: https://storybook.js.org/docs/svelte/writing-stories/args
 export const Primary = Template.bind({});
 Primary.args = {
-  primary: true,
-  label: 'Button',
+  containerId: 'canvasContainer1',
+  config: {
+    type: {},
+    data: {},
+    options: {}
+  }
 };
-
-console.log('js 파일 실행');
