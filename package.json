@@ -31,6 +31,7 @@
     "@testing-library/svelte": "^3.2.2",
     "@testing-library/user-event": "^14.4.3",
     "@tsconfig/svelte": "^3.0.0",
+    "@types/jest": "^29.2.5",
     "babel-jest": "^29.3.1",
     "babel-loader": "^8.3.0",
     "babel-plugin-transform-vite-meta-env": "^1.0.3",
@@ -50,10 +51,11 @@
     "vite": "^4.0.0"
   },
   "jest": {
+    "preset": "ts-jest",
     "transform": {
       "^.+\\.js$": "babel-jest",
       "^.+\\.ts$": "ts-jest",
-      "^.+\\.svelte$": "svelte-jester",
+      "^.+\\.svelte$": ["svelte-jester", {"preprocess": true}],
       ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2|svg)$": "jest-transform-stub"
     },
     "moduleFileExtensions": ["svelte", "js", "ts"],

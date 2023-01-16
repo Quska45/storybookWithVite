@@ -5,10 +5,13 @@
 
     export let containerId: string;
     export let config: TConfig;
+    let lineChart: LineChart;
 
     onMount(async () => {
-        let lineChart = new LineChart( '#' + containerId, config );
-        lineChart.init()
+        lineChart = new LineChart( '#' + containerId, config );
+        lineChart.init();
+        lineChart.run();
+        lineChart.engine.stop();
     });
 
 </script>

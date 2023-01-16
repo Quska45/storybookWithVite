@@ -17,7 +17,9 @@ export class LineChart {
         this.engine.addLine( 'testLine', new Vector(0,0), new Vector(50,50) );
         this.engine.addText('1', 'abcdef', new Vector(50,50));
         // engine.renderer.ctx.restore()
-
-        this.engine.run();
     };
+
+    run( callback? ){
+        this.engine.run();
+    }
 };

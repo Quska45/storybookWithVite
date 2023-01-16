@@ -18,13 +18,24 @@ export class Engine {
         this.scene = new Scene( 'Scene' + selector );
     };
 
+    /**
+     * engine의 instace에서 직접 호출되면 안되는 메서드 입니다.
+     * run 내부에서 실행시키기 위해 만들어진 함수 입니다.
+    */
+    innerRun( callback: FrameRequestCallback ){
+        callback.apply(this, 0);
+    };
+
     run(){
         let _this = this;
-        (function run( time ){
-            _this.RAF.rendering = requestAnimationFrame( run );
+
+        function _run( time ){
+            _this.RAF.rendering = requestAnimationFrame( _run );
             _this.RAF.fpms = time;
             _this.renderer.render( _this.scene );
-        })()
+        };
+
+        _run( 0 );
     };
 
     stop(){
