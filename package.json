@@ -48,6 +48,7 @@
     "ts-jest": "^29.0.3",
     "tslib": "^2.4.1",
     "typescript": "^4.9.3",
+    "uuid": "^9.0.0",
     "vite": "^4.0.0"
   },
   "jest": {
@@ -55,12 +56,25 @@
     "transform": {
       "^.+\\.js$": "babel-jest",
       "^.+\\.ts$": "ts-jest",
-      "^.+\\.svelte$": ["svelte-jester", {"preprocess": true}],
+      "^.+\\.svelte$": [
+        "svelte-jester",
+        {
+          "preprocess": true
+        }
+      ],
       ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2|svg)$": "jest-transform-stub"
     },
-    "moduleFileExtensions": ["svelte", "js", "ts"],
+    "moduleFileExtensions": [
+      "svelte",
+      "js",
+      "ts"
+    ],
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["@testing-library/jest-dom/extend-expect"],
-    "setupFiles": ["jest-canvas-mock"]
+    "setupFilesAfterEnv": [
+      "@testing-library/jest-dom/extend-expect"
+    ],
+    "setupFiles": [
+      "jest-canvas-mock"
+    ]
   }
 }

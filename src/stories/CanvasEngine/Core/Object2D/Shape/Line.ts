@@ -27,6 +27,7 @@ export class Line extends Shape {
         this.applyPaint( ctx );
         ctx.moveTo( firstRealPosition.x, firstRealPosition.y );
         ctx.lineTo( secondRealPosition.x, secondRealPosition.y );
+        ctx.lineWidth
         ctx.stroke();
         ctx.closePath();
     };

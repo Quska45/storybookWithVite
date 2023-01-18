@@ -6,6 +6,7 @@ export class Text extends Shape {
     textAlign: CanvasTextAlign = 'center';
     textBaseLine: CanvasTextBaseline = 'middle';
     fontFamily: string = 'Arial';
+    fontSize: string = '8px';
     text: string;
 
     constructor( id: string, text: string ){
@@ -20,6 +21,7 @@ export class Text extends Shape {
         ctx.beginPath();
         ctx.textAlign = this.textAlign;
         ctx.textBaseline = this.textBaseLine;
+        ctx.font = `${this.fontSize} ${this.fontFamily}`;
         ctx.closePath();
         ctx.strokeText( this.text, realPosition.x , realPosition.y );
     };

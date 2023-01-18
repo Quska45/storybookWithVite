@@ -2,6 +2,7 @@ import { Renderer } from "../Core/Basic/Renderer";
 import type { Vector } from "../Core/Math/Vector";
 import type { Object2D } from "../Core/Object2D/Object2D";
 import { Quadrant, Scene } from "../Core/Object2D/Scene";
+import { Circle } from "../Core/Object2D/Shape/Circle";
 import { Line } from "../Core/Object2D/Shape/Line";
 import { Text } from "../Core/Object2D/Shape/Text";
 
@@ -43,7 +44,7 @@ export class Engine {
         this.RAF.rendering = null;
     };
 
-    addLine( id: string, firstCoordinate: Vector, secondCoordinate: Vector ): Object2D | null{
+    addLine( id: string, firstCoordinate: Vector, secondCoordinate: Vector ): Line | null{
         let object2d = this.getObjectById( id );
         if( object2d ){
             console.log( `'${ id }'는 중복된 id 값 입니다.` );
@@ -56,7 +57,7 @@ export class Engine {
         return line;
     };
 
-    addText( id: string, textStr: string, position: Vector ): Object2D | null{
+    addText( id: string, textStr: string, position: Vector ): Text | null{
         let object2d = this.getObjectById( id );
         if( object2d ){
             console.log( `'${ id }'는 중복된 id 값 입니다.` );
@@ -69,6 +70,21 @@ export class Engine {
         this.scene.add( text );
 
         return text;
+    };
+
+    addCircle( id: string, position: Vector ){
+        let object2d = this.getObjectById( id );
+        if( object2d ){
+            console.log( `'${ id }'는 중복된 id 값 입니다.` );
+            return null;
+        };
+
+        let circle = new Circle( id );
+        circle.position.x = position.x;
+        circle.position.y = position.y;
+        this.scene.add( circle );
+
+        return circle;
     };
 
     getObjectById( id: string ): Object2D{

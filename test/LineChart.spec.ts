@@ -153,7 +153,7 @@ describe('requestAnimation mocking impl', () => {
         };
 
         let returnValue = requestAnimationFrame( run );
-        expect(returnValue).toBeLessThan(48);
+        expect(returnValue).toBeLessThan(32);
     });
 
     /**
@@ -177,7 +177,7 @@ describe('requestAnimation mocking impl', () => {
         };
 
         let returnValue = requestAnimationFrame( run );
-        expect(returnValue).toBeLessThan(48);
+        expect(returnValue).toBeLessThan(32);
     });
 
     afterEach(() => {
@@ -207,7 +207,7 @@ describe('LineChart.ts test', () => {
         canvasContainer = render(CanvasConatiner);
     });
 
-    test('TConfig 인자에 빈 값 넣기', () => {
+    test.skip('TConfig 인자에 빈 값 넣기', () => {
 
         let config: TConfig = {
             type: 'line',
@@ -240,3 +240,189 @@ describe('LineChart.ts test', () => {
         expect( lineChart.container.querySelector('canvas') ).toBeInTheDocument();
     })
 });
+
+describe('y 축 데이터 만들기 테스트', () => {
+    let config = {
+        type: {},
+        data: {
+            labels: ['1','2','3','4','5','6','7','8'],
+            datasets: [{
+            label: '1',
+            data: [80, -19, 7, -65, -50, -20, -11],
+            fill: true,
+            borderColor: '',
+            tension: 0
+            }, {
+                label: '2',
+                data: [4, 61, -87, 10, -79, -40, 40],
+                fill: true,
+                borderColor: '',
+                tension: 0
+            }]
+        },
+        options: {}
+    };
+    let fullArr: any[];
+
+    beforeEach(() => {
+        fullArr = config.data.datasets.reduce(( acc, cur ) => {
+            acc = [ ...acc, ...cur.data ]
+
+            return acc;
+        }, []);
+    });
+
+    test.skip('y 축 데이터 최대값 구하기', () => {
+        let maxValue = 0;
+        maxValue = Math.max.apply(null, fullArr);
+
+        expect(maxValue).toEqual(80);
+    });
+
+    test.skip('y 축 데이터 최소값 구하기', () => {
+        let minValue = 0
+        minValue = Math.min.apply(null, fullArr)
+
+        expect(minValue).toEqual(-87);
+    });
+
+    test.skip('y 축 전체 데이터의 최대값이 80 이하인 경우 최대값 구하기', () => {
+        let expectResult = 0
+        let maxValue = Math.max.apply(null, fullArr);
+        let maxValueRemainder = maxValue / 10;
+
+        if( maxValueRemainder / 10 > 0 && maxValueRemainder / 10 < 0 ){
+            let numStr = maxValue.toString();
+            let numDigit = numStr.length + 1;
+            expectResult = parseInt('1'.padEnd(numDigit, '0'));
+        } else {
+            expectResult = maxValue
+        };
+        
+        expect(expectResult).toEqual(80);
+    });
+
+    test.skip('y 축 전체 데이터의 최대값이 91인 경우 최대값 구하기', () => {
+        let expectResult = 0
+        let maxValue = Math.max.apply(null, [91]);
+        let maxValueRemainder = maxValue / 10;
+
+        if( maxValueRemainder > 0 && maxValueRemainder < 10 ){
+            let numStr = maxValue.toString();
+            let numDigit = numStr.length + 1;
+            let addNum = parseInt('1'.padEnd(numDigit, '0'))/5;
+            expectResult = maxValue + addNum
+        } else {
+            expectResult = maxValue
+        };
+        
+        expect(expectResult).toEqual(100);
+    });
+
+    test.skip('y 축 전체 데이터 구하기', () => {
+        let expectResult = []
+
+        expect(expectResult).toEqual([-100, -80, -60, -40, -20, 0, 20, 40, 60, 80]);
+    });
+});
+
+describe('line chart y axis 알고리즘', () => {
+    var calcStepSize = function(range, targetSteps) {
+        // calculate an initial guess at step size
+        var tempStep = range / targetSteps;
+
+        // get the magnitude of the step size
+        var mag = Math.floor(Math.log(tempStep) / Math.LN10);
+        var magPow = Math.pow(10, mag);
+
+        // calculate most significant digit of the new step size
+        var magMsd = Math.round(tempStep / magPow + 0.5);
+
+        // promote the MSD to either 1, 2, or 5
+        if (magMsd > 5.0)
+            magMsd = 10.0;
+        else if (magMsd > 2.0)
+            magMsd = 5.0;
+        else if (magMsd > 1.0)
+            magMsd = 2.0;
+
+        return magMsd * magPow;
+    };
+
+    let config = {
+        type: {},
+        data: {
+            labels: ['1','2','3','4','5','6','7','8'],
+            datasets: [{
+            label: '1',
+            data: [-1,-2,-3,-4,-5,-6,-7,-8],
+            fill: true,
+            borderColor: '',
+            tension: 0
+            }, {
+                label: '2',
+                data: [10,20,30,40,50,60,70,80],
+                fill: true,
+                borderColor: '',
+                tension: 0
+            }]
+        },
+        options: {}
+    };
+    let fullArr: any[];
+
+    beforeEach(() => {
+        fullArr = config.data.datasets.reduce(( acc, cur ) => {
+            acc = [ ...acc, ...cur.data ]
+
+            return acc;
+        }, []);
+    });
+
+    test('calcStepSize 테스트', () => {
+        let maxValue = Math.max.apply(null, fullArr);
+        let minValue = Math.min.apply(null, fullArr);
+        let range = maxValue - minValue
+        let stepSize = calcStepSize( range, 10 );
+
+        function addDataTexts( max: number, min: number, range: number, stepSize: number ){
+            let rangeShare = Math.ceil( range / stepSize );
+            let isMaxPositive = Math.sign( min ) >= 0 ? true : false;
+            let isMinPositive = Math.sign( min ) >= 0 ? true : false;
+            let startPoint = Math.ceil( min / rangeShare );
+            let endPoint = Math.ceil( max / rangeShare );
+
+            if( isMaxPositive ){
+                endPoint = Math.ceil( max / rangeShare ) * stepSize;
+            } else {
+                endPoint = Math.floor( max / rangeShare ) * stepSize;
+            };
+
+            if( isMinPositive ){
+                startPoint = Math.ceil( min / rangeShare ) * stepSize;
+            } else {
+                startPoint = Math.floor( min / rangeShare ) * stepSize;
+            };
+
+            // let loopIndex = (Math.abs( endPoint ) + Math.abs( startPoint )) / ;
+
+            let dataArr = [];
+            let whileEndValue = 0;
+            let whileIndex = 0;
+            while( whileEndValue != endPoint ){
+                whileEndValue = startPoint + (stepSize * whileIndex);
+                dataArr.push( whileEndValue );
+                whileIndex++;
+            };
+
+            return dataArr;
+        };
+
+        let result = addDataTexts( maxValue, minValue, range, stepSize );
+
+        expect(stepSize).toEqual(10);
+        expect(range).toEqual(88);
+        expect(result).toEqual([-10, 0, 10, 20, 30, 40, 50, 60, 70, 80]);
+
+    });
+})

@@ -31,7 +31,22 @@ Primary.args = {
   containerId: 'canvasContainer1',
   config: {
     type: {},
-    data: {},
+    data: {
+      labels: ['1','2','3','4','5','6','7','8'],
+      datasets: [{
+        label: '1',
+        data: [1,2,3,4,5,6,7,8],
+        fill: true,
+        borderColor: '',
+        tension: 0
+      }, {
+        label: '2',
+        data: [10,20,30,40,50,60,70,80],
+        fill: true,
+        borderColor: '',
+        tension: 0
+      }]
+    },
     options: {}
   }
 };
