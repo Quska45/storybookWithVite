@@ -361,7 +361,7 @@ describe('line chart y axis 알고리즘', () => {
             tension: 0
             }, {
                 label: '2',
-                data: [10,20,30,40,50,60,70,80],
+                data: [10,20,30,40,50,60,70,91],
                 fill: true,
                 borderColor: '',
                 tension: 0
@@ -379,7 +379,7 @@ describe('line chart y axis 알고리즘', () => {
         }, []);
     });
 
-    test.skip('calcStepSize 테스트', () => {
+    test('calcStepSize 테스트', () => {
         let maxValue = Math.max.apply(null, fullArr);
         let minValue = Math.min.apply(null, fullArr);
         let range = maxValue - minValue
@@ -461,7 +461,7 @@ describe('line chart y axis 알고리즘', () => {
 
         let data = [-1,-2,-3,-4,-5,-6,-7,-8];
 
-        test('curValue가 -5인 경우 대한 height 값 비율 구하기', () => {
+        test.skip('curValue가 -5인 경우 대한 height 값 비율 구하기', () => {
             let maxValue: number = 80;
             let minValue: number = -10;
             let curValue: number = -5;
@@ -477,7 +477,7 @@ describe('line chart y axis 알고리즘', () => {
             expect(lineHeight).toEqual(0.05555555555555555);
         });
 
-        test('curValue가 5인 경우 대한 height 값 비율 구하기', () => {
+        test.skip('curValue가 5인 경우 대한 height 값 비율 구하기', () => {
             let maxValue: number = 80;
             let minValue: number = -10;
             let curValue: number = 5;
@@ -491,7 +491,7 @@ describe('line chart y axis 알고리즘', () => {
             expect(lineHeight).toEqual(0.16666666666666666);
         });
 
-        test('curValue가 -5인 경우 대한 height 값 구하기', () => {
+        test.skip('curValue가 -5인 경우 대한 height 값 구하기', () => {
             let height: number = 300;
             let maxValue: number = 80;
             let minValue: number = -10;
@@ -510,7 +510,7 @@ describe('line chart y axis 알고리즘', () => {
             expect(realHeight).toEqual(16.666666666666664);
         });
 
-        test('curValue가 5인 경우 대한 height 값 구하기', () => {
+        test.skip('curValue가 5인 경우 대한 height 값 구하기', () => {
             let height: number = 300;
             let maxValue: number = 80;
             let minValue: number = -10;

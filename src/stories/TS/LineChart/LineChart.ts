@@ -42,6 +42,12 @@ export class LineChart {
         // this.addPoint( labelStepSize, dataStepSize );
     };
 
+    addLines2( data: number[] ){
+        data.forEach(( cur, i ) => {
+            
+        });
+    };
+
     /**
      * this.config의 label을 이용해 실제 line을 추가하는 기능
     */
