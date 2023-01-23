@@ -35,7 +35,7 @@ Primary.args = {
       labels: ['1','2','3','4','5','6','7','8'],
       datasets: [{
         label: '1',
-        data: [1,2,3,4,5,6,7,8],
+        data: [-1,-2,-3,-4,-5,-6,-7,-8],
         fill: true,
         borderColor: '',
         tension: 0

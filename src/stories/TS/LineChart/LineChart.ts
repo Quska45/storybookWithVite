@@ -1,7 +1,7 @@
 import { Engine } from "../../CanvasEngine/API/Engine"
 import { Vector } from "../../CanvasEngine/Core/Math/Vector";
 import { Quadrant } from "../../CanvasEngine/Core/Object2D/Scene";
-import { DataSet } from "../Chart/DataSet";
+import type { DataSet } from "../Chart/DataSet";
 import type { Label } from "../Chart/Label";
 import type { TConfig } from "../Common/Config";
 import type { TData } from "../Common/Data";
@@ -24,28 +24,26 @@ export class LineChart {
             acc = [ ...acc, ...cur.data ];
             return acc;
         }, []);
-        let maxValue = Math.max.apply( null, fullDataArr );
-        let minValue = Math.min.apply( null, fullDataArr );
-        let range = maxValue - minValue;
+
+        let dataMaxValue = Math.max.apply( null, fullDataArr );
+        let dataMinValue = Math.min.apply( null, fullDataArr );
+        let range = dataMaxValue - dataMinValue;
         let stepSize: number = this.getStepSize( range, STEP_COUNT );
-        let dataCount = range / stepSize;
-
-        let labelStepSize: number = (this.engine.renderer.canvas.width - X_POSTION * 2) / (this.config.data.labels.length - 1);
-        // let dataStepSize: number = (this.engine.renderer.canvas.height - Y_POSTION * 2) / (this.config.data.datasets[0].data.length - 1);
-        let dataStepSize: number = (this.engine.renderer.canvas.height - Y_POSTION) / dataCount;
-
+        
         this.engine.setQuadrant( Quadrant.quadrant1 );
+        
+        let dataArr = this.getDataArr( dataMaxValue, dataMinValue, range, stepSize );
+        let labelStepSize: number = (this.engine.renderer.canvas.width - X_POSTION * 2) / (this.config.data.labels.length - 1);
+        let dataStepSize: number = (this.engine.renderer.canvas.height - Y_POSTION) / dataArr.length;
 
-        // this.addDataSet( dataStepSize );
-        let dataArr = this.getDataArr( maxValue, minValue, range, stepSize );
-        this.addDataTexts( dataArr );
+        this.addDataTexts( dataArr, dataStepSize );
         this.addLabelTexts( labelStepSize );
         // this.addLines( labelStepSize, dataStepSize );
         // this.addPoint( labelStepSize, dataStepSize );
     };
 
     /**
-     * this.config의 label을 이용해 실제 line을 추가 기능
+     * this.config의 label을 이용해 실제 line을 추가하는 기능
     */
     addLines( labelInterval: number, dataStepSize: number ){
         this.config.data.labels.reduce(( acc, cur, i ) => {
@@ -70,28 +68,17 @@ export class LineChart {
             return acc;
         });
     };
-
+    
     /**
-     * this.config의 dataset을 이용해 data을 만드는 기능
-     * dataset이라는 클래스가 필요할지는 의문임
+     * y축에 표시될 data의 배열을 실제로 캔버스에 그리는 기능
     */
-    addDataSet( dataStepSize: number ){
-        let dataSet: DataSet;
-        this.config.data.datasets.reduce(( acc, cur ) => {
-            let dataset: DataSet = new DataSet( cur );
-            cur.data.reduce(( dataAcc, curData, i ) => {
-                let text = this.addData( curData, dataStepSize * i );
+    addDataTexts( dataArr: number[], dataStepSize: number ){
+        dataArr.reduce(( acc, cur, i ) => {
+            let text = this.addData( cur, dataStepSize * i );
                 
-                return dataAcc;
-            }, []);
-
-            acc.push( dataset );
+            acc.push( text );
             return acc;
         }, []);
-
-        this.dataSets.push( dataSet );
-        
-        return dataSet;
     };
 
     /**
@@ -109,14 +96,6 @@ export class LineChart {
         line.lineWidth = 0.2;
 
         return text;
-    };
-
-    /**
-     * this.config를 이용해 Y축에 표시되는 텍스트인 data를 그리는 기능
-    */
-    addDataTexts( dataArr: number[] ){
-        
-        
     };
 
     /**
@@ -148,7 +127,9 @@ export class LineChart {
         return text;
     };
 
-    // y축의 데이터를 계산
+    /**
+     * y축에 표시될 데이터의 간격을 구하는 알고리즘
+    */
     getStepSize(range, targetStepCount) {
         // calculate an initial guess at step size
         let tempStep = range / targetStepCount;
@@ -171,6 +152,9 @@ export class LineChart {
         return magMsd * magPow;
     };
 
+    /**
+     * y축에 표시될 data의 배열을 구하는 기능
+    */
     getDataArr( max: number, min: number, range: number, stepSize: number ){
         let rangeShare = Math.ceil( range / stepSize );
         let isMaxPositive = Math.sign( min ) >= 0 ? true : false;

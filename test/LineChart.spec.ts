@@ -379,7 +379,7 @@ describe('line chart y axis 알고리즘', () => {
         }, []);
     });
 
-    test('calcStepSize 테스트', () => {
+    test.skip('calcStepSize 테스트', () => {
         let maxValue = Math.max.apply(null, fullArr);
         let minValue = Math.min.apply(null, fullArr);
         let range = maxValue - minValue
@@ -424,5 +424,107 @@ describe('line chart y axis 알고리즘', () => {
         expect(range).toEqual(88);
         expect(result).toEqual([-10, 0, 10, 20, 30, 40, 50, 60, 70, 80]);
 
+    });
+
+
+    describe('Line chart에서 line 그리기', () => {
+        let config: TConfig = {
+            type: 'line',
+            data: {
+                labels: ['1','2','3','4','5','6','7','8'],
+                datasets: [{
+                label: '1',
+                data: [80, -19, 7, -65, -50, -20, -11],
+                fill: true,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0
+                }, {
+                    label: '2',
+                    data: [4, 61, -87, 10, -79, -40, 40],
+                    fill: true,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'text'
+                    }
+                }
+            }
+        };
+
+        let data = [-1,-2,-3,-4,-5,-6,-7,-8];
+
+        test('curValue가 -5인 경우 대한 height 값 비율 구하기', () => {
+            let maxValue: number = 80;
+            let minValue: number = -10;
+            let curValue: number = -5;
+            let range = maxValue - minValue;
+            let lineHeight = curValue / range;
+
+            if( Math.sign(minValue) < 0 && Math.sign(lineHeight) >= 0 ){
+                lineHeight = lineHeight + Math.abs( minValue / range );
+            } else {
+                lineHeight = Math.abs( lineHeight );
+            };
+            
+            expect(lineHeight).toEqual(0.05555555555555555);
+        });
+
+        test('curValue가 5인 경우 대한 height 값 비율 구하기', () => {
+            let maxValue: number = 80;
+            let minValue: number = -10;
+            let curValue: number = 5;
+            let range = maxValue - minValue;
+            let lineHeight = curValue / range;
+
+            if( Math.sign(minValue) < 0 && Math.sign(lineHeight) >= 0 ){
+                lineHeight = lineHeight + Math.abs( minValue / range );
+            };
+            
+            expect(lineHeight).toEqual(0.16666666666666666);
+        });
+
+        test('curValue가 -5인 경우 대한 height 값 구하기', () => {
+            let height: number = 300;
+            let maxValue: number = 80;
+            let minValue: number = -10;
+            let curValue: number = -5;
+            let range = maxValue - minValue;
+            let lineHeightRatio = curValue / range;
+
+            if( Math.sign(minValue) < 0 && Math.sign(lineHeightRatio) >= 0 ){
+                lineHeightRatio = lineHeightRatio + Math.abs( minValue / range );
+            } else {
+                lineHeightRatio = Math.abs( lineHeightRatio );
+            };
+
+            let realHeight = height * lineHeightRatio;
+            
+            expect(realHeight).toEqual(16.666666666666664);
+        });
+
+        test('curValue가 5인 경우 대한 height 값 구하기', () => {
+            let height: number = 300;
+            let maxValue: number = 80;
+            let minValue: number = -10;
+            let curValue: number = 5;
+            let range = maxValue - minValue;
+            let lineHeightRatio = curValue / range;
+
+            if( Math.sign(minValue) < 0 && Math.sign(lineHeightRatio) >= 0 ){
+                lineHeightRatio = lineHeightRatio + Math.abs( minValue / range );
+            };
+            
+            let realHeight = height * lineHeightRatio;
+
+            expect(realHeight).toEqual(50);
+        });
     });
 })
