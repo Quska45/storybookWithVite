@@ -34,13 +34,14 @@ export class LineChart {
         
         let dataArr = this.getDataArr( dataMaxValue, dataMinValue, range, stepSize );
         let labelStepSize: number = (this.engine.renderer.canvas.width - X_POSTION * 2) / (this.config.data.labels.length - 1);
-        let dataStepSize: number = (this.engine.renderer.canvas.height - Y_POSTION) / dataArr.length;
+        let dataStepSize: number = (this.engine.renderer.canvas.height - Y_POSTION * 2) / (dataArr.length - 1);
         let positions:[Vector[]] = [];
 
         this.addDataTexts( dataArr, dataStepSize, stepSize );
         this.addLabelTexts( labelStepSize );
         this.config.data.datasets.forEach(( cur, i ) => {
             let positionArr = this.addPoint( cur, labelStepSize, dataArr[dataArr.length-1] - dataArr[0], dataArr, dataStepSize );
+            this.addLegend( cur, this.engine.renderer.canvas.height - Y_POSTION, i, this.config.data.datasets.length-1 );
             positions.push( positionArr );
         });
         positions.forEach(( position, i ) => {
@@ -58,8 +59,18 @@ export class LineChart {
         dataset.data.forEach(( cur, i ) => {
             let realHeight;
             let position;
-            realHeight = Y_POSTION + (cur*dataStepSizeRatio);
-            position = new Vector( X_POSTION + (labelInterval * i), realHeight + Y_POSTION );
+            if( dataArr[0] < 0 && cur >= 0 ){
+                realHeight = Y_POSTION + ((cur + (dataArr[0] * -1))*dataStepSizeRatio);
+            } else {
+                realHeight = Y_POSTION + (cur*dataStepSizeRatio);
+            };
+
+            if( cur < 0 ){
+                let dataZeroIndex = dataArr.findIndex(( data ) => { return data == 0 });
+                let dataZeroPosition = ((dataArr[ dataZeroIndex ] - dataArr[ 0 ]) * dataStepSizeRatio);
+                realHeight = Y_POSTION + dataZeroPosition + (cur*dataStepSizeRatio);
+            };
+            position = new Vector( X_POSTION + (labelInterval * i), realHeight);
             positions.push( position );
 
             let circle = this.engine.addCircle( uuid(), position );
@@ -86,7 +97,36 @@ export class LineChart {
             line.lineWidth = dataset.lineWidth
         };
     };
+
+    /**
+     * this.config를 이용해 X축에 표시되는 텍스트인 label을 그리는 기능
+    */
+    addLabelTexts( labelStepSize: number ){
+        this.config.data.labels.reduce(( acc, cur, i ) => {
+            this.addLabel( cur, labelStepSize * i );
+
+            return acc;
+        }, []);
+    };
     
+    /**
+     * this.config의 label을 이용해 실제 label에 해당하는 text 추가 기능
+    */
+    addLabel( label: string, stepSize ){
+        let startXPosition = LABEL_COORDINATE.x;
+        let startYPosition = LABEL_COORDINATE.y;
+
+        let position = new Vector( startXPosition + stepSize, startYPosition );
+        let lineFirstPosition = new Vector( X_POSTION + stepSize, Y_POSTION );
+        let lineSecondPosition = new Vector( X_POSTION + stepSize , this.engine.renderer.canvas.height - Y_POSTION + 5 );
+        let text = this.engine.addText( uuid(), label, position );
+        let line = this.engine.addLine( uuid(), lineFirstPosition, lineSecondPosition );
+
+        line.lineWidth = 0.2;
+
+        return text;
+    };
+
     /**
      * y축에 표시될 data의 배열을 실제로 캔버스에 그리는 기능
     */
@@ -114,35 +154,6 @@ export class LineChart {
 
         let text = this.engine.addText( uuid(), data.toString(), position );
         let line = this.engine.addLine( uuid(), lineFirstPosition, lineSecondPosition );
-        line.lineWidth = 0.2;
-
-        return text;
-    };
-
-    /**
-     * this.config를 이용해 X축에 표시되는 텍스트인 label을 그리는 기능
-    */
-    addLabelTexts( labelStepSize: number ){
-        this.config.data.labels.reduce(( acc, cur, i ) => {
-            this.addLabel( cur, labelStepSize * i );
-
-            return acc;
-        }, []);
-    };
-    
-    /**
-     * this.config의 label을 이용해 실제 label에 해당하는 text 추가 기능
-    */
-    addLabel( label: string, stepSize ){
-        let startXPosition = LABEL_COORDINATE.x;
-        let startYPosition = LABEL_COORDINATE.y;
-
-        let position = new Vector( startXPosition + stepSize, startYPosition );
-        let lineFirstPosition = new Vector( X_POSTION + stepSize, Y_POSTION );
-        let lineSecondPosition = new Vector( X_POSTION + stepSize , this.engine.renderer.canvas.height - Y_POSTION + 5 );
-        let text = this.engine.addText( uuid(), label, position );
-        let line = this.engine.addLine( uuid(), lineFirstPosition, lineSecondPosition );
-
         line.lineWidth = 0.2;
 
         return text;
@@ -220,9 +231,10 @@ export class LineChart {
         return resultArr;
     };
 
-    updateDatasetByData( dataset: TDataset, newData: number[] ){
-        dataset.data = newData;
-
+    addLegend( dataset: TDataset, y: number, index: number, legendLength: number ){
+        let position = new Vector( (this.engine.renderer.canvas.width / 2) - ( legendLength * 25 ) + ( index * 50 ), y + Y_POSTION / 2 );
+        let text = this.engine.addText( uuid(), dataset.label, position );
+        text.strokeStyle = dataset.borderColor;
     };
 
     run(){
