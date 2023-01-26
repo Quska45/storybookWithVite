@@ -95,4 +95,8 @@ export class Engine {
     setQuadrant( quadrant: Quadrant ){
         this.scene.setCSD( quadrant );
     };
+
+    removeAll(){
+        
+    }
 };

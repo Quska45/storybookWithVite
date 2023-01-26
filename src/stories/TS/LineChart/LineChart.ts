@@ -4,7 +4,7 @@ import { Quadrant } from "../../CanvasEngine/Core/Object2D/Scene";
 import type { DataSet } from "../Chart/DataSet";
 import type { Label } from "../Chart/Label";
 import type { TConfig } from "../Common/Config";
-import type { TData } from "../Common/Data";
+import type { TData, TDataset } from "../Common/Data";
 import { v4 as uuid } from 'uuid';
 import { X_POSTION, Y_POSTION, LABEL_COORDINATE, DATA_COORDINATE, STEP_COUNT } from '../Common/ConstValue'
 
@@ -35,52 +35,66 @@ export class LineChart {
         let dataArr = this.getDataArr( dataMaxValue, dataMinValue, range, stepSize );
         let labelStepSize: number = (this.engine.renderer.canvas.width - X_POSTION * 2) / (this.config.data.labels.length - 1);
         let dataStepSize: number = (this.engine.renderer.canvas.height - Y_POSTION) / dataArr.length;
+        let positions:[Vector[]] = [];
 
-        this.addDataTexts( dataArr, dataStepSize );
+        this.addDataTexts( dataArr, dataStepSize, stepSize );
         this.addLabelTexts( labelStepSize );
-        // this.addLines( labelStepSize, dataStepSize );
-        // this.addPoint( labelStepSize, dataStepSize );
-    };
-
-    addLines2( data: number[] ){
-        data.forEach(( cur, i ) => {
-            
+        this.config.data.datasets.forEach(( cur, i ) => {
+            let positionArr = this.addPoint( cur, labelStepSize, dataArr[dataArr.length-1] - dataArr[0], dataArr, dataStepSize );
+            positions.push( positionArr );
         });
-    };
-
-    /**
-     * this.config의 label을 이용해 실제 line을 추가하는 기능
-    */
-    addLines( labelInterval: number, dataStepSize: number ){
-        this.config.data.labels.reduce(( acc, cur, i ) => {
-            let lineFirstPosition = new Vector( X_POSTION + (labelInterval * (i - 1)), Y_POSTION + (dataStepSize * (i - 1)) );
-            let lineSecondPosition = new Vector( X_POSTION + (labelInterval * i) , Y_POSTION + (dataStepSize * i) );
-
-            let line = this.engine.addLine( uuid(), lineFirstPosition, lineSecondPosition );
-
-            return acc;
+        positions.forEach(( position, i ) => {
+            this.addLines( position, this.config.data.datasets[i] );
         });
     };
 
     /**
      * this.config의 label을 이용해 line의 꼭지점을 그리는 기능
     */
-    addPoint( labelStepSize: number, dataStepSize: number ){
-        this.config.data.labels.reduce(( acc, cur, i ) => {
-            let position = new Vector( X_POSTION + (labelStepSize * i), Y_POSTION + (dataStepSize * i) );
+    addPoint( dataset: TDataset, labelInterval, range, dataArr: number[], dataStepSize: number ){
+        let dataStepSizeRatio = dataStepSize * (dataArr.length-1) / range;
+        let positions: Vector[] = [];
+
+        dataset.data.forEach(( cur, i ) => {
+            let realHeight;
+            let position;
+            realHeight = Y_POSTION + (cur*dataStepSizeRatio);
+            position = new Vector( X_POSTION + (labelInterval * i), realHeight + Y_POSTION );
+            positions.push( position );
 
             let circle = this.engine.addCircle( uuid(), position );
-
-            return acc;
+            circle.strokeStyle = dataset.borderColor;
         });
+
+        return positions;
+    };
+
+    /**
+     * this.config의 label을 이용해 실제 line을 추가하는 기능
+    */
+    addLines( positions: Vector[], dataset: TDataset ){
+        for( let i=0; i<positions.length; ++i ){
+            if( positions.length-1 == i ){
+                return;
+            };
+
+            let lineFirstPosition = positions[ i ];
+            let lineSecondPosition = positions[ i + 1 ];
+
+            let line = this.engine.addLine( uuid(), lineFirstPosition, lineSecondPosition );
+            line.strokeStyle = dataset.borderColor;
+            line.lineWidth = dataset.lineWidth
+        };
     };
     
     /**
      * y축에 표시될 data의 배열을 실제로 캔버스에 그리는 기능
     */
-    addDataTexts( dataArr: number[], dataStepSize: number ){
+    addDataTexts( dataArr: number[], dataStepSize: number, stepSize: number ){
+        let dataStepSizeRatio = Math.abs(dataStepSize/stepSize);
         dataArr.reduce(( acc, cur, i ) => {
-            let text = this.addData( cur, dataStepSize * i );
+            let text = this.addData( cur, (dataStepSizeRatio*stepSize) * i );
+            // let text = this.addData( cur, (dataStepSize) * i );
                 
             acc.push( text );
             return acc;
@@ -96,7 +110,8 @@ export class LineChart {
 
         let position = new Vector( startXPosition, startYPosition + stepSize );
         let lineFirstPosition = new Vector( X_POSTION, Y_POSTION + stepSize );
-        let lineSecondPosition = new Vector( this.engine.renderer.canvas.width - startXPosition , Y_POSTION + stepSize );
+        let lineSecondPosition = new Vector( this.engine.renderer.canvas.width - X_POSTION , Y_POSTION + stepSize );
+
         let text = this.engine.addText( uuid(), data.toString(), position );
         let line = this.engine.addLine( uuid(), lineFirstPosition, lineSecondPosition );
         line.lineWidth = 0.2;
@@ -124,7 +139,7 @@ export class LineChart {
 
         let position = new Vector( startXPosition + stepSize, startYPosition );
         let lineFirstPosition = new Vector( X_POSTION + stepSize, Y_POSTION );
-        let lineSecondPosition = new Vector( X_POSTION + stepSize , this.engine.renderer.canvas.height - startYPosition );
+        let lineSecondPosition = new Vector( X_POSTION + stepSize , this.engine.renderer.canvas.height - Y_POSTION + 5 );
         let text = this.engine.addText( uuid(), label, position );
         let line = this.engine.addLine( uuid(), lineFirstPosition, lineSecondPosition );
 
@@ -162,34 +177,52 @@ export class LineChart {
      * y축에 표시될 data의 배열을 구하는 기능
     */
     getDataArr( max: number, min: number, range: number, stepSize: number ){
-        let rangeShare = Math.ceil( range / stepSize );
-        let isMaxPositive = Math.sign( min ) >= 0 ? true : false;
-        let isMinPositive = Math.sign( min ) >= 0 ? true : false;
-        let startPoint = Math.ceil( min / rangeShare );
-        let endPoint = Math.ceil( max / rangeShare );
+        if( max % stepSize != 0 ){
+            let share = Math.floor( max / stepSize );
+            if( Math.sign( share ) >= 0 ){
+                max = (Math.floor( max / stepSize ) + 1) * stepSize;
+            } else {
+                max = (Math.floor( max / stepSize )) * stepSize;
+            }
+        };
+        if( min % stepSize != 0 ){
+            let share2 = Math.floor( min / stepSize );
+            if( Math.sign( share2 ) >= 0 ){
+                min = (Math.floor( min / stepSize ) + 1) * stepSize;
+            } else {
+                min = (Math.floor( min / stepSize )) * stepSize;
+            }
+        };
 
-        if( isMaxPositive ){
-            endPoint = Math.ceil( max / rangeShare ) * stepSize;
+        let resultArr = [];
+        let resultIndex = 0;
+        if( Math.sign( min ) >= 0 ){
+            while( min - (stepSize * resultIndex) != 0 ){
+                resultArr.push( min - (stepSize * resultIndex) );
+                resultIndex++;
+            };
         } else {
-            endPoint = Math.floor( max / rangeShare ) * stepSize;
+            while( min + (stepSize * resultIndex) != 0 ){
+                resultArr.push( min + (stepSize * resultIndex) );
+                resultIndex++;
+            };
+        }
+        resultIndex = 0;
+        while( max - (stepSize * resultIndex) != 0 ){
+            resultArr.push( max - (stepSize * resultIndex) );
+            resultIndex++;
         };
+        resultArr.push(0)
+        resultArr.sort(function(a, b)  {
+            return a - b;
+        });
 
-        if( isMinPositive ){
-            startPoint = Math.ceil( min / rangeShare ) * stepSize;
-        } else {
-            startPoint = Math.floor( min / rangeShare ) * stepSize;
-        };
+        return resultArr;
+    };
 
-        let dataArr = [];
-        let whileEndValue = 0;
-        let whileIndex = 0;
-        while( whileEndValue != endPoint ){
-            whileEndValue = startPoint + (stepSize * whileIndex);
-            dataArr.push( whileEndValue );
-            whileIndex++;
-        };
+    updateDatasetByData( dataset: TDataset, newData: number[] ){
+        dataset.data = newData;
 
-        return dataArr;
     };
 
     run(){
