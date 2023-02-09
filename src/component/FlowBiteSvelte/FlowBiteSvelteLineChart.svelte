@@ -1,5 +1,6 @@
 <script lang="ts">
     import "flowbite/dist/flowbite.css";
+    import { onMount } from 'svelte'
     import FlowBiteSvelteLayout from './FlowBiteSvelteLayout.svelte'
     import FlowBiteSvelteButton from './FlowBiteSvelteButton.svelte'
     import FlowBiteSvelteTab from './FlowBiteSvelteTab.svelte'
@@ -22,25 +23,20 @@
     } from 'chart.js'
     import 'chartjs-adapter-moment'
     import zoomPlugin from 'chartjs-plugin-zoom'
-    import { data, options, zoomOption } from './TS/FlowBiteSvelteLineChart/FlowBiteSvelteLineChartData'
+    import { ChartData, chartDummyData, chartLegendData, ontuneDummyData, type TOntuneData } from './TS/FlowBiteSvelteLineChart/data/FlowBiteSvelteLineChartData'
+    import { currentTimeBeforSecond, data, dataUtil, options, randomColorFactor, zoomOption, } from './TS/FlowBiteSvelteLineChart/data/FlowBiteSvelteLineChartOptions'
     import type { TFlowBiteSvelteButton } from './TS/FlowBiteSvelteButton'
     import type { TCell } from "./TS/FlowBiteSvelteTable";
+    import { TCellTHeadDummyData } from "./TS/FlowBiteSvelteTable";
     import type { TTab } from "./TS/FlowBiteSvelteTab";
-    import { 
-        addData
-        , addRandomData
-        , removeData
-        , getRandomIntInclusive
-        , currentTime
-        , zoom
-    } from './TS/FlowBiteSvelteLineChart/FlowBiteSvelteLineChart'
+    import { FlowBiteSvelteLineChart } from './TS/FlowBiteSvelteLineChart/FlowBiteSvelteLineChart'
+    import { currentTime } from "./TS/FlowBiteSvelteLineChart/data/FlowBiteSvelteLineChartOptions";
 
     export let buttonProps: TFlowBiteSvelteButton[];
-    export let headers: TCell[];
-    export let bodys: [TCell[]];
+    export let tableHeaders: TCell[];
     export let tabs: TTab[];
-
-    let chart;
+    export let tabItemStyleStr: string;
+    
     ChartJS.register(
         Title
         , Tooltip
@@ -54,32 +50,83 @@
         , LineController
     );
 
-    function chartEventTest(){
-        console.log( 'chartEventTest' );
-        console.log('chart.options',chart.options);
-        console.log('chart.options.plugins', chart.options.plugins);
+    let chart: ChartJS;
+    let flowBiteLineChart: FlowBiteSvelteLineChart;
+    let chartData: ChartData = new ChartData();
+    chartData.setDatas( ontuneDummyData, chartDummyData, chartLegendData );
+    let lengendTableBodyData: TOntuneData[] = chartData.ontuneData;
+    let chartJSData = chartData.chartData;
+    let chartJSLabels = chartJSData.labels;
+    let chartJSDataSets = chartJSData.datasets;
 
-        // chart.options = zoomOption;
-        console.log(chart.config);
-        console.log(chart.config.plugins);
-        // chart.config._config.options.plugins.zoom.zoom.wheel.enabled = true
-        // chart.options.plugins = zoomOption;
-        // options.plugins.zoom.zoom.wheel.enabled = true;
-        // options.plugins.zoom.zoom.pinch.enabled = true;
-        // options.plugins.zoom.zoom.mode = "xy";
-        // options.plugins.zoom.pan.enabled = true;
-        // chart.options.plugins = zoomOption
-        // chart.options.plugins.set()
-        // console.log('chart.options.plugins2',chart.options.plugins);
-        chart.update()
+    let test = 1;
+    function clickTest(){
+        console.log('clickTest');
+        // 라인하나 추가하기
+
+        // legend 강제로 하나 추가 하기
+        for(let i=0; i<10; ++i){
+            // dataUtil.addDataSet( data.datasets );
+            chartJSData.datasets.push({
+                label: 'pc' + test,
+                fill: true,
+                borderColor: `rgb(${randomColorFactor()}, ${randomColorFactor()}, ${randomColorFactor()})`,
+                data: [1,2,3,4,5,6,7,8,9,10]
+            });
+            test = test+1;
+
+            lengendTableBodyData.push(
+                {
+                    pcName: 'pc'+test,
+                    value: 50,
+                    date: '2022-05-23 13:45:31',
+                    valueArr: [20], 
+                    valueTotal: 20, 
+                    valueAvg: 20,
+                    maxValue: 20, 
+                    maxDate: '2022-05-23 13:45:31'
+                }
+            )
+        }
+        chartJSData.datasets = chartJSData.datasets;
+        lengendTableBodyData = lengendTableBodyData;
     }
+
+    let isZoom = false;
+    function noZoomAddRandomData(){
+        isZoom = true;
+        flowBiteLineChart.addRandomData(currentTime());
+        if(flowBiteLineChart.chart.data.labels.length > 10){
+            while(flowBiteLineChart.chart.data.labels.length > 10){
+                flowBiteLineChart.removeData();
+            }
+            chart.update()
+        }
+    }
+    
+    function onZoomAddRandomData(){
+        isZoom = false;
+        flowBiteLineChart.addRandomData(currentTime());
+        flowBiteLineChart.chart.options.plugins.zoom.pan.threshold = 10
+    }
+
+    onMount(() => {
+        zoomOption.pan.enabled = !zoomOption.pan.enabled;
+        flowBiteLineChart = new FlowBiteSvelteLineChart( chart, options, zoomOption );
+        flowBiteLineChart.setData( chartData );
+
+        flowBiteLineChart.setDataInterval( 1000, noZoomAddRandomData );
+        flowBiteLineChart.startDataInterval();
+        
+        console.log(chart);
+        console.log(chart.data.labels);
+    })
 </script>
 
 <div class="flow_bite_svelte_line_chart">
-    <button style="border: 1px solid black;" on:click={() => { addRandomData(chart, currentTime()) }}>data add</button>
-    <button style="border: 1px solid black;" on:click={() => { removeData(chart) }}>data remove</button>
-    <button style="border: 1px solid black;" on:click={() => { zoom.reset(chart) }}>zoom reset</button>
-    <button style="border: 1px solid black;" on:click={chartEventTest}>test click</button>
+    <!-- <button style="border: 1px solid black;" on:click={() => { flowBiteLineChart.addRandomData(currentTime()) }}>data add</button>
+    <button style="border: 1px solid black;" on:click={() => { flowBiteLineChart.removeData() }}>data remove</button> -->
+    <button style="border: 1px solid black;" on:click={() => { clickTest() }}>데이터 10개 추가</button>
     <FlowBiteSvelteLayout
         size="xl"
         padding="md"
@@ -91,9 +138,9 @@
             <div class="canvasContainer">
                 <FlowBiteSvelteTab
                     tabs = {tabs}
+                    tabItemStyleStr = {tabItemStyleStr}
                 >
-                    <Chart width={100} height={470} bind:chart type="line" {data} {options} />
-                    <!-- <Line bind:line on:click={testLineClick} {data} {options} /> -->
+                    <Chart bind:chart type="line" data={chartJSData} {options} />
                 </FlowBiteSvelteTab>
             </div>
 
@@ -101,10 +148,10 @@
             <div class="optionContainer">
 
                 <!-- 정보(레전드 및 데이터 표시) 영역 -->
-                <div class="optionContainer top">
+                <div id="legend-container" class="optionContainer top">
                     <FlowBiteSvelteTable
-                        bodys = {bodys}
-                        headers = {headers}
+                        bodys = {lengendTableBodyData}
+                        headers = {tableHeaders}
                         styleStr = "padding: 3px"
                         tableWidth = "w-full"             
                         tableHeight = "h-full"
@@ -114,7 +161,7 @@
 
                 <!-- 기능 영역 -->
                 <div class="optionContainer bottom">
-                    {#each buttonProps as buttonProp}
+                    {#each buttonProps as buttonProp, i}
                         <FlowBiteSvelteButton
                             color="{buttonProp.color}"
                             size="{buttonProp.size}"
@@ -123,6 +170,14 @@
                             styleStr="{buttonProp.styleStr}"
                             svgClass="{buttonProp.svgClass}"
                             svg_d="{buttonProp.svg_d}"
+                            isSelected={buttonProp.isSelected}
+                            on:onButtonClick={
+                                () => {
+                                    flowBiteLineChart.clickZoomButton( i, buttonProp );
+                                    isZoom ? flowBiteLineChart.setDataInterval( 1000, onZoomAddRandomData ) : flowBiteLineChart.setDataInterval( 1000, noZoomAddRandomData );
+                                    isZoom ? chart.zoom( 0.7 ) : chart.zoom( 1.0 )
+                                }
+                            }
                         >
                         </FlowBiteSvelteButton>
                     {/each}
@@ -143,13 +198,11 @@
         width: 70%;
         margin-right: 30px;
         display: inline-block;
-        /* border: 1px solid black; */
     }
     
     .optionContainer {
         width: 30%;
         display: inline-block;
-        /* border: 1px solid black; */
     }
 
     .optionContainer .top {
