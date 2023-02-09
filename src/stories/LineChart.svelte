@@ -10,7 +10,8 @@
     onMount(async () => {
         lineChart = new LineChart( '#' + containerId, config );
         lineChart.init();
-        lineChart.run();
+        lineChart.engine.renderer.render( lineChart.engine.scene );
+        // lineChart.run();
     });
 
 </script>

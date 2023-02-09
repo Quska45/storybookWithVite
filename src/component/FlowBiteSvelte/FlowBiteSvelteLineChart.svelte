@@ -56,8 +56,6 @@
     chartData.setDatas( ontuneDummyData, chartDummyData, chartLegendData );
     let lengendTableBodyData: TOntuneData[] = chartData.ontuneData;
     let chartJSData = chartData.chartData;
-    let chartJSLabels = chartJSData.labels;
-    let chartJSDataSets = chartJSData.datasets;
 
     let test = 1;
     function clickTest(){
@@ -71,7 +69,8 @@
                 label: 'pc' + test,
                 fill: true,
                 borderColor: `rgb(${randomColorFactor()}, ${randomColorFactor()}, ${randomColorFactor()})`,
-                data: [1,2,3,4,5,6,7,8,9,10]
+                data: [1,2,3,4,5,6,7,8,9,10],
+                radius: 0
             });
             test = test+1;
 
@@ -117,15 +116,10 @@
 
         flowBiteLineChart.setDataInterval( 1000, noZoomAddRandomData );
         flowBiteLineChart.startDataInterval();
-        
-        console.log(chart);
-        console.log(chart.data.labels);
     })
 </script>
 
 <div class="flow_bite_svelte_line_chart">
-    <!-- <button style="border: 1px solid black;" on:click={() => { flowBiteLineChart.addRandomData(currentTime()) }}>data add</button>
-    <button style="border: 1px solid black;" on:click={() => { flowBiteLineChart.removeData() }}>data remove</button> -->
     <button style="border: 1px solid black;" on:click={() => { clickTest() }}>데이터 10개 추가</button>
     <FlowBiteSvelteLayout
         size="xl"

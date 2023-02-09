@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { LegendTable, LegendCheckBox } from '../FlowBiteLegendMaker'
-import type { Chart, CoreChartOptions, ElementChartOptions } from 'chart.js';
+import type { Chart,ChartOptions, CoreChartOptions, ElementChartOptions } from 'chart.js';
 import { TCellTHeadDummyData, TCellTBodyDummyData } from '../../FlowBiteSvelteTable'
 
 export function randomColorFactor() {
@@ -174,17 +174,18 @@ export const data = {
     }
   }
   
-  export let options = {
+  export let options: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     animation:{
+      onComplete: function() {
+        // console.log('Line Chart Rendered Completely!');
+      },
       duration: 0
     },
     scales: {
       y: {
           beginAtZero: true,
-          steps: 10,
-          stepValue: 5,
           max: 100
       }
     },
@@ -196,6 +197,7 @@ export const data = {
       legend: {
         display: false
       }
-    }
+    },
+
   }
   
