@@ -1,7 +1,8 @@
 // import type { Chart } from "chart.js";
 import { LineChart } from "../../../../stories/TS/LineChart/LineChart";
-import { ChartData } from "./data/FlowBiteSvelteLineChartData";
+import type { ChartData } from "./data/FlowBiteSvelteLineChartData";
 import type { Chart } from 'svelte-chartjs'
+// import type { Chart } from "chart.js";
 import { FlowBiteSvelteLineChartEvent } from "./Event";
 import { FlowBiteDataInterval } from "./FlowBiteSvelteInterval";
 
@@ -46,7 +47,7 @@ export class FlowBiteSvelteLineChart{
         chart.chart.data.datasets.forEach((dataset, i) => {
             dataset.data.push(getRandomIntInclusive(0,100));
         });
-        chart.chart.update();
+        // chart.chart.update();
     };
 
     addRandomData2( label ) {
@@ -78,7 +79,7 @@ export class FlowBiteSvelteLineChart{
         chart.chart.data.datasets.forEach((dataset) => {
             dataset.data.shift();
         });
-        chart.chart.update();
+        // chart.chart.update();
     }
 
     zoomReset(){

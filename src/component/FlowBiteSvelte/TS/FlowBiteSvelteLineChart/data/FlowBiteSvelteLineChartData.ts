@@ -1,4 +1,5 @@
 import type { LegendItem } from "chart.js"
+import type { TVector } from "../../FlowBiteSvelteLineChartByD3/ChartByD3Type";
 import { currentTimeBeforSecond } from "./FlowBiteSvelteLineChartOptions";
 
 export type TOntuneData = {
@@ -40,6 +41,39 @@ export class ChartData {
   setDatas( ontuneData: TOntuneData[], chartData: TChartData, chartLegendData: TChartLegendData[] ){
     this.ontuneData = ontuneData;
     this.chartData = chartData;
+    this.chartLegendData = chartLegendData;
+  }
+  
+  setOntuneData( ontuneData: TOntuneData[] ){
+    this.ontuneData = ontuneData;
+  }
+
+  setChartData( chartData: TChartData ){
+    this.chartData = chartData;
+  }
+
+  setChartLegendData( chartLegendData: TChartLegendData[] ){
+    this.chartLegendData = chartLegendData;
+  }
+}
+
+export class D3ChartData{
+  ontuneData: TOntuneData[] = [];
+  chartData: TVector[] = [];
+  chartLegendData: TChartLegendData[] = [];
+
+  constructor(){
+  }
+
+  setOntuneData( ontuneData: TOntuneData[] ){
+    this.ontuneData = ontuneData;
+  }
+
+  setChartData( chartData: TVector[] ){
+    this.chartData = chartData;
+  }
+
+  setChartLegendData( chartLegendData: TChartLegendData[] ){
     this.chartLegendData = chartLegendData;
   }
 }

@@ -53,17 +53,18 @@
     let chart: ChartJS;
     let flowBiteLineChart: FlowBiteSvelteLineChart;
     let chartData: ChartData = new ChartData();
-    chartData.setDatas( ontuneDummyData, chartDummyData, chartLegendData );
+    // chartData.setDatas( ontuneDummyData, chartDummyData, chartLegendData );
     let lengendTableBodyData: TOntuneData[] = chartData.ontuneData;
     let chartJSData = chartData.chartData;
+    let renderingTime;
 
     let test = 1;
-    function clickTest(){
+    function clickTest(count){
         console.log('clickTest');
         // 라인하나 추가하기
 
         // legend 강제로 하나 추가 하기
-        for(let i=0; i<10; ++i){
+        for(let i=0; i<count; ++i){
             // dataUtil.addDataSet( data.datasets );
             chartJSData.datasets.push({
                 label: 'pc' + test,
@@ -95,22 +96,32 @@
     function noZoomAddRandomData(){
         isZoom = true;
         flowBiteLineChart.addRandomData(currentTime());
+        let startTime = new Date()
         if(flowBiteLineChart.chart.data.labels.length > 10){
             while(flowBiteLineChart.chart.data.labels.length > 10){
                 flowBiteLineChart.removeData();
             }
             chart.update()
         }
+        getRenderingTime(startTime);
     }
     
     function onZoomAddRandomData(){
+        let startTime = new Date();
         isZoom = false;
         flowBiteLineChart.addRandomData(currentTime());
         flowBiteLineChart.chart.options.plugins.zoom.pan.threshold = 10
+        chart.update()
+        getRenderingTime(startTime);
+    }
+
+    function getRenderingTime( startTime ){
+        renderingTime = new Date().getTime() - startTime.getTime();
     }
 
     onMount(() => {
         zoomOption.pan.enabled = !zoomOption.pan.enabled;
+
         flowBiteLineChart = new FlowBiteSvelteLineChart( chart, options, zoomOption );
         flowBiteLineChart.setData( chartData );
 
@@ -120,7 +131,9 @@
 </script>
 
 <div class="flow_bite_svelte_line_chart">
-    <button style="border: 1px solid black;" on:click={() => { clickTest() }}>데이터 10개 추가</button>
+    <button style="border: 1px solid black;" on:click={() => { clickTest(10) }}>데이터 10개 추가</button>
+    <button style="border: 1px solid black;" on:click={() => { clickTest(1000) }}>데이터 1000개 추가</button>
+    <span>렌더링 시간 : {renderingTime} ms</span>
     <FlowBiteSvelteLayout
         size="xl"
         padding="md"
