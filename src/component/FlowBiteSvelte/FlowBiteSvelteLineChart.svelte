@@ -57,6 +57,7 @@
     let lengendTableBodyData: TOntuneData[] = chartData.ontuneData;
     let chartJSData = chartData.chartData;
     let renderingTime;
+    let fps;
 
     let test = 1;
     function clickTest(count){
@@ -117,6 +118,7 @@
 
     function getRenderingTime( startTime ){
         renderingTime = new Date().getTime() - startTime.getTime();
+        fps = 60-(renderingTime/16)
     }
 
     onMount(() => {
@@ -132,8 +134,10 @@
 
 <div class="flow_bite_svelte_line_chart">
     <button style="border: 1px solid black;" on:click={() => { clickTest(10) }}>데이터 10개 추가</button>
+    <button style="border: 1px solid black;" on:click={() => { clickTest(100) }}>데이터 100개 추가</button>
     <button style="border: 1px solid black;" on:click={() => { clickTest(1000) }}>데이터 1000개 추가</button>
     <span>렌더링 시간 : {renderingTime} ms</span>
+    <span>프레임 : {fps}</span>
     <FlowBiteSvelteLayout
         size="xl"
         padding="md"

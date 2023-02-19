@@ -9,10 +9,8 @@
     import type { TFlowBiteSvelteButton } from './TS/FlowBiteSvelteButton'
     import type { TCell } from "./TS/FlowBiteSvelteTable";
     import type { TTab } from "./TS/FlowBiteSvelteTab";
-    import * as PIXI from 'pixi.js';
-    import { PixiLineChart } from "./TS/FlowBiteSvelteLineChartByPIXI/PixiLineChart/API/PixiLineChart";
-    import { ContainerManager } from "./TS/FlowBiteSvelteLineChartByPIXI/PixiLineChart/Container/ContainerManager";
-    import type { ContainerOptions } from "./TS/FlowBiteSvelteLineChartByPIXI/PixiLineChart/Container/Container";
+    import { Ontune2D } from "../../ontune2D/api/index"
+    console.log(Ontune2D.prototype.on);
 
     export let buttonProps: TFlowBiteSvelteButton[];
     export let tableHeaders: TCell[];
@@ -25,101 +23,17 @@
     }
 
     // props로 받아야할 목록
-    let resizeToSelector = '#pixiContainer';
-    let pixiOptions;
-    let xAxesContainerOption: ContainerOptions = {
-        margin: 10,
-        width: 0,
-        height: 0,
-        x: 0,
-        y: 0
-    };
-    let yAxesContainerOption: ContainerOptions = {
-        margin: 10,
-        width: 0,
-        height: 0,
-        x: 0,
-        y: 0
-    };
-    let chartMainContainerOption: ContainerOptions = {
-        margin: 10,
-        width: 0,
-        height: 0,
-        x: 0,
-        y: 0
-    };
 
 
-    let pixiContainer: HTMLElement;
-    let pixiContainerInfo;
-    let pixiApp: PIXI.Application;
-    let pixiChart: PixiLineChart;
-    let containerManager: ContainerManager;
+    let canvasContainer: HTMLElement;
     let canvas: HTMLCanvasElement;
     const chartData: D3ChartData = new D3ChartData();
     let lengendTableBodyData: TOntuneData[] = chartData.ontuneData;
     
 
     onMount(() => {
-        // pixi 인스턴스 생성
-        pixiOptions = {
-            resizeTo: (document.querySelector(resizeToSelector) as HTMLElement),
-            background: '#ffffff'
-        };
-        pixiApp = new PIXI.Application( pixiOptions );
-
-        // 차트의 container 생성
-        containerManager = new ContainerManager();
-
-        // lineChart 인스턴스 생성
-        pixiChart = new PixiLineChart( pixiApp, containerManager );
-        pixiChart.attachBySelector( resizeToSelector );
-        canvas = document.querySelector( 'canvas' );
-
-        pixiContainerInfo = getRectSize(pixiContainer);
-
-        // ETC
-        const sprite1 = new PIXI.Sprite(PIXI.Texture.WHITE);
-        sprite1.tint = 0xff0000
-        sprite1.width = sprite1.height = 100
-        let position = PixiLineChart.getValueByQuadrant( 1, {x: 100, y: 100}, canvas );
-        sprite1.position.set(position.x, position.y)
-        pixiApp.stage.addChild(sprite1);
-
-        const sprite2 = new PIXI.Sprite(PIXI.Texture.WHITE);
-        sprite2.tint = 0xff0000
-        sprite2.width = sprite2.height = 50
-        let position2 = PixiLineChart.getValueByQuadrant( 1, {x: 200, y: 200}, canvas );
-        sprite2.position.set(position2.x, position2.y)
-        pixiApp.stage.addChild(sprite2);
     })
 
-    function getRectSize( dom: HTMLElement ){
-        // 현재 컨테이너 크기 조회
-        let rect = dom.getBoundingClientRect();
-        let pl = parseFloat( dom.style.paddingLeft );
-        let pr = parseFloat( dom.style.paddingRight );
-        let pb = parseFloat( dom.style.paddingBottom );
-        let pt = parseFloat( dom.style.paddingTop );
-        
-        if( isNaN( pl ) === false ){
-            rect.width -= pl;
-        }
-        if( isNaN( pr ) === false ){
-            rect.width -= pr;
-        }
-        if( isNaN( pb ) === false ){
-            rect.height -= pb;
-        }
-        if( isNaN( pt ) === false ){
-            rect.height -= pt;
-        }
-        
-        return {
-            width: rect.width,
-            height: rect.height
-        };
-    }
 </script>
 
 <div class="flow_bite_svelte_line_chart">
@@ -136,7 +50,7 @@
                     tabs = {tabs}
                     tabItemStyleStr = {tabItemStyleStr}
                 >
-                <div id="pixiContainer" bind:this={pixiContainer}></div>
+                <div id="canvasContainer" bind:this={canvasContainer}></div>
                 </FlowBiteSvelteTab>
             </div>
 
@@ -210,7 +124,7 @@
         padding-top: 15px;
     }
 
-    #pixiContainer {
+    #canvasContainer {
 		width: 100%;
 		height: 100%;
 		background-color: whitesmoke;
