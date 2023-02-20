@@ -6,7 +6,13 @@ export class Scene extends Group {
 
     constructor( id ){
         super( id );
-        // default는 1사분면
+
+        /*
+            좌표 증가 방향. 사분면 개념. default는 1사분면으로 세팅
+            [2] -1,1  | [1] 1,1
+            --------------------
+            [3] -1,-1 | [4] 1,-1
+        */
         this.qudrantSystem = new Vector2( 1, 1 );
     };
 

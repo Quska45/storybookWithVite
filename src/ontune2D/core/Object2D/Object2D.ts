@@ -4,7 +4,7 @@ export class Object2D {
     id: string;
     scale: Vector2;
     position: Vector2;
-    rotation: Vector2;
+    rotation: Vector2; // rotation은 vector일 필요가 없음. angle의 개념이기 때문에 그냥 number여야함. 추후 수정 예정
     opacity: number;
     zIndex: number;
     // 객체가 선택되어야 하는 범위에 대한 속성. 객체의 모양이 다양해 질 수록 선택되어야 범위의 복잡성이 증가함.
@@ -39,6 +39,21 @@ export class Object2D {
     setDegree( deg ){
         const rad = deg * Math.PI / 180;
         this.rotation.set( rad, rad );
+    };
+
+    traverse( callback: Function, endCallback?: Function ){
+        // 탐색 수동 종료: return false;
+        if( callback( this ) === false ){
+            return false;
+        };
+        
+        if( typeof endCallback !== "function" ){
+            return;
+        }
+        
+        if( endCallback( this ) === false ){
+            return false;
+        };
     };
 
     // interface의 개념. 하위 객체들은 updateHandle을 구현해서 사용.

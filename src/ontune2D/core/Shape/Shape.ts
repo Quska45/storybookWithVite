@@ -14,6 +14,7 @@ export class Shape extends Object2D {
 	strokeStyle: string;
 	isFixedLineWidth: boolean;
 	image: HTMLImageElement;
+    isShape = true;
 
     constructor( id: string ){
         super( id );
@@ -43,7 +44,7 @@ export class Shape extends Object2D {
         shape.isFixedLineWidth = paintInfo.isFixedLineWidth || shape.isFixedLineWidth;
     };
 
-    drawn( ctx: CanvasRenderingContext2D, zoom: number ){
+    drawn( ctx: CanvasRenderingContext2D, zoom: number, qudrantSystemX: number, qudrantSystemY: number ){
         console.warn( 'Shape의 하위 객체는 반드시 drawn 메서드를 오버라이드 해야 함' );
     };
 }

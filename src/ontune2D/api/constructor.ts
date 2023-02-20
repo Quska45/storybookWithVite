@@ -2,29 +2,36 @@ import { Scene } from "../core/Object2D/Scene";
 import { Camera } from "../core/Viewer/Camera";
 import { Renderer } from "../core/Viewer/Renderer";
 import { env } from "../env/env";
+import { moveCamera } from "./camera";
 import { on, off } from "./event";
+import { addRectangle, addLine } from "./object";
 import { run, resize, setQuadrantSystem, stop } from "./renderer";
 
 export class Ontune2D {
-    rederer: Renderer;
+    renderer: Renderer;
     scene: Scene;
     camera: Camera;
     ENV: typeof env;
+    RAF: { rendering: number };
     event: {
         sequence: number,
         beforeRender: Object,
         afterRender: Object,
         resize: Object,
-        executeCallback: Object
+        executeCallback: Function
     };
 
     constructor( selector ){
         this.ENV = env;
-        this.rederer = new Renderer( 'Ontune2D.Rederer:' + selector, selector );
+        this.renderer = new Renderer( 'Ontune2D.Renderer:' + selector, selector );
         this.scene = new Scene( 'Ontune2D.Scene:' + selector );
         this.camera = new Camera( 'Ontune2D.Camera:' + selector );
         this.camera.position.x = this.ENV.camera.startPosition.x;
         this.camera.position.y = this.ENV.camera.startPosition.y;
+
+        this.RAF = {
+            rendering: null
+        }
 
         this.event = Object.create(Object.prototype, {
 		
@@ -81,29 +88,41 @@ export class Ontune2D {
     };
 
     // event api
-    on( type: string, callback: Function ){}
-    off( reqSequence: number ){}
+    on( type: string, callback: Function ){
+        on( this, type, callback );
+    };
+    off( reqSequence: number ){
+        off( this, reqSequence )
+    };
 
     // renderer api
-    run(){};
+    run(){
+        run( this );
+    };
     stop(){};
     setQuadrantSystem( quadrant: number ){};
     resize(){};
 
     // camera api
-    moveCamera( x: number, y: number ){};
+    moveCamera( x: number, y: number ){
+        moveCamera( this, x, y );
+    };
     rotate( angle: number, isDgree: number ){};
     zoomInCamera(){};
     zoomOutCamera(){};
     getCameraBoundary(){};
+
+    // object api
+    addRectangle( id: string ){
+        return addRectangle( this, id );
+    };
+
+    addLine( id: string ){
+        return addLine( this, id );
+    };
 };
 
-// event api
-Ontune2D.prototype.on = on;
-Ontune2D.prototype.off = off;
-
 // renderer api
-Ontune2D.prototype.run = run;
 Ontune2D.prototype.stop = stop;
 Ontune2D.prototype.setQuadrantSystem = setQuadrantSystem;
 Ontune2D.prototype.resize = resize;

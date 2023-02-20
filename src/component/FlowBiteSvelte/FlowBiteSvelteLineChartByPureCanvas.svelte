@@ -25,6 +25,7 @@
     // props로 받아야할 목록
 
 
+    let engine: Ontune2D;
     let canvasContainer: HTMLElement;
     let canvas: HTMLCanvasElement;
     const chartData: D3ChartData = new D3ChartData();
@@ -32,7 +33,20 @@
     
 
     onMount(() => {
-    })
+        engine = new Ontune2D( '#canvasContainer' );
+        // engine.camera.position.set(engine.renderer.canvas.width/2, engine.renderer.canvas.height/2)
+        engine.moveCamera( engine.renderer.canvas.width/2, engine.renderer.canvas.height/2 );
+        
+        let rect = engine.addRectangle( 'rect' );
+        rect.position.set(10, 10);
+        rect.scale.set(10, 10);
+        
+        let line = engine.addLine( 'line' );
+        line.position.set(20, 20)
+        line.scale.set(20, 20);
+
+        engine.run();
+    });
 
 </script>
 

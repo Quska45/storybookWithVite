@@ -30,6 +30,7 @@ export class Rectangle extends Shape {
 
         ctx.closePath();
         ctx.stroke();
+        
         rectangle.fillStyle ? ctx.fill() : null;
     };
 };
