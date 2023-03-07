@@ -19,6 +19,8 @@ export class Object2D {
 
     userData: any;
 
+    parent: Object2D;
+
     constructor( id ){
         this.id = id;
         this.scale = new Vector2( 1, 1 );
@@ -33,6 +35,7 @@ export class Object2D {
         };
         this.handleScale = new Vector2( 1, 1 );
         this.isFixedSize = false;
+        this.parent = null;
     };
 
     // degree to radian

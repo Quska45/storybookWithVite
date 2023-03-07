@@ -79,7 +79,6 @@ export class FlowBiteSvelteLineChart{
         chart.chart.data.datasets.forEach((dataset) => {
             dataset.data.shift();
         });
-        // chart.chart.update();
     }
 
     zoomReset(){

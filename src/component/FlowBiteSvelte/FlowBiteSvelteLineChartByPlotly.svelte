@@ -9,43 +9,124 @@
     import type { TFlowBiteSvelteButton } from './TS/FlowBiteSvelteButton'
     import type { TCell } from "./TS/FlowBiteSvelteTable";
     import type { TTab } from "./TS/FlowBiteSvelteTab";
-    import type { Ontune2D } from "../../ontune2D/api/constructor"
-    // import { OntuneChart } from "./TS/FlowBiteSvelteLineChartPureCanvas/Chart/OntuneChart";
-    import { CONFIG } from "./TS/FlowBiteSvelteLineChartPureCanvas/data/Config";
-    import { engineSample } from "./TS/FlowBiteSvelteLineChartPureCanvas/Sample/enginSample";
-    import type { OntuneChart } from "./TS/FlowBiteSvelteLineChartPureCanvas/Chart/OntuneChart";
-    import { OntuneLineChart } from "./TS/FlowBiteSvelteLineChartPureCanvas/Chart/OntuenLineChart";
-    import { ChartVector2 } from "./TS/FlowBiteSvelteLineChartPureCanvas/data/ChartVector2";
+    import Plotly from 'plotly.js-basic-dist';
+    import { getPlotlyXDummyData, getPlotlyYDummyData, randomColorFactor } from "./TS/FlowBiteSvelteLineChartByPlotly/PlotlyDummyData"; 
 
+    // 차트외의 props
     export let buttonProps: TFlowBiteSvelteButton[];
     export let tableHeaders: TCell[];
     export let tabs: TTab[];
     export let tabItemStyleStr: string;
 
-    
-    function clickTest(){
-        console.log('clickTest click');
-    }
-
     // props로 받아야할 목록
-
-
-    let engine: Ontune2D;
-    let canvasContainer: HTMLElement;
-    let canvas: HTMLCanvasElement;
+    let myChart: HTMLElement;
     const chartData: D3ChartData = new D3ChartData();
     let lengendTableBodyData: TOntuneData[] = chartData.ontuneData;
-    let chart: OntuneLineChart;
     
 
+    export let host;
+    export let term; //시간(s)
+    export let isStreamStart;
+    let data = [];
+
+
+    function rand(): number{
+        return Math.random()*100;
+    };
+
+    const plotlyXData = getPlotlyXDummyData( term );
+    for(let i=0; i<host; ++i){
+        data.push({
+            x: [...plotlyXData],
+            y: getPlotlyYDummyData(term),
+            type: 'scattergl',
+            mode: 'lines',
+            line: {
+                color: `rgb(${randomColorFactor()}, ${randomColorFactor()}, ${randomColorFactor()})`,
+                width: 1
+            }
+        })
+    };
+    
+    const layout = {
+        title: 'My Line Chart with WebGL',
+        xaxis: {
+            title: 'X-axis label',
+            range: [1,10],
+            nticks: 10
+        },
+        yaxis: {
+            title: 'Y-axis label'
+        },
+        margin: {
+            l: 50,
+            r: 50,
+            b: 50,
+            t: 80
+        },
+        // dragmode: 'pan' // pan이 enable 된 상태로 시작되게 해줌
+        // modebar: {
+        //     orientation: 'v',
+        // },
+    };
+
+    function addZero( time ){
+        if( time < 10 ){
+            time = '0' + time;
+        };
+        return time;
+    };
+
     onMount(() => {
-        // engine을 사용해서 객체 몇 개를 띄워 보는 샘플 코드
-        // engineSample.makeSomeObject( engine );
+        Plotly.newPlot('myChart', data, layout);
 
-        chart = new OntuneLineChart( CONFIG );
-        chart.addBaseLine();
+        if( !isStreamStart ){
+            return;
+        };
 
-        window.addEventListener('resize', chart.engine.resize);
+        setInterval(function(){
+            let date = new Date();
+            let hour = addZero(date.getHours());
+            let min = addZero(date.getMinutes());
+            let sec = addZero(date.getSeconds());
+
+            for(let i=0; i<host; ++i){
+                data[i].x.shift()
+                data[i].y.shift()
+                data[i].x.push(`${hour}:${min}:${sec}`);
+                data[i].y.push(Math.random()*100);
+            };
+
+            Plotly.redraw('myChart');
+            
+            // let yArr = [];
+            // let yCountArr = [];
+            // for(let i=0; i<count; ++i){
+            //     yArr.push([rand()]);
+            //     yCountArr.push(i);
+            // };
+
+            // console.log('변경 전',data[0]);
+            // const worker = new Worker(new URL('./TS/FlowBiteSvelteLineChartByPlotly/AddDataWorker.js', import.meta.url), {type: 'module'});
+            // worker.postMessage({data, count, layout});
+            // console.log('변경 후',data);
+            // worker.onmessage = function(event) {
+                // console.log(data)
+                // console.log('변경 후', event.data[0]);
+                // console.log('Received message from worker evente:', event);
+                // data = event.data;
+                // Plotly.update('myChart', {}, event.data);
+                // Plotly.update('myChart', event.data, {});
+                // Plotly.redraw('myChart');
+            // };
+
+            // console.log('yArr', yArr);
+            // console.log('yCountArr', yCountArr);
+            // Plotly.extendTraces('myChart', {
+            //     y: yArr
+            // }, yCountArr);
+        }, 1000);
+
     });
 
 </script>
@@ -64,7 +145,7 @@
                     tabs = {tabs}
                     tabItemStyleStr = {tabItemStyleStr}
                 >
-                <div id="canvasContainer" bind:this={canvasContainer}></div>
+                <div id="myChart" bind:this={myChart}></div>
                 </FlowBiteSvelteTab>
             </div>
 
@@ -137,10 +218,4 @@
         height: 30%;
         padding-top: 15px;
     }
-
-    #canvasContainer {
-		width: 100%;
-		height: 100%;
-		background-color: whitesmoke;
-	}
 </style>

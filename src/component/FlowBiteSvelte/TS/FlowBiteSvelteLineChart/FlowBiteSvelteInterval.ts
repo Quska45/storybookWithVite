@@ -1,3 +1,5 @@
+const window = self;
+
 export class FlowBiteDataInterval {
     intervalTick: number;
     intervalTime: number;

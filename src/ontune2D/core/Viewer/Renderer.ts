@@ -10,6 +10,7 @@ export class Renderer {
     container: HTMLElement;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
+    boundingClientRect: DOMRect;
 
     constructor( id: string, selector: string ){
         let renderer = this;
@@ -66,14 +67,16 @@ export class Renderer {
                 const isShape = object2d instanceof Shape ? true : false;
 
                 if( isGroup === true ){
-                    ctx.translate( -(object2d as Group).pivot.x, -(object2d as Group).pivot.y );
-                }
+                    const group = (object2d as Group);
+                    ctx.translate( -group.pivot.x, -group.pivot.y );
+                };
                 ctx.save();
                 ctx.scale( qudrantSystemX, qudrantSystemY );
                 if( isShape === true ){
+                    const shape = object2d as Shape;
                     ctx.globalAlpha = object2d.opacity;
-                    (object2d as Shape).drawn( ctx, camera.scale.x, qudrantSystemX, qudrantSystemY );
-                }
+                    shape.drawn( ctx, camera.scale.x, qudrantSystemX, qudrantSystemY );
+                };
                 ctx.restore();
                 
             }, function( object2d ){
@@ -109,5 +112,6 @@ export class Renderer {
         }
         renderer.canvas.width = rect.width;
         renderer.canvas.height = rect.height;
+        renderer.boundingClientRect = rect;
     }
 };

@@ -1,11 +1,14 @@
+import { Vector2 } from "../core/Math/Vector2";
+import type { Object2D } from "../core/Object2D/Object2D";
 import { Scene } from "../core/Object2D/Scene";
 import { Camera } from "../core/Viewer/Camera";
 import { Renderer } from "../core/Viewer/Renderer";
 import { env } from "../env/env";
-import { moveCamera } from "./camera";
+import { getSelectBox, onContextmenu, onMousedown, onMousemove, onMouseUp, type TMouseControl } from "../plugin/MouseControl";
+import { CameraAPI } from "./camera";
 import { on, off } from "./event";
-import { addRectangle, addLine } from "./object";
-import { run, resize, setQuadrantSystem, stop } from "./renderer";
+import { ObjectAPI } from "./object";
+import { RendererAPI } from "./renderer";
 
 export class Ontune2D {
     renderer: Renderer;
@@ -20,6 +23,10 @@ export class Ontune2D {
         resize: Object,
         executeCallback: Function
     };
+    mouseControl: TMouseControl;
+    rendererAPI: RendererAPI;
+    objectAPI: ObjectAPI;
+    cameraAPI: CameraAPI;
 
     constructor( selector ){
         this.ENV = env;
@@ -31,6 +38,32 @@ export class Ontune2D {
 
         this.RAF = {
             rendering: null
+        };
+
+        this.rendererAPI = new RendererAPI( this );
+        this.objectAPI = new ObjectAPI( this );
+        this.cameraAPI = new CameraAPI( this );
+
+        this.mouseControl = {
+            isEnable: false,
+            isEnableMousearea: true, // 마우스 영역 사용 여부
+            isEnableMousemove: true, // 마우스 이동 사용 여부
+            isEnableMouserotate: false, // 마우스 회전 사용 여부
+            isEnableMousezoom: true, // 마우스 줌 사용 여부
+            isEnableMousemoveByMousezoom: true, // 마우스 확대 시, 이동 여부
+            
+            // 판단
+            isDraged: false, // 현재 드래그 여부
+            
+            button: null, // 누르고 있는 마우스 버튼
+            downPageXy: new Vector2( 0, 0 ), // 다운 당시 page 좌표
+            beforePageXy: new Vector2( 0, 0 ), // 이전 page 좌표
+            downXy: new Vector2( 0, 0 ), // 버튼을 눌렀을 당시 좌표
+            beforeCameraRotation: new Vector2( 0, 0 ), // 회전 전 카메라 회전값
+            
+            isReverseButton: false, // 버튼 맵핑 반대 여부
+
+            selectBox: getSelectBox( this ),
         }
 
         this.event = Object.create(Object.prototype, {
@@ -60,6 +93,16 @@ export class Ontune2D {
                 enumerable: true,
                 writable: true
             },
+
+            // mouse event
+            mousedown: {},
+            mouseup: {},
+            mousemove: {},
+            click: {},  
+            mousearea: {},
+            // mousewheel: {},
+            // mouseenter: {},
+            // mouseleave: {},
             
             /*
                 @USE
@@ -88,41 +131,38 @@ export class Ontune2D {
     };
 
     // event api
-    on( type: string, callback: Function ){
-        on( this, type, callback );
-    };
-    off( reqSequence: number ){
-        off( this, reqSequence )
-    };
+    on( type: string, callback: Function ){ on( this, type, callback ); };
+    off( reqSequence: number ){ off( this, reqSequence ) };
 
     // renderer api
-    run(){
-        run( this );
-    };
+    run(){ this.rendererAPI.run() };
     stop(){};
     setQuadrantSystem( quadrant: number ){};
-    resize(){};
+    resize(){ this.rendererAPI.resize() };
+    getCanvasSize(){ return this.rendererAPI.getCanvasSize() };
 
     // camera api
-    moveCamera( x: number, y: number ){
-        moveCamera( this, x, y );
-    };
+    moveCamera( x: number, y: number ){ this.cameraAPI.moveCamera( x, y ); };
     rotate( angle: number, isDgree: number ){};
-    zoomInCamera(){};
-    zoomOutCamera(){};
+    zoomInCamera(){ this.cameraAPI.zoomInCamera(); };
+    zoomOutCamera(){ this.cameraAPI.zoomOutCamera(); };
     getCameraBoundary(){};
 
     // object api
-    addRectangle( id: string ){
-        return addRectangle( this, id );
-    };
+    addRectangle( id: string ){ return this.objectAPI.addRectangle( id ); };
+    addLine( id: string ){ return this.objectAPI.addLine( id ); };
+    addText( id: string, text: string ){ return this.objectAPI.addText(id, text); };
+    addObject( object2d: Object2D ){ return this.objectAPI.addObject( object2d ) };
+    addPolyLine( id: string ){ return this.objectAPI.addPolyLine( id ); }
 
-    addLine( id: string ){
-        return addLine( this, id );
+    // mouseControlPlugin
+    startMouseControl(){
+        const ontune2d = this;
+
+        ontune2d.mouseControl.isEnable = true;
+        ontune2d.renderer.container.addEventListener('mousedown', ( e ) => { onMousedown(e, ontune2d) });
+        ontune2d.renderer.container.addEventListener('mousemove', ( e ) => { onMousemove(e, ontune2d) });
+        ontune2d.renderer.container.addEventListener('mouseup', ( e ) => { onMouseUp(e, ontune2d) });
+        ontune2d.renderer.container.addEventListener('contextmenu', ( e ) => { onContextmenu(e) });
     };
 };
-
-// renderer api
-Ontune2D.prototype.stop = stop;
-Ontune2D.prototype.setQuadrantSystem = setQuadrantSystem;
-Ontune2D.prototype.resize = resize;

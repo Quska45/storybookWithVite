@@ -1,16 +1,19 @@
-import type { Vector2 } from "../Math/Vector2";
+import { Vector2 } from "../Math/Vector2";
 import { Object2D } from "./Object2D";
 
 export class Group extends Object2D {
-    parent: Object2D;
+    // parent: Object2D;
     children: Object2D[];
     pivot: Vector2;
     isGroup = true;
 
     constructor( id: string ){
         super( id );
-        this.parent = null;
+        // this.parent = null;
         this.children = [];
+        this.scale.set( 1, 1 );
+        this.position.set( 0, 0 );
+        this.pivot = new Vector2( 0, 0 );
         // Group의 기본 선택 영역은 네모
         this.selectRange = {
             x: [ -0.5, -0.5, 0.5, 0.5, -0.5 ],
@@ -26,6 +29,9 @@ export class Group extends Object2D {
         if( isGroup ){
             // 기존의 참조 제거
             object2d.parent instanceof Group ? object2d.parent.remove( object2d.parent ) : null;
+            object2d.parent = group;
+        } else {
+            object2d.parent = null;
             object2d.parent = group;
         };
         

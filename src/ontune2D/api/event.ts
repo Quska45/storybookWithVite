@@ -1,4 +1,11 @@
+import { Ontune2DAPI } from "./api";
 import type { Ontune2D } from "./constructor";
+
+export class EventAPI extends Ontune2DAPI {
+    constructor( ontune2d: Ontune2D ){
+        super( ontune2d );
+    };
+};
 
 /**
 	콜백 등록

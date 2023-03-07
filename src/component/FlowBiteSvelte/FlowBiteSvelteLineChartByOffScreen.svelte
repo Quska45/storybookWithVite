@@ -9,17 +9,8 @@
         Line
         , Chart
      } from 'svelte-chartjs'
-    import { 
+    import type { 
         Chart as ChartJS
-        , Title
-        , Tooltip
-        , Legend
-        , LineElement
-        , LinearScale
-        , PointElement
-        , CategoryScale
-        , TimeScale
-        , LineController
     } from 'chart.js'
     import 'chartjs-adapter-moment'
     import zoomPlugin from 'chartjs-plugin-zoom'
@@ -27,37 +18,25 @@
     import { currentTimeBeforSecond, data, dataUtil, options, randomColorFactor, zoomOption, } from './TS/FlowBiteSvelteLineChart/data/FlowBiteSvelteLineChartOptions'
     import type { TFlowBiteSvelteButton } from './TS/FlowBiteSvelteButton'
     import type { TCell } from "./TS/FlowBiteSvelteTable";
-    import { TCellTHeadDummyData } from "./TS/FlowBiteSvelteTable";
     import type { TTab } from "./TS/FlowBiteSvelteTab";
-    import { FlowBiteSvelteLineChart } from './TS/FlowBiteSvelteLineChart/FlowBiteSvelteLineChart'
+    import type { FlowBiteSvelteLineChart } from './TS/FlowBiteSvelteLineChart/FlowBiteSvelteLineChart'
     import { currentTime } from "./TS/FlowBiteSvelteLineChart/data/FlowBiteSvelteLineChartOptions";
 
     export let buttonProps: TFlowBiteSvelteButton[];
     export let tableHeaders: TCell[];
     export let tabs: TTab[];
     export let tabItemStyleStr: string;
-    
-    ChartJS.register(
-        Title
-        , Tooltip
-        , Legend
-        , LineElement
-        , LinearScale
-        , PointElement
-        , CategoryScale
-        , TimeScale
-        , zoomPlugin
-        , LineController
-    );
+
+    export let host;
+    export let term;
+    export let isStreamStart;
 
     let chart: ChartJS;
     let flowBiteLineChart: FlowBiteSvelteLineChart;
     let chartData: ChartData = new ChartData();
-    // chartData.setDatas( ontuneDummyData, chartDummyData, chartLegendData );
     let lengendTableBodyData: TOntuneData[] = chartData.ontuneData;
     let chartJSData = chartData.chartData;
-    let renderingTime;
-    let fps;
+    let chartCanvas: HTMLCanvasElement;
 
     let test = 1;
     function clickTest(count){
@@ -104,7 +83,6 @@
             }
             chart.update()
         }
-        getRenderingTime(startTime);
     }
     
     function onZoomAddRandomData(){
@@ -113,24 +91,23 @@
         flowBiteLineChart.addRandomData(currentTime());
         flowBiteLineChart.chart.options.plugins.zoom.pan.threshold = 10
         chart.update()
-        getRenderingTime(startTime);
-    }
-
-    function getRenderingTime( startTime ){
-        renderingTime = new Date().getTime() - startTime.getTime();
-        fps = 60-(renderingTime/16)
     }
 
     onMount(() => {
-        zoomOption.pan.enabled = !zoomOption.pan.enabled;
+        const config = {type:'line', data: chartJSData, options: options};
+        const worker = new Worker(new URL('./TS/FlowBiteSvelteLineChartByOffScreen/offScreenWorker.js', import.meta.url), {type: 'module'});
 
-        flowBiteLineChart = new FlowBiteSvelteLineChart( chart, options, zoomOption );
-        flowBiteLineChart.setData( chartData );
+        const canvas = chartCanvas.transferControlToOffscreen();
+        const canvasWidth = chartCanvas.width;
+        const canvasHeight = chartCanvas.height;
+        console.log('canvasWidth', canvasWidth);
+        console.log('canvasHeight', canvasHeight);
 
-        flowBiteLineChart.setDataInterval( 1000, noZoomAddRandomData );
-        flowBiteLineChart.startDataInterval();
-
-        console.log(chart);
+        const canvasContainer = document.getElementsByClassName('canvasContainer');
+        const canvasContainerWidth = canvasContainer[0].clientWidth;
+        const canvasContainerHeight = canvasContainer[0].clientHeight;
+        const _config = JSON.stringify(config);
+        worker.postMessage({canvas, _config, host, term, isStreamStart, canvasWidth, canvasHeight, canvasContainerWidth, canvasContainerHeight}, [canvas]);
     })
 </script>
 
@@ -138,8 +115,6 @@
     <button style="border: 1px solid black;" on:click={() => { clickTest(10) }}>데이터 10개 추가</button>
     <button style="border: 1px solid black;" on:click={() => { clickTest(100) }}>데이터 100개 추가</button>
     <button style="border: 1px solid black;" on:click={() => { clickTest(1000) }}>데이터 1000개 추가</button>
-    <!-- <span>렌더링 시간 : {renderingTime} ms</span>
-    <span>프레임 : {fps}</span> -->
     <FlowBiteSvelteLayout
         size="xl"
         padding="md"
@@ -153,7 +128,8 @@
                     tabs = {tabs}
                     tabItemStyleStr = {tabItemStyleStr}
                 >
-                    <Chart bind:chart type="line" data={chartJSData} {options} />
+                    <!-- <div id="testContainer"></div> -->
+                    <canvas bind:this={chartCanvas} id="myChart"></canvas>
                 </FlowBiteSvelteTab>
             </div>
 
