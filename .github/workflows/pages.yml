@@ -33,8 +33,12 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Install Modules
+        with:
+          node-version: 16.19.0
         run: npm i
       - name: Build Pages
+        with:
+          node-version: 16.19.0
         run: npm run build-storybook
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
