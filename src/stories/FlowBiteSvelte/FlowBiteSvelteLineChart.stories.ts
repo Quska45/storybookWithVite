@@ -9,6 +9,38 @@ export default {
   title: 'Example/FlowBiteSvelteLineChart',
   component: FlowBiteSvelteLineChart,
   argTypes: {
+    host: {
+      control: { type: 'select' },
+      options: [10, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+      description: '호스트의 수. 호스트 1개당 차트에서 1개의 라인이 추가됨',
+      table: {
+        type: { summary: 'number' },
+      },
+    },
+    term: {
+      control: { type: 'select' },
+      options: [60, 300, 600, 1200, 1800, 2400, 3000, 3600],
+      description: '적재하려는 시간데이터(x축의 데이터). 1당 1초를 의미함',
+      table: {
+        type: { summary: 'number' },
+      },
+    },
+    isStreamStart: {
+      control: { type: 'select' },
+      options: [true, false],
+      description: '1초 단위 데이터 업데이트 실행 여부',
+      table: {
+        type: { summary: 'boolean' },
+      },
+    },
+    isShowAllData: {
+      control: { type: 'select' },
+      options: [true, false],
+      description: '모든 term에 대한 데이터를 표시 할지에 대한 여부. false면 마지막 10개 term에 대한 데이터만 표시 ',
+      table: {
+        type: { summary: 'boolean' },
+      },
+    },
     buttonProps: {
       control: 'object'
     },
@@ -36,6 +68,10 @@ const Template = (args) => ({
 // More on args: https://storybook.js.org/docs/svelte/writing-stories/args
 export const Primary = Template.bind({});
 Primary.args = {
+  host: 10,
+  term: 60,
+  isStreamStart: true,
+  isShowAllData: false,
   buttonProps: [
     {
       color: 'red',

@@ -10,8 +10,10 @@ import {
     , CategoryScale
     , TimeScale
     , LineController
+    , Filler
 } from 'chart.js'
 import 'chartjs-adapter-moment'
+import { compute_rest_props } from 'svelte/internal';
 // import zoomPlugin from 'chartjs-plugin-zoom'
 import { ChartData } from '../FlowBiteSvelteLineChart/data/FlowBiteSvelteLineChartData';
 import { currentTime, randomColorFactor, zoomOption } from "../FlowBiteSvelteLineChart/data/FlowBiteSvelteLineChartOptions";
@@ -28,6 +30,7 @@ ChartJS.register(
     , TimeScale
     // , zoomPlugin
     , LineController
+    , Filler
 );
 
 let test = 1;
@@ -37,15 +40,13 @@ let year = today.getFullYear();
 let month = addZero(today.getMonth()+1);
 let day = addZero(today.getDate());
 let fullDate = `${year}-${month}-${day}`;
-let startHour = addZero(today.getHours()-1);
-
 
 function addData( host, term, chartJSData ){
     // legend 강제로 하나 추가 하기
     for(let i=0; i<host; ++i){
         chartJSData.datasets.push({
             label: 'pc' + test,
-            fill: true,
+            fill: false,
             borderColor: `rgb(${randomColorFactor()}, ${randomColorFactor()}, ${randomColorFactor()})`,
             data: [],
             radius: 0
@@ -80,28 +81,26 @@ function addZero( time ){
     return time;
 };
 
-function getTime( time ){
-    let startTime = new Date();
-    let resultTime = new Date(startTime - (time*1000));
-
-    let hour = addZero(resultTime.getHours());
-    let min = addZero(resultTime.getMinutes());
-    let sec = addZero(resultTime.getSeconds());
-
-    return '';
-}
-
 onmessage = function( event ){
     let chartData = new ChartData();
-    const {canvas, _config, host, term, isStreamStart, canvasWidth, canvasHeight, canvasContainerWidth, canvasContainerHeight} = event.data;
+    const {canvas, _config, host, term, isStreamStart, isShowAllData, canvasContainerWidth, canvasContainerHeight} = event.data;
     // const canvas = JSON.parse(_canvas);
     const config = JSON.parse(_config);
     delete config.options.scales.x.type;
-    config.options.scales.x.ticks.maxTicksLimit = 10;
-
-
+    // config.options.scales.x.ticks.sampleSize = 10;
+    // config.options.scales.x.ticks.autoSkip = false;
+    // config.options.scales.x.ticks.autoSkipPadding = 0.1
+    // config.options.scales.x.ticks.labelOffset = 100
+    // config.options.scales.x.ticks.stepSize = 0.1;
+    // ChartJS.defaults.scales.linear.min = 50;
+    
     addData(host, term, config.data);
-
+    
+    if( !isShowAllData ){
+        config.options.scales.x.min = config.data.labels[config.data.labels.length-10];
+        config.options.scales.x.max = config.data.labels[config.data.labels.length-1];
+        config.options.scales.x.ticks.maxTicksLimit = 20;
+    };
     canvas.width = canvasContainerWidth;
     canvas.height = canvasContainerHeight-70;
     const chart = new ChartJS(canvas, config);
@@ -109,6 +108,10 @@ onmessage = function( event ){
     function noZoomAddRandomData(){
         flowBiteLineChart.addRandomData(currentTime());
         flowBiteLineChart.removeData();
+        if( !isShowAllData ){
+            config.options.scales.x.min = config.data.labels[config.data.labels.length-10];
+            config.options.scales.x.max = config.data.labels[config.data.labels.length-1];
+        };
         chart.update()
     };
 

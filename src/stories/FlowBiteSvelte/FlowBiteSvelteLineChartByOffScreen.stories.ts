@@ -33,6 +33,14 @@ export default {
         type: { summary: 'boolean' },
       },
     },
+    isShowAllData: {
+      control: { type: 'select' },
+      options: [true, false],
+      description: '모든 term에 대한 데이터를 표시 할지에 대한 여부. false면 마지막 10개 term에 대한 데이터만 표시 ',
+      table: {
+        type: { summary: 'boolean' },
+      },
+    },
     buttonProps: {
       control: 'object'
     },
@@ -63,6 +71,7 @@ Primary.args = {
   host: 10,
   term: 600,
   isStreamStart: true,
+  isShowAllData: false,
   buttonProps: [
     {
       color: 'red',

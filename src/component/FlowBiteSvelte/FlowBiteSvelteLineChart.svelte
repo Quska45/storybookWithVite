@@ -20,6 +20,7 @@
         , CategoryScale
         , TimeScale
         , LineController
+        , Filler
     } from 'chart.js'
     import 'chartjs-adapter-moment'
     import zoomPlugin from 'chartjs-plugin-zoom'
@@ -36,6 +37,11 @@
     export let tableHeaders: TCell[];
     export let tabs: TTab[];
     export let tabItemStyleStr: string;
+
+    export let host;
+    export let term;
+    export let isStreamStart;
+    export let isShowAllData;
     
     ChartJS.register(
         Title
@@ -48,6 +54,7 @@
         , TimeScale
         , zoomPlugin
         , LineController
+        , Filler
     );
 
     let chart: ChartJS;
@@ -56,8 +63,13 @@
     // chartData.setDatas( ontuneDummyData, chartDummyData, chartLegendData );
     let lengendTableBodyData: TOntuneData[] = chartData.ontuneData;
     let chartJSData = chartData.chartData;
-    let renderingTime;
-    let fps;
+    let chartCanvas: HTMLCanvasElement;
+
+    let today = new Date();
+    let year = today.getFullYear();
+    let month = addZero(today.getMonth()+1);
+    let day = addZero(today.getDate());
+    let fullDate = `${year}-${month}-${day}`;
 
     let test = 1;
     function clickTest(count){
@@ -89,23 +101,25 @@
                 }
             )
         }
-        chartJSData.datasets = chartJSData.datasets;
+        // chartJSData.datasets = chartJSData.datasets;
         lengendTableBodyData = lengendTableBodyData;
-    }
+    };
 
     let isZoom = false;
-    function noZoomAddRandomData(){
+    function noZoomAddRandomData( config ){
         isZoom = true;
         flowBiteLineChart.addRandomData(currentTime());
-        let startTime = new Date()
-        if(flowBiteLineChart.chart.data.labels.length > 10){
-            while(flowBiteLineChart.chart.data.labels.length > 10){
-                flowBiteLineChart.removeData();
-            }
-            chart.update()
-        }
-        getRenderingTime(startTime);
-    }
+        flowBiteLineChart.removeData();
+        if( !isShowAllData ){
+            config.options.scales.x.min = config.data.labels[config.data.labels.length-10];
+            config.options.scales.x.max = config.data.labels[config.data.labels.length-1];
+        } else {
+            delete options.scales.x.min;
+            delete options.scales.x.max;
+            delete options.scales.x.ticks.maxTicksLimit;
+        };
+        chart.update()
+    };
     
     function onZoomAddRandomData(){
         let startTime = new Date();
@@ -113,33 +127,91 @@
         flowBiteLineChart.addRandomData(currentTime());
         flowBiteLineChart.chart.options.plugins.zoom.pan.threshold = 10
         chart.update()
-        getRenderingTime(startTime);
-    }
+    };
 
-    function getRenderingTime( startTime ){
-        renderingTime = new Date().getTime() - startTime.getTime();
-        fps = 60-(renderingTime/16)
-    }
+    function addData( host, term, chartJSData ){
+        // legend 강제로 하나 추가 하기
+        for(let i=0; i<host; ++i){
+            chartJSData.datasets.push({
+                label: 'pc' + test,
+                fill: false,
+                borderColor: `rgb(${randomColorFactor()}, ${randomColorFactor()}, ${randomColorFactor()})`,
+                data: [],
+                radius: 0
+            });
+            test++;
+        };
+
+        let startTime = new Date(new Date().getTime() - (term*1000)).getTime();
+        for(let i=1; i<=term; ++i){
+            let timeStr = '';
+            let tempDate = new Date(startTime + (i*1000));
+            let hour = addZero( tempDate.getHours() );
+            let min = addZero( tempDate.getMinutes() );
+            let sec = addZero( tempDate.getSeconds() );
+            
+            timeStr = `${fullDate} ${hour}:${min}:${sec}`;
+
+            chartJSData.labels.push(timeStr);
+
+            for( let j=0; j<host; ++j ){
+                chartJSData.datasets[j].data.push(parseInt((Math.random() * 100).toString()));
+            };
+        };
+
+        console.log('chartJSData at addData', chartJSData);
+    };
+
+    function addZero( time ){
+        if( time < 10 ){
+            time = '0' + time;
+        };
+        return time;
+    };
 
     onMount(() => {
+        const canvasContainer = document.getElementsByClassName('canvasContainer');
+        const canvasContainerWidth = canvasContainer[0].clientWidth;
+        const canvasContainerHeight = canvasContainer[0].clientHeight;
+        const config = {type:'line', data: chartJSData, options: options};
+        delete config.options.scales.x.type;
+
+        addData(host, term, chartJSData);
+
+        if( !isShowAllData ){
+            options.scales.x.min = chartJSData.labels[chartJSData.labels.length-10].toString();
+            options.scales.x.max = chartJSData.labels[chartJSData.labels.length-1].toString();
+            options.scales.x.ticks.maxTicksLimit = 20;
+        } else {
+            delete options.scales.x.min;
+            delete options.scales.x.max;
+            delete options.scales.x.ticks.maxTicksLimit;
+        };
+
+        chartCanvas.width = canvasContainerWidth;
+        chartCanvas.height = canvasContainerHeight-70;
+        chart = new ChartJS(chartCanvas, config);
+
+        chart.resize();
+
+        if( !isStreamStart ){
+            return;
+        };
+
         zoomOption.pan.enabled = !zoomOption.pan.enabled;
 
         flowBiteLineChart = new FlowBiteSvelteLineChart( chart, options, zoomOption );
         flowBiteLineChart.setData( chartData );
 
         flowBiteLineChart.setDataInterval( 1000, noZoomAddRandomData );
-        flowBiteLineChart.startDataInterval();
-
-        console.log(chart);
-    })
+        flowBiteLineChart.startDataInterval( config );
+    });
 </script>
 
 <div class="flow_bite_svelte_line_chart">
     <button style="border: 1px solid black;" on:click={() => { clickTest(10) }}>데이터 10개 추가</button>
     <button style="border: 1px solid black;" on:click={() => { clickTest(100) }}>데이터 100개 추가</button>
     <button style="border: 1px solid black;" on:click={() => { clickTest(1000) }}>데이터 1000개 추가</button>
-    <!-- <span>렌더링 시간 : {renderingTime} ms</span>
-    <span>프레임 : {fps}</span> -->
     <FlowBiteSvelteLayout
         size="xl"
         padding="md"
@@ -153,7 +225,7 @@
                     tabs = {tabs}
                     tabItemStyleStr = {tabItemStyleStr}
                 >
-                    <Chart bind:chart type="line" data={chartJSData} {options} />
+                    <canvas bind:this={chartCanvas} id="myChart"></canvas>
                 </FlowBiteSvelteTab>
             </div>
 

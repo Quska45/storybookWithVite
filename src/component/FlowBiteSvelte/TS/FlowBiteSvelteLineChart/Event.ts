@@ -7,7 +7,6 @@ export class FlowBiteSvelteLineChartEvent{
         this.chart = chart;
         this.options = options;
         this.zoomOption = zoomOption;
-        console.log('event chart',chart);
     };
 
     triggerButtonEventByButtonIndex( index: number, buttonProp ){

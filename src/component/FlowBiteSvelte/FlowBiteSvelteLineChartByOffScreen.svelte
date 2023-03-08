@@ -30,6 +30,7 @@
     export let host;
     export let term;
     export let isStreamStart;
+    export let isShowAllData;
 
     let chart: ChartJS;
     let flowBiteLineChart: FlowBiteSvelteLineChart;
@@ -98,23 +99,19 @@
         const worker = new Worker(new URL('./TS/FlowBiteSvelteLineChartByOffScreen/offScreenWorker.js', import.meta.url), {type: 'module'});
 
         const canvas = chartCanvas.transferControlToOffscreen();
-        const canvasWidth = chartCanvas.width;
-        const canvasHeight = chartCanvas.height;
-        console.log('canvasWidth', canvasWidth);
-        console.log('canvasHeight', canvasHeight);
 
         const canvasContainer = document.getElementsByClassName('canvasContainer');
         const canvasContainerWidth = canvasContainer[0].clientWidth;
         const canvasContainerHeight = canvasContainer[0].clientHeight;
         const _config = JSON.stringify(config);
-        worker.postMessage({canvas, _config, host, term, isStreamStart, canvasWidth, canvasHeight, canvasContainerWidth, canvasContainerHeight}, [canvas]);
+        worker.postMessage({canvas, _config, host, term, isStreamStart, isShowAllData, canvasContainerWidth, canvasContainerHeight}, [canvas]);
     })
 </script>
 
 <div class="flow_bite_svelte_line_chart">
-    <button style="border: 1px solid black;" on:click={() => { clickTest(10) }}>데이터 10개 추가</button>
+    <!-- <button style="border: 1px solid black;" on:click={() => { clickTest(10) }}>데이터 10개 추가</button>
     <button style="border: 1px solid black;" on:click={() => { clickTest(100) }}>데이터 100개 추가</button>
-    <button style="border: 1px solid black;" on:click={() => { clickTest(1000) }}>데이터 1000개 추가</button>
+    <button style="border: 1px solid black;" on:click={() => { clickTest(1000) }}>데이터 1000개 추가</button> -->
     <FlowBiteSvelteLayout
         size="xl"
         padding="md"
