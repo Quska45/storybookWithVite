@@ -105,7 +105,7 @@ export class FlowBiteSvelteLineChart{
     /**
      * intervalStart에 인자로 들어오는 모든 값은 chart.dataInterval.startFunction 안에서 실행되는 콜백의 인자로 들어간다.
     */
-    startDataInterval(){
+    startDataInterval( arg ){
         let chart = this;
 
         chart.dataInterval.startFunction.apply( chart.dataInterval, arguments );

@@ -1,6 +1,6 @@
 <script lang="ts">
     import "flowbite/dist/flowbite.css";
-    import { onMount } from 'svelte'
+    import { onMount, onDestroy } from 'svelte'
     import FlowBiteSvelteLayout from './FlowBiteSvelteLayout.svelte'
     import FlowBiteSvelteButton from './FlowBiteSvelteButton.svelte'
     import FlowBiteSvelteTab from './FlowBiteSvelteTab.svelte'
@@ -20,9 +20,10 @@
         , CategoryScale
         , TimeScale
         , LineController
-        , Filler
+        , Filler,
+        type ChartConfiguration
     } from 'chart.js'
-    import 'chartjs-adapter-moment'
+    // import 'chartjs-adapter-moment'
     import zoomPlugin from 'chartjs-plugin-zoom'
     import { ChartData, chartDummyData, chartLegendData, ontuneDummyData, type TOntuneData } from './TS/FlowBiteSvelteLineChart/data/FlowBiteSvelteLineChartData'
     import { currentTimeBeforSecond, data, dataUtil, options, randomColorFactor, zoomOption, } from './TS/FlowBiteSvelteLineChart/data/FlowBiteSvelteLineChartOptions'
@@ -106,10 +107,22 @@
     };
 
     let isZoom = false;
+    // const worker = new Worker(new URL('./TS/FlowBiteSvelteLineChart/lineChartWorker.js', import.meta.url), {type: 'module'});
+    // worker.onmessage = function( event ){
+    //     chartJSData = event.data;
+
+    //     chart.update()
+    // };
+    
     function noZoomAddRandomData( config ){
         isZoom = true;
         flowBiteLineChart.addRandomData(currentTime());
         flowBiteLineChart.removeData();
+
+        // const chartData = config.data;
+        // const label = currentTime();
+        // worker.postMessage({chartData, label});
+
         if( !isShowAllData ){
             config.options.scales.x.min = config.data.labels[config.data.labels.length-10];
             config.options.scales.x.max = config.data.labels[config.data.labels.length-1];
@@ -173,7 +186,7 @@
         const canvasContainer = document.getElementsByClassName('canvasContainer');
         const canvasContainerWidth = canvasContainer[0].clientWidth;
         const canvasContainerHeight = canvasContainer[0].clientHeight;
-        const config = {type:'line', data: chartJSData, options: options};
+        const config: ChartConfiguration = {type:'line', data: chartJSData, options: options};
         delete config.options.scales.x.type;
 
         addData(host, term, chartJSData);
@@ -181,7 +194,7 @@
         if( !isShowAllData ){
             options.scales.x.min = chartJSData.labels[chartJSData.labels.length-10].toString();
             options.scales.x.max = chartJSData.labels[chartJSData.labels.length-1].toString();
-            options.scales.x.ticks.maxTicksLimit = 20;
+            // options.scales.x.ticks.maxTicksLimit = 20;
         } else {
             delete options.scales.x.min;
             delete options.scales.x.max;
@@ -206,12 +219,27 @@
         flowBiteLineChart.setDataInterval( 1000, noZoomAddRandomData );
         flowBiteLineChart.startDataInterval( config );
     });
+
+    onDestroy(() => {
+        // chart.destroy();
+        chart = null;
+        flowBiteLineChart = null;
+        chartData = null;
+        lengendTableBodyData = null;
+        chartJSData = null;
+        chartCanvas = null;
+        today = null;
+        year = null;
+        month = null;
+        day = null;
+        fullDate = null;
+    });
 </script>
 
 <div class="flow_bite_svelte_line_chart">
-    <button style="border: 1px solid black;" on:click={() => { clickTest(10) }}>데이터 10개 추가</button>
+    <!-- <button style="border: 1px solid black;" on:click={() => { clickTest(10) }}>데이터 10개 추가</button>
     <button style="border: 1px solid black;" on:click={() => { clickTest(100) }}>데이터 100개 추가</button>
-    <button style="border: 1px solid black;" on:click={() => { clickTest(1000) }}>데이터 1000개 추가</button>
+    <button style="border: 1px solid black;" on:click={() => { clickTest(1000) }}>데이터 1000개 추가</button> -->
     <FlowBiteSvelteLayout
         size="xl"
         padding="md"

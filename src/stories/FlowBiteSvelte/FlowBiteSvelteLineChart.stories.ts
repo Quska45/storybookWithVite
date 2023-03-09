@@ -69,7 +69,7 @@ const Template = (args) => ({
 export const Primary = Template.bind({});
 Primary.args = {
   host: 10,
-  term: 60,
+  term: 3600,
   isStreamStart: true,
   isShowAllData: false,
   buttonProps: [

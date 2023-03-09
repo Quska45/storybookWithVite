@@ -1,6 +1,6 @@
 <script lang="ts">
     import "flowbite/dist/flowbite.css";
-    import { onMount } from 'svelte'
+    import { onMount, onDestroy } from 'svelte'
     import FlowBiteSvelteLayout from './FlowBiteSvelteLayout.svelte'
     import FlowBiteSvelteButton from './FlowBiteSvelteButton.svelte'
     import FlowBiteSvelteTab from './FlowBiteSvelteTab.svelte'
@@ -38,6 +38,9 @@
     let lengendTableBodyData: TOntuneData[] = chartData.ontuneData;
     let chartJSData = chartData.chartData;
     let chartCanvas: HTMLCanvasElement;
+    let fps;
+    let frame;
+    let worker: Worker;
 
     let test = 1;
     function clickTest(count){
@@ -96,7 +99,7 @@
 
     onMount(() => {
         const config = {type:'line', data: chartJSData, options: options};
-        const worker = new Worker(new URL('./TS/FlowBiteSvelteLineChartByOffScreen/offScreenWorker.js', import.meta.url), {type: 'module'});
+        worker = new Worker(new URL('./TS/FlowBiteSvelteLineChartByOffScreen/offScreenWorker.js', import.meta.url), {type: 'module'});
 
         const canvas = chartCanvas.transferControlToOffscreen();
 
@@ -105,6 +108,22 @@
         const canvasContainerHeight = canvasContainer[0].clientHeight;
         const _config = JSON.stringify(config);
         worker.postMessage({canvas, _config, host, term, isStreamStart, isShowAllData, canvasContainerWidth, canvasContainerHeight}, [canvas]);
+        worker.onmessage = function( event ){
+            const { _fps, _frame } = event.data;
+            fps = _fps;
+        }
+    });
+
+    onDestroy(() => {
+        chart = null;
+        flowBiteLineChart = null;
+        chartData = null;
+        lengendTableBodyData = null;
+        chartJSData = null;
+        chartCanvas = null;
+        fps = null;
+        frame = null;
+        worker = null;
     })
 </script>
 
@@ -112,6 +131,7 @@
     <!-- <button style="border: 1px solid black;" on:click={() => { clickTest(10) }}>데이터 10개 추가</button>
     <button style="border: 1px solid black;" on:click={() => { clickTest(100) }}>데이터 100개 추가</button>
     <button style="border: 1px solid black;" on:click={() => { clickTest(1000) }}>데이터 1000개 추가</button> -->
+    <div>fps : {fps}</div>
     <FlowBiteSvelteLayout
         size="xl"
         padding="md"

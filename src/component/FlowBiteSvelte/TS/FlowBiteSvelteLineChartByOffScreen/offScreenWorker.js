@@ -41,6 +41,10 @@ let month = addZero(today.getMonth()+1);
 let day = addZero(today.getDate());
 let fullDate = `${year}-${month}-${day}`;
 
+let startTime2 = performance.now();
+let frameCount = 0;
+let fps = 0;
+
 function addData( host, term, chartJSData ){
     // legend 강제로 하나 추가 하기
     for(let i=0; i<host; ++i){
@@ -100,10 +104,16 @@ onmessage = function( event ){
         config.options.scales.x.min = config.data.labels[config.data.labels.length-10];
         config.options.scales.x.max = config.data.labels[config.data.labels.length-1];
         config.options.scales.x.ticks.maxTicksLimit = 20;
+    } else {
+        delete options.scales.x.min;
+        delete options.scales.x.max;
+        delete options.scales.x.ticks.maxTicksLimit;
     };
     canvas.width = canvasContainerWidth;
     canvas.height = canvasContainerHeight-70;
+    let loadStartTime = this.performance.now();
     const chart = new ChartJS(canvas, config);
+    console.log('(performance.now() - loadStartTime)/1000', (performance.now() - loadStartTime)/1000);
 
     function noZoomAddRandomData(){
         flowBiteLineChart.addRandomData(currentTime());
@@ -111,11 +121,35 @@ onmessage = function( event ){
         if( !isShowAllData ){
             config.options.scales.x.min = config.data.labels[config.data.labels.length-10];
             config.options.scales.x.max = config.data.labels[config.data.labels.length-1];
+        } else {
+            delete options.scales.x.min;
+            delete options.scales.x.max;
+            delete options.scales.x.ticks.maxTicksLimit;
         };
         chart.update()
     };
 
     chart.resize();
+
+    // Update the chart
+    function updateChart() {
+        // Your chart update code here...
+
+        // Measure FPS
+        frameCount++;
+        const elapsedTime = performance.now() - startTime2;
+        if (elapsedTime > 1000) {
+            fps = Math.round(frameCount / (elapsedTime / 1000));
+            postMessage({_fps: fps, _frame: (elapsedTime / 1000)});
+            frameCount = 0;
+            startTime2 = performance.now();
+        }
+
+        // Request next animation frame
+        requestAnimationFrame(updateChart);
+    }
+    // Start the animation loop
+    requestAnimationFrame(updateChart);
 
     if( !isStreamStart ){
         return;

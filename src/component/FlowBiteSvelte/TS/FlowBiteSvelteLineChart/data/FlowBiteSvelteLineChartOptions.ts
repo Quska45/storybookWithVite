@@ -169,8 +169,8 @@ export let zoomOption = {
 }
   
 export let options: ChartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
+  // responsive: true,
+  // maintainAspectRatio: false,
   animation:{
     onComplete: function() {
       // console.log('Line Chart Rendered Completely!');
@@ -183,19 +183,19 @@ export let options: ChartOptions = {
       type: 'time',
       // min: new Date().valueOf(),
       ticks: {
-        maxTicksLimit: 10,
+        // maxTicksLimit: 10,
         // autoSkip: true,
         // stepSize: 10,
         // autoSkipPadding: 50,
         // maxRotation: 0
       },
-      time: {
-        displayFormats: {
-          hour: 'HH:mm',
-          minute: 'HH:mm',
-          second: 'HH:mm:ss'
-        }
-      }
+      // time: {
+      //   displayFormats: {
+      //     hour: 'HH:mm',
+      //     minute: 'HH:mm',
+      //     second: 'HH:mm:ss'
+      //   }
+      // }
     },
     y: {
         beginAtZero: true,
