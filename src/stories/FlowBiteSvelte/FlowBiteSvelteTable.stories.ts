@@ -3,7 +3,7 @@ import FlowBiteSvelteTable from '../../component/FlowBiteSvelte/FlowBiteSvelteTa
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 // More on argTypes: https://storybook.js.org/docs/svelte/api/argtypes
 export default {
-  title: 'Example/FlowBiteSvelteTable',
+  title: 'Example/FlowBite/FlowBiteSvelteTable',
   component: FlowBiteSvelteTable,
   argTypes: {
     tableWidth: {

@@ -53,7 +53,8 @@ function addData( host, term, chartJSData ){
             fill: false,
             borderColor: `rgb(${randomColorFactor()}, ${randomColorFactor()}, ${randomColorFactor()})`,
             data: [],
-            radius: 0
+            radius: 0,
+            borderWidth: 1
         });
         test++;
     };
@@ -85,18 +86,13 @@ function addZero( time ){
     return time;
 };
 
+const window = self;
 onmessage = function( event ){
     let chartData = new ChartData();
     const {canvas, _config, host, term, isStreamStart, isShowAllData, canvasContainerWidth, canvasContainerHeight} = event.data;
     // const canvas = JSON.parse(_canvas);
     const config = JSON.parse(_config);
     delete config.options.scales.x.type;
-    // config.options.scales.x.ticks.sampleSize = 10;
-    // config.options.scales.x.ticks.autoSkip = false;
-    // config.options.scales.x.ticks.autoSkipPadding = 0.1
-    // config.options.scales.x.ticks.labelOffset = 100
-    // config.options.scales.x.ticks.stepSize = 0.1;
-    // ChartJS.defaults.scales.linear.min = 50;
     
     addData(host, term, config.data);
     

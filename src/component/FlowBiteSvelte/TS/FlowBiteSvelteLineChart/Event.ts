@@ -23,7 +23,7 @@ export class FlowBiteSvelteLineChartEvent{
         event.zoomOption.zoom.drag.enabled = !event.zoomOption.zoom.drag.enabled;
         event.zoomOption.pan.enabled = !event.zoomOption.pan.enabled;                
         event.toggleButtonSelected( buttonProp );
-        event.chart.update();
+        // event.chart.update();
     };
 
     /**

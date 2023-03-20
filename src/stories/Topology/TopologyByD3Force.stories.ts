@@ -1,23 +1,25 @@
-import FlowBiteSvelteTab from '../../component/FlowBiteSvelte/FlowBiteSvelteTab.svelte';
+import TopologyByD3Force from '../../component/Topology/TopologyByD3Force.svelte';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 // More on argTypes: https://storybook.js.org/docs/svelte/api/argtypes
 export default {
-  title: 'Example/FlowBite/FlowBiteSvelteTab',
-  component: FlowBiteSvelteTab,
+  title: 'Example/Topology/TopologyByD3Force',
+  component: TopologyByD3Force,
   argTypes: {
-    tabs: {
-      control: { type: 'object' }
-    },
-    tabItemStyleStr: {
-      control: { type: 'object' }
+    alpha: {
+      control: { type: 'select' },
+      options: [0, 0.5, 1],
+      description: '',
+      table: {
+        type: { summary: 'number' },
+      },
     }
   }
 };
 
 // More on component templates: https://storybook.js.org/docs/svelte/writing-stories/introduction#using-args
 const Template = (args) => ({
-  Component: FlowBiteSvelteTab,
+  Component: TopologyByD3Force,
   props: args,
   on: {
     click: args.onClick,
@@ -27,11 +29,5 @@ const Template = (args) => ({
 // More on args: https://storybook.js.org/docs/svelte/writing-stories/args
 export const Primary = Template.bind({});
 Primary.args = {
-  tabs: [
-    {
-      isOpen: true,
-      title: 'Memory'
-    }
-  ],
-  tabItemStyleStr: ''
+  alpha: 0.5
 };

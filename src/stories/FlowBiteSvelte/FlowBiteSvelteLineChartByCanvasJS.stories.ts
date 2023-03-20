@@ -1,12 +1,12 @@
-import FlowBiteSvelteLineChartByPlotly from '../../component/FlowBiteSvelte/FlowBiteSvelteLineChartByPlotly.svelte';
+import FlowBiteSvelteLineChartByCanvasJS from '../../component/FlowBiteSvelte/FlowBiteSvelteLineChartByCanvasJS.svelte';
 import { TCellTHeadDummyData } from '../../component/FlowBiteSvelte/TS/FlowBiteSvelteTable'
 
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 // More on argTypes: https://storybook.js.org/docs/svelte/api/argtypes
 export default {
-  title: 'Example/FlowBite/FlowBiteSvelteLineChartByPlotly',
-  component: FlowBiteSvelteLineChartByPlotly,
+  title: 'Example/FlowBite/FlowBiteSvelteLineChartByCanvasJS',
+  component: FlowBiteSvelteLineChartByCanvasJS,
   argTypes: {
     host: {
       control: { type: 'select' },
@@ -49,7 +49,7 @@ export default {
 
 // More on component templates: https://storybook.js.org/docs/svelte/writing-stories/introduction#using-args
 const Template = (args) => ({
-  Component: FlowBiteSvelteLineChartByPlotly,
+  Component: FlowBiteSvelteLineChartByCanvasJS,
   props: args,
   on: {
     click: args.onClick,

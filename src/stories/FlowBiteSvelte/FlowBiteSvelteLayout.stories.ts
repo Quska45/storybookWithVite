@@ -3,7 +3,7 @@ import FlowBiteSvelteLayout from '../../component/FlowBiteSvelte/FlowBiteSvelteL
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 // More on argTypes: https://storybook.js.org/docs/svelte/api/argtypes
 export default {
-  title: 'Example/FlowBiteSvelteLayout',
+  title: 'Example/FlowBite/FlowBiteSvelteLayout',
   component: FlowBiteSvelteLayout,
   argTypes: {
     size: {

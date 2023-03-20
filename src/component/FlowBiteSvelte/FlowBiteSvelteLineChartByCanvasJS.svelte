@@ -9,8 +9,8 @@
     import type { TFlowBiteSvelteButton } from './TS/FlowBiteSvelteButton'
     import type { TCell } from "./TS/FlowBiteSvelteTable";
     import type { TTab } from "./TS/FlowBiteSvelteTab";
-    import Plotly from 'plotly.js-basic-dist';
-    import { getPlotlyXDummyData, getPlotlyYDummyData, randomColorFactor } from "./TS/FlowBiteSvelteLineChartByPlotly/PlotlyDummyData"; 
+    import * as CanvasJS from './canvasjs.min.js';
+
 
     // 차트외의 props
     export let buttonProps: TFlowBiteSvelteButton[];
@@ -27,106 +27,63 @@
     export let host;
     export let term; //시간(s)
     export let isStreamStart;
-    let data = [];
 
-
-    function rand(): number{
-        return Math.random()*100;
-    };
-
-    const plotlyXData = getPlotlyXDummyData( term );
-    for(let i=0; i<host; ++i){
-        data.push({
-            x: [...plotlyXData],
-            y: getPlotlyYDummyData(term),
-            type: 'scattergl',
-            mode: 'lines',
-            line: {
-                color: `rgb(${randomColorFactor()}, ${randomColorFactor()}, ${randomColorFactor()})`,
-                width: 1
-            }
-        })
-    };
-    
-    const layout = {
-        title: 'My Line Chart with WebGL',
-        xaxis: {
-            title: 'X-axis label',
-            range: [1,10],
-            nticks: 10
-        },
-        yaxis: {
-            title: 'Y-axis label'
-        },
-        margin: {
-            l: 50,
-            r: 50,
-            b: 50,
-            t: 80
-        },
-        showlegend: false,
-        // dragmode: 'pan' // pan이 enable 된 상태로 시작되게 해줌
-        // modebar: {
-        //     orientation: 'v',
-        // },
-    };
-
-    function addZero( time ){
-        if( time < 10 ){
-            time = '0' + time;
-        };
-        return time;
-    };
+    let hostArr = [];
 
     onMount(() => {
-        Plotly.newPlot('myChart', data, layout);
+        for(let i=0; i<host; ++i){
+            hostArr.push({
+                type: "line",
+                dataPoints: []
+            });
+        };
+
+        let chart = new CanvasJS.Chart("myChart", {
+            title :{
+                text: "Dynamic Data"
+            },
+            axisY:{
+                minimum: 0,
+                maximum: 100,
+            },
+            data: hostArr
+        });
+        
 
         if( !isStreamStart ){
             return;
         };
 
-        setInterval(function(){
-            let date = new Date();
-            let hour = addZero(date.getHours());
-            let min = addZero(date.getMinutes());
-            let sec = addZero(date.getSeconds());
+        let xVal = 0;
+        let yVal = 100; 
+        let updateInterval = 1000;
+        let dataLength = 10; // number of dataPoints visible at any point
 
-            // for(let i=0; i<host; ++i){
-                // data[0].x.shift()
-                // data[0].y.shift()
-                data[0].x.push(`${hour}:${min}:${sec}`);
-                data[0].y.push(Math.random()*100);
-            // };
+        let updateChart = function () {
 
-            Plotly.redraw('myChart');
+            for (let j = 0; j < hostArr.length; j++) {
+                yVal = Math.random()*100;
+                hostArr[j].dataPoints.push({
+                    x: xVal,
+                    y: yVal
+                });
+                xVal++;
             
-            // let yArr = [];
-            // let yCountArr = [];
-            // for(let i=0; i<count; ++i){
-            //     yArr.push([rand()]);
-            //     yCountArr.push(i);
-            // };
+            // console.log('hostArr[j].dataPoints', hostArr[j].dataPoints);
+            
+            if (hostArr[j].dataPoints.length > dataLength) {
+            hostArr[j].dataPoints.shift();
+            }
+            }
+        
+        // console.log(hostArr);
 
-            // console.log('변경 전',data[0]);
-            // const worker = new Worker(new URL('./TS/FlowBiteSvelteLineChartByPlotly/AddDataWorker.js', import.meta.url), {type: 'module'});
-            // worker.postMessage({data, count, layout});
-            // console.log('변경 후',data);
-            // worker.onmessage = function(event) {
-                // console.log(data)
-                // console.log('변경 후', event.data[0]);
-                // console.log('Received message from worker evente:', event);
-                // data = event.data;
-                // Plotly.update('myChart', {}, event.data);
-                // Plotly.update('myChart', event.data, {});
-                // Plotly.redraw('myChart');
-            // };
 
-            // console.log('yArr', yArr);
-            // console.log('yCountArr', yCountArr);
-            // Plotly.extendTraces('myChart', {
-            //     y: yArr
-            // }, yCountArr);
-        }, 1000);
+            chart.render();
+        };
+
+        updateChart();
+        setInterval(function(){updateChart()}, updateInterval);
 
     });
 

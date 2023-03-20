@@ -119,6 +119,6 @@ export const LegendCheckBox = {
         checkbox.onclick = () => {
             chart.setDatasetVisibility( item.index, !chart.isDatasetVisible( item.datasetIndex ) );
         }
-        chart.update();
+        // chart.update();
     }
 }

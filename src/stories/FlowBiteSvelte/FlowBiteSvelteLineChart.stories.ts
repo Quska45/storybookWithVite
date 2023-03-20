@@ -6,7 +6,7 @@ import { currentTime } from '../../component/FlowBiteSvelte/TS/FlowBiteSvelteLin
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 // More on argTypes: https://storybook.js.org/docs/svelte/api/argtypes
 export default {
-  title: 'Example/FlowBiteSvelteLineChart',
+  title: 'Example/FlowBite/FlowBiteSvelteLineChart',
   component: FlowBiteSvelteLineChart,
   argTypes: {
     host: {
@@ -19,7 +19,7 @@ export default {
     },
     term: {
       control: { type: 'select' },
-      options: [60, 300, 600, 1200, 1800, 2400, 3000, 3600],
+      options: [10, 60, 300, 600, 1200, 1800, 2400, 3000, 3600],
       description: '적재하려는 시간데이터(x축의 데이터). 1당 1초를 의미함',
       table: {
         type: { summary: 'number' },
@@ -68,8 +68,8 @@ const Template = (args) => ({
 // More on args: https://storybook.js.org/docs/svelte/writing-stories/args
 export const Primary = Template.bind({});
 Primary.args = {
-  host: 10,
-  term: 3600,
+  host: 1000,
+  term: 10,
   isStreamStart: true,
   isShowAllData: false,
   buttonProps: [

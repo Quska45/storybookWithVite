@@ -20,8 +20,9 @@
         , CategoryScale
         , TimeScale
         , LineController
-        , Filler,
-        type ChartConfiguration
+        , Filler
+        , type ChartConfiguration,
+        type ChartTypeRegistry
     } from 'chart.js'
     // import 'chartjs-adapter-moment'
     import zoomPlugin from 'chartjs-plugin-zoom'
@@ -71,6 +72,7 @@
     let month = addZero(today.getMonth()+1);
     let day = addZero(today.getDate());
     let fullDate = `${year}-${month}-${day}`;
+    let minYCount = 10;
 
     let test = 1;
     function clickTest(count){
@@ -124,22 +126,74 @@
         // worker.postMessage({chartData, label});
 
         if( !isShowAllData ){
-            config.options.scales.x.min = config.data.labels[config.data.labels.length-10];
+            config.options.scales.x.min = config.data.labels[config.data.labels.length - minYCount];
             config.options.scales.x.max = config.data.labels[config.data.labels.length-1];
         } else {
             delete options.scales.x.min;
             delete options.scales.x.max;
             delete options.scales.x.ticks.maxTicksLimit;
         };
-        chart.update()
+
+        // update( chart, 'none' );
+        chart.update('none');
     };
+
+    function compare2Level(l1, l2) {
+        return function(a, b) {
+            return a[l1] === b[l1] ? a[l2] - b[l2] : a[l1] - b[l1];
+        };
+    }
+    // function update( chart2: ChartJS, mode ){
+    //     const config = chart2.config;
+    //     config.update();
+    //     const options = chart2._options = config.createResolver(config.chartOptionScopes(), chart.getContext());
+    //     const animsDisabled = chart2._animationsDisabled = !options.animation;
+    //     chart2._updateScales();
+    //     chart2._checkEventBindings();
+    //     chart2._updateHiddenIndices();
+    //     chart2._plugins.invalidate();
+    //     if (chart2.notifyPlugins('beforeUpdate', {
+    //         mode,
+    //         cancelable: true
+    //     }) === false) {
+    //         return;
+    //     }
+    //     const newControllers = chart2.buildOrUpdateControllers();
+    //     chart2.notifyPlugins('beforeElementsUpdate');
+    //     let minPadding = 0;
+    //     for(let i = 0, ilen = chart2.data.datasets.length; i < ilen; i++){
+    //         const { controller  } = chart2.getDatasetMeta(i);
+    //         const reset = !animsDisabled && newControllers.indexOf(controller) === -1;
+    //         controller.buildOrUpdateElements(reset);
+    //         minPadding = Math.max(+controller.getMaxOverflow(), minPadding);
+    //     }
+    //     minPadding = chart2._minPadding = options.layout.autoPadding ? minPadding : 0;
+    //     chart2._updateLayout(minPadding);
+    //     if (!animsDisabled) {
+    //         helpers_segment.each(newControllers, (controller)=>{
+    //             controller.reset();
+    //         });
+    //     }
+    //     chart2._updateDatasets(mode);
+    //     chart2.notifyPlugins('afterUpdate', {
+    //         mode
+    //     });
+    //     chart2._layers.sort(compare2Level('z', '_idx'));
+    //     const { _active , _lastEvent  } = chart2;
+    //     if (_lastEvent) {
+    //         chart2._eventHandler(_lastEvent, true);
+    //     } else if (_active.length) {
+    //         chart2._updateHoverStyles(_active, _active, true);
+    //     }
+    //     chart2.render();
+    // };
     
     function onZoomAddRandomData(){
         let startTime = new Date();
         isZoom = false;
         flowBiteLineChart.addRandomData(currentTime());
         flowBiteLineChart.chart.options.plugins.zoom.pan.threshold = 10
-        chart.update()
+        // chart.update()
     };
 
     function addData( host, term, chartJSData ){
@@ -150,7 +204,13 @@
                 fill: false,
                 borderColor: `rgb(${randomColorFactor()}, ${randomColorFactor()}, ${randomColorFactor()})`,
                 data: [],
-                radius: 0
+                radius: 0,
+                borderWidth: 1,
+                tension: false,
+                stepped: 0,
+                borderDash: [],
+                minRotation: 0,
+                maxRotation: 0,
             });
             test++;
         };
@@ -192,7 +252,7 @@
         addData(host, term, chartJSData);
 
         if( !isShowAllData ){
-            options.scales.x.min = chartJSData.labels[chartJSData.labels.length-10].toString();
+            options.scales.x.min = chartJSData.labels[chartJSData.labels.length - minYCount].toString();
             options.scales.x.max = chartJSData.labels[chartJSData.labels.length-1].toString();
             // options.scales.x.ticks.maxTicksLimit = 20;
         } else {
@@ -204,6 +264,8 @@
         chartCanvas.width = canvasContainerWidth;
         chartCanvas.height = canvasContainerHeight-70;
         chart = new ChartJS(chartCanvas, config);
+        console.log('chart', chart);
+        console.log(JSON.stringify(chart));
 
         chart.resize();
 

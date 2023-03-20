@@ -1,23 +1,18 @@
-import FlowBiteSvelteTab from '../../component/FlowBiteSvelte/FlowBiteSvelteTab.svelte';
+import Chart from '../../component/V5/Chart.svelte';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 // More on argTypes: https://storybook.js.org/docs/svelte/api/argtypes
 export default {
-  title: 'Example/FlowBite/FlowBiteSvelteTab',
-  component: FlowBiteSvelteTab,
+  title: 'Example/V5/Chart',
+  component: Chart,
   argTypes: {
-    tabs: {
-      control: { type: 'object' }
-    },
-    tabItemStyleStr: {
-      control: { type: 'object' }
-    }
+  
   }
 };
 
 // More on component templates: https://storybook.js.org/docs/svelte/writing-stories/introduction#using-args
 const Template = (args) => ({
-  Component: FlowBiteSvelteTab,
+  Component: Chart,
   props: args,
   on: {
     click: args.onClick,
@@ -27,11 +22,5 @@ const Template = (args) => ({
 // More on args: https://storybook.js.org/docs/svelte/writing-stories/args
 export const Primary = Template.bind({});
 Primary.args = {
-  tabs: [
-    {
-      isOpen: true,
-      title: 'Memory'
-    }
-  ],
-  tabItemStyleStr: ''
+
 };

@@ -113,7 +113,7 @@ export let htmlLegendPlugin = {
         } else {
           chart.setDatasetVisibility(item.datasetIndex, !chart.isDatasetVisible(item.datasetIndex));
         }
-        chart.update();
+        // chart.update();
       };
 
       // Color box
@@ -171,37 +171,20 @@ export let zoomOption = {
 export let options: ChartOptions = {
   // responsive: true,
   // maintainAspectRatio: false,
-  animation:{
-    onComplete: function() {
-      // console.log('Line Chart Rendered Completely!');
-    },
-    duration: 0
-  },
+  animation:false,
   scales: {
     x:{
       position: 'bottom',
       type: 'time',
-      // min: new Date().valueOf(),
       ticks: {
-        // maxTicksLimit: 10,
-        // autoSkip: true,
-        // stepSize: 10,
-        // autoSkipPadding: 50,
-        // maxRotation: 0
       },
-      // time: {
-      //   displayFormats: {
-      //     hour: 'HH:mm',
-      //     minute: 'HH:mm',
-      //     second: 'HH:mm:ss'
-      //   }
-      // }
     },
     y: {
         beginAtZero: true,
         max: 100
-    }
+    },
   },
+  // parsing: false,
   plugins: {
     zoom: zoomOption,
     htmlLegend:{
@@ -209,6 +192,11 @@ export let options: ChartOptions = {
     },
     legend: {
       display: false
+    }
+  },
+  elements: {
+    point: {
+      radius: 0
     }
   }
 }

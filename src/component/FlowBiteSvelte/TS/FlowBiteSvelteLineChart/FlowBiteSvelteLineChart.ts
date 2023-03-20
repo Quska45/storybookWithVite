@@ -38,7 +38,7 @@ export class FlowBiteSvelteLineChart{
         chart.chart.data.datasets.forEach((dataset, i) => {
             dataset.data.push(data + i);
         });
-        chart.chart.update();
+        // chart.chart.update();
     };
     
     addRandomData( label ) {
@@ -70,7 +70,7 @@ export class FlowBiteSvelteLineChart{
 
         // chart.data.chartLegendData에 데이터 추가
         chart.data.chartLegendData
-        chart.chart.update();
+        // chart.chart.update();
     };
     
     removeData() {
@@ -99,6 +99,7 @@ export class FlowBiteSvelteLineChart{
     setDataInterval( intervalTime: number, intervalFunction ){
         let chart = this;
 
+        chart.dataInterval.stop();
         chart.dataInterval.set( intervalTime, intervalFunction );
     }
 

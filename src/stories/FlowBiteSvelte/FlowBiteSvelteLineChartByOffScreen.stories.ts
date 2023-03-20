@@ -6,7 +6,7 @@ import { currentTime } from '../../component/FlowBiteSvelte/TS/FlowBiteSvelteLin
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 // More on argTypes: https://storybook.js.org/docs/svelte/api/argtypes
 export default {
-  title: 'Example/FlowBiteSvelteLineChartByOffScreen',
+  title: 'Example/FlowBite/FlowBiteSvelteLineChartByOffScreen',
   component: FlowBiteSvelteLineChartByOffScreen,
   argTypes: {
     host: {

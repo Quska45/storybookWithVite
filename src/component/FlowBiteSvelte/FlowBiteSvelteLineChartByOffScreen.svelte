@@ -99,7 +99,7 @@
 
     onMount(() => {
         const config = {type:'line', data: chartJSData, options: options};
-        worker = new Worker(new URL('./TS/FlowBiteSvelteLineChartByOffScreen/offScreenWorker.js', import.meta.url), {type: 'module'});
+        worker = new Worker(new URL('./TS/FlowBiteSvelteLineChartByOffScreen/lineChartByOffScreenWorker.js', import.meta.url), {type: 'module'});
 
         const canvas = chartCanvas.transferControlToOffscreen();
 
@@ -111,7 +111,7 @@
         worker.onmessage = function( event ){
             const { _fps, _frame } = event.data;
             fps = _fps;
-        }
+        };
     });
 
     onDestroy(() => {

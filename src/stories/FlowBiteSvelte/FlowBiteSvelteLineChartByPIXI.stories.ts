@@ -5,7 +5,7 @@ import { TCellTHeadDummyData } from '../../component/FlowBiteSvelte/TS/FlowBiteS
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 // More on argTypes: https://storybook.js.org/docs/svelte/api/argtypes
 export default {
-  title: 'Example/FlowBiteSvelteLineChartByPixi',
+  title: 'Example/FlowBite/FlowBiteSvelteLineChartByPixi',
   component: FlowBiteSvelteLineChartByPixi,
   argTypes: {
     buttonProps: {
