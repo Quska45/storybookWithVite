@@ -1,0 +1,1 @@
+export type yAxesPosition = 'left' | 'right' | 'both';
