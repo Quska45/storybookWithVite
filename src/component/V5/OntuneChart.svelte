@@ -22,7 +22,7 @@
     export let rightYAxesMax: number = DefaultValue.RIGHT_Y_AXES_MAX;
     export let yAxesPosition: TYAxesPosition = DefaultValue.Y_AXES_POSITION as TYAxesPosition;
     export let showLegendValue: boolean = DefaultValue.SHOW_LEGEND_VALUE;
-    // export let globalLineWidth: number = DefaultValue.GLOBAL_LINE_WIDTH;
+    export let globalLineWidth: number = DefaultValue.GLOBAL_LINE_WIDTH;
     export let labels: unknown[] = [];
     export let datasets: ChartDataset[] = [];
 
@@ -55,8 +55,6 @@
         ? Style.LegendContainer.CONTAINER_HORIZON
         : Style.LegendContainer.CONTAINER_VERTICAL;
 
-    // child object
-
     onMount(() => {
         // set canvas full size
         chartCanvas.style.width = DefaultValue.CANVAS_WIDTH;
@@ -73,7 +71,11 @@
             scales: {
                 x: {
                     min: data.labels.length - 10,
-                    max: data.labels.length
+                    max: data.labels.length,
+                    ticks: {
+                        minRotation: 90,
+                        maxRotation: 90
+                    }
                 },
                 y: {
                     type: 'linear',
@@ -136,8 +138,11 @@
             type: chartType,
             data: data,
             options: options,
-            plugins: plugins,
+            plugins: plugins
         };
+
+        // set global line width
+        OntuneChart.setGlobalLineWidth( globalLineWidth, data );
 
         // make ontuneChart main instance
         ontuneChart = new OntuneChart( chartCanvas, config );
@@ -176,7 +181,7 @@
             <canvas bind:this={chartCanvas} id="ontuneChart"></canvas>
         </div>
         <div id="ontune_chart_legend_container" class="ontune_chart_legend_container" style="{LegendContainerStyle}">
-
+            
         </div>
     </div>
 </div>

@@ -13,7 +13,8 @@ import {
     , Filler
     , BarElement
     , BarController,
-    type LayoutPosition
+    type LayoutPosition,
+    type ChartData
 } from 'chart.js';
 import { OntuneChartConfig } from './OntuneChartConfig';
 import type { TLengendOptions } from './OntuneChartType';
@@ -50,5 +51,11 @@ export class OntuneChart {
 
     makeLegend( id: string, legendOptions: TLengendOptions ){
         this.ontuneLegend.makeLegend( this.chart, id, legendOptions );
+    };
+
+    static setGlobalLineWidth( lineWidth: number, data: ChartData ){
+        data.datasets.forEach(( cur ) => {
+            cur.borderWidth = lineWidth;
+        });
     };
 };

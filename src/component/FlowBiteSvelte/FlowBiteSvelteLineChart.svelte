@@ -265,7 +265,6 @@
         chartCanvas.height = canvasContainerHeight-70;
         chart = new ChartJS(chartCanvas, config);
         console.log('chart', chart);
-        console.log(JSON.stringify(chart));
 
         chart.resize();
 

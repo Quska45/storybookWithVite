@@ -32,6 +32,7 @@ export class OntuneLegend {
             itemDiv.style.display = 'flex';
             itemDiv.style.marginBottom = '5px';
             itemDiv.style.alignItems = 'center';
+            itemDiv.style.justifyContent = 'space-between';
             i == 0 ? itemDiv.style.marginTop = '5px' : null;
 
             const checkbox = document.createElement( 'input' );
@@ -62,22 +63,42 @@ export class OntuneLegend {
             textContainer.style.color = item.fontColor as string;
             textContainer.style.margin = '0';
             textContainer.style.padding = '0';
-
             
-            const lastValue = document.createTextNode(item.text);
-            textContainer.appendChild(lastValue);
+            const seriesName = document.createTextNode(item.text);
+            textContainer.appendChild(seriesName);
+
+            const itemInnerDiv = document.createElement( 'div' );
+            itemInnerDiv.style.display = 'flex';
+            itemInnerDiv.style.alignItems = 'center';
+            itemInnerDiv.appendChild( checkbox );
+            itemInnerDiv.appendChild( colorPicker );
+            itemInnerDiv.appendChild(textContainer);
+            itemDiv.appendChild( itemInnerDiv );
             
             if( legendOptions.showLegendValue ){
                 const itemData = chart.data.datasets[item.datasetIndex].data;
-                const seriesName = document.createTextNode(' : ' + itemData[itemData.length-1].toString());
-                textContainer.appendChild(seriesName);
+                const lastValueDiv = document.createElement( 'div' );
+                lastValueDiv.textContent = itemData[itemData.length-1].toString();
+                itemDiv.appendChild(lastValueDiv);
             };
-
-            itemDiv.appendChild( checkbox );
-            itemDiv.appendChild( colorPicker );
-            itemDiv.appendChild(textContainer);
             container.appendChild( itemDiv );
         });
+    };
+
+    private domElementMaker = {
+        itemDiv: () => {
+
+        },
+        checkbox: () => {
+
+        },
+        colorPicker: () => {
+
+        },
+        textContainer: () => {
+
+        },
+        
     };
 
     private getOrCreateLegendContainer = (chart: Chart, id: string) => {

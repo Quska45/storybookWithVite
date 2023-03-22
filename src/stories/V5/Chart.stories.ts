@@ -10,7 +10,7 @@ export default {
     componentWidth: {
       control: { type: 'select' },
       options: [ 800, 1000 ],
-      description: '컴포넌트의 전체 width를 지정',
+      description: '컴포넌트의 전체 width를 지정'
     },
     componentHeight: {
       control: { type: 'select' },
@@ -62,6 +62,11 @@ export default {
       options: [ true, false ],
       description: 'legend의 value show / hide 여부',
     },
+    globalLineWidth: {
+      control: { type: 'select' },
+      options: [ 1, 2, 3 ],
+      description: '전체 series의 width',
+    },
     labels: {
       control: { type: 'object' },
       description: 'x축 데이터',
@@ -69,7 +74,7 @@ export default {
     datasets: {
       control: { type: 'object' },
       description: 'series 데이터',
-    },
+    }
   }
 };
 
@@ -84,6 +89,7 @@ const Template = (args) => ({
 
 // More on args: https://storybook.js.org/docs/svelte/writing-stories/args
 export const Primary = Template.bind({});
+const globalLineWidth = 1;
 Primary.args = {
   componentWidth : 800,
   componentHeight : 500,
@@ -96,6 +102,7 @@ Primary.args = {
   rightYAxesMax : 100,
   yAxesPosition : 'left',
   showLegendValue : true,
+  globalLineWidth : globalLineWidth,
   labels : TestDataMaker.getTerm(),
-  datasets : TestDataMaker.getHost()
+  datasets : TestDataMaker.getHost( globalLineWidth )
 };

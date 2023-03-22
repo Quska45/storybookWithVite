@@ -56,7 +56,30 @@ export const Style = {
         CONTAINER_HORIZON: 'width: 100%; height: 30%;',
         CONTAINER_VERTICAL: 'width: 30%; height: 100%;'
     }
-}
+};
+
+export const LineDefaultColor = [
+    'rgb(154, 32, 140)'
+    , 'rgb(225, 18, 153)'
+    , 'rgb(255, 234, 234)'
+    , 'rgb(245, 198, 236)'
+    , 'rgb(113, 73, 198)'
+    , 'rgb(252, 41, 71)'
+    , 'rgb(254, 98, 68)'
+    , 'rgb(255, 222, 185)'
+    , 'rgb(255, 242, 204)'
+    , 'rgb(255, 217, 102)'
+    , 'rgb(244, 177, 131)'
+    , 'rgb(223, 166, 123)'
+    , 'rgb(36, 89, 83)'
+    , 'rgb(64, 142, 145)'
+    , 'rgb(228, 147, 147)'
+    , 'rgb(216, 216, 216)'
+    , 'rgb(187, 214, 184)'
+    , 'rgb(174, 194, 182)'
+    , 'rgb(148, 175, 159)'
+    , 'rgb(219, 228, 198)'
+];
 
 export const TestDataMaker = {
     host: 20,
@@ -79,14 +102,15 @@ export const TestDataMaker = {
             let min = OntuneChartDateUtil.getAddZeroValue( tempDate.getMinutes() );
             let sec = OntuneChartDateUtil.getAddZeroValue( tempDate.getSeconds() );
             
-            timeStr = `${fullDate} ${hour}:${min}:${sec}`;
+            // timeStr = `${fullDate} ${hour}:${min}:${sec}`;
+            timeStr = `${hour}:${min}:${sec}`;
 
             resultTermArr.push(timeStr);
         };
         
         return resultTermArr;
     },
-    getHost: function getHost(){
+    getHost: function getHost( globalLineWidth: number ){
         let _this = this;
         let resultHostArr: ChartDataset[] = [];
 
@@ -94,16 +118,25 @@ export const TestDataMaker = {
             let dataset = {
                 label: 'Test PC' + _this.testDataIndex,
                 fill: false,
-                borderColor: `rgb(${OntuneChartColorUtil.randomColorFactor()}, ${OntuneChartColorUtil.randomColorFactor()}, ${OntuneChartColorUtil.randomColorFactor()})`,
+                borderColor: 
+                    i < 20 
+                    ? LineDefaultColor[ i ]
+                    : `rgb(${OntuneChartColorUtil.randomColorFactor()}, ${OntuneChartColorUtil.randomColorFactor()}, ${OntuneChartColorUtil.randomColorFactor()})`,
                 // borderColor: OntuneChartColorUtil.makeHexColor(),
                 data: [],
                 radius: 0,
-                borderWidth: 1,
+                borderWidth: globalLineWidth,
                 tension: false,
                 stepped: 0,
                 borderDash: [],
-                minRotation: 0,
-                maxRotation: 0,
+                tick: {
+                    minRotation: 90,
+                    maxRotation: 90,
+                }
+                // yAxisID: 
+                //     i < 10
+                //     ? 'y'
+                //     : 'y1'
             };
 
             resultHostArr.push( dataset );
