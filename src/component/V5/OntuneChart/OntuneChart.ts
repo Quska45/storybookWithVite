@@ -12,11 +12,12 @@ import {
     , LineController
     , Filler
     , BarElement
-    , BarController
+    , BarController,
+    type LayoutPosition
 } from 'chart.js';
 import { OntuneChartConfig } from './OntuneChartConfig';
-import type { OntuneChartData } from './OntuneChartData';
-import type { OntuneChartOptions } from './OntuneChartOptions/OntuneChartOptions';
+import type { TLengendOptions } from './OntuneChartType';
+import { OntuneLegend } from './OntuneLegend';
 
 ChartJS.register(
     Title
@@ -36,12 +37,18 @@ ChartJS.register(
 export class OntuneChart {
     chart: ChartJS;
     ontuneChartConfig: OntuneChartConfig;
+    ontuneLegend: OntuneLegend;
 
     
     constructor( canvas: HTMLCanvasElement, config: ChartConfiguration ){
         this.ontuneChartConfig = new OntuneChartConfig( config );
         this.chart = new ChartJS( canvas, config );
+        this.ontuneLegend = new OntuneLegend( this.chart.legend );
 
         this.chart.resize();
+    };
+
+    makeLegend( id: string, legendOptions: TLengendOptions ){
+        this.ontuneLegend.makeLegend( this.chart, id, legendOptions );
     };
 };

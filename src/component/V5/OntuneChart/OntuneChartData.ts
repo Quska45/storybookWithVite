@@ -6,7 +6,7 @@ export class OntuneChartData implements ChartData {
     dataIndex: number;
 
     constructor( data: ChartData ){
-        data ? this.labels = data.labels : null;
-        data ? this.datasets = data.datasets : null;
+        data ? this.labels = data.labels : [];
+        data ? this.datasets = data.datasets : [];
     };
 };

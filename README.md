@@ -1,5 +1,7 @@
 https://quska45.github.io/storybookWithVite/
 
+storybook accesebility and controls pannel이 없어지면 D or A 누르면 됨.
+
 # Svelte + TS + Vite
 
 This template should help get you started developing with Svelte and TypeScript in Vite.

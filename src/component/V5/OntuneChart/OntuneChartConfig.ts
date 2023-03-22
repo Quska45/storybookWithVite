@@ -1,6 +1,6 @@
 import type { ChartConfiguration, ChartData, ChartOptions, ChartType, Plugin } from "chart.js";
 import { OntuneChartData } from "./OntuneChartData";
-import { OntuneChartOptions } from "./OntuneChartOptions/OntuneChartOptions";
+import { OntuneChartOptions } from "./OntuneChartOptions";
 
 export class OntuneChartConfig {
     config: ChartConfiguration;

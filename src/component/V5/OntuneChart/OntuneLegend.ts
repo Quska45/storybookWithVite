@@ -1,30 +1,23 @@
-import type { Chart } from "chart.js";
-import { OntuneChartColorUtil } from "../OntuneChartUtils";
+import type { Chart, LayoutPosition, LegendElement } from "chart.js";
+import type { TLengendOptions } from "./OntuneChartType";
+import { OntuneChartColorUtil } from "./OntuneChartUtils";
 
-const getOrCreateLegendList = (chart, id) => {
-    const legendContainer = document.getElementById(id);
-    let listContainer = legendContainer.querySelector('div');
-  
-    if (!listContainer) {
-      listContainer = document.createElement('div');
-      listContainer.style.display = 'flex';
-      listContainer.style.flexDirection = 'column';
-      listContainer.style.margin = '0';
-      listContainer.style.padding = '0';
-  
-      legendContainer.appendChild(listContainer);
-    }
-  
-    return listContainer;
-};
+export class OntuneLegend {
+    legend: LegendElement;
 
-export const htmlLegendPlugin = {
-    id: 'htmlLegend',
-    afterUpdate( chart: Chart, args, options ){
-        const container = getOrCreateLegendList(chart, options.containerID);
+    constructor( legend: LegendElement ){
+        this.legend = legend;
+    };
+
+    makeLegend( chart: Chart, containerId: string, legendOptions: TLengendOptions ){
+        if( !legendOptions.showLegend ){
+            return;
+        };
+
+        const container = this.getOrCreateLegendContainer( chart, containerId );
 
         // Remove old legend items
-        while (container.firstChild) {
+        while ( container.firstChild ) {
             container.firstChild.remove();
         }
 
@@ -58,7 +51,10 @@ export const htmlLegendPlugin = {
             colorPicker.style.backgroundColor = 'transparent';
             colorPicker.value = OntuneChartColorUtil.rgbToHex( item.strokeStyle );
             colorPicker.addEventListener('input', ( event: Event ) => {
-                console.log( 'event.target', (event.target as HTMLInputElement).value );
+                const itemData = chart.data.datasets[item.datasetIndex];
+                let target = ( event.target as HTMLInputElement );
+                itemData.borderColor = OntuneChartColorUtil.hexToRgb( target.value );
+                chart.update();
             });
 
             // Text
@@ -67,13 +63,37 @@ export const htmlLegendPlugin = {
             textContainer.style.margin = '0';
             textContainer.style.padding = '0';
 
-            const text = document.createTextNode(item.text);
-            textContainer.appendChild(text);
+            
+            const lastValue = document.createTextNode(item.text);
+            textContainer.appendChild(lastValue);
+            
+            if( legendOptions.showLegendValue ){
+                const itemData = chart.data.datasets[item.datasetIndex].data;
+                const seriesName = document.createTextNode(' : ' + itemData[itemData.length-1].toString());
+                textContainer.appendChild(seriesName);
+            };
 
             itemDiv.appendChild( checkbox );
             itemDiv.appendChild( colorPicker );
             itemDiv.appendChild(textContainer);
             container.appendChild( itemDiv );
         });
-    }
-}
+    };
+
+    private getOrCreateLegendContainer = (chart: Chart, id: string) => {
+        const legendContainer = document.getElementById(id);
+        let listContainer = legendContainer.querySelector('div');
+      
+        if (!listContainer) {
+          listContainer = document.createElement('div');
+          listContainer.style.display = 'flex';
+          listContainer.style.flexDirection = 'column';
+          listContainer.style.margin = '0';
+          listContainer.style.padding = '0';
+      
+          legendContainer.appendChild(listContainer);
+        }
+      
+        return listContainer;
+    };
+};

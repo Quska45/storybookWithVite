@@ -1,4 +1,4 @@
-import type { ChartDataset } from "chart.js";
+import type { ChartDataset, LayoutPosition } from "chart.js";
 import { OntuneChartDateUtil, OntuneChartColorUtil } from "./OntuneChartUtils";
 
 export const DefaultValue = {
@@ -6,6 +6,16 @@ export const DefaultValue = {
     COMPONENT_HEIGHT: 500,
     CANVAS_WIDTH: '100%',
     CANVAS_HEIGHT: '100%',
+    CHART_TYPE: 'line',
+    LEGEND_POSITION: 'right',
+    SHOW_LEGEND: true,
+    SHOW_LEGEND_VALUE: true,
+    LEFT_Y_AXES_MIN: 0,
+    LEFT_Y_AXES_MAX: 100,
+    RIGHT_Y_AXES_MIN: 0,
+    RIGHT_Y_AXES_MAX: 100,
+    Y_AXES_POSITION: 'left',
+    GLOBAL_LINE_WIDTH: 1,
     unicodeBoldNumber: {
         0: '\u{1D7EC}',
         1: '\u{1D7ED}',
@@ -19,6 +29,34 @@ export const DefaultValue = {
         9: '\u{1D7F5}'
     }
 };
+
+export const Style = {
+    ChartContainer: {
+        CONTAINER_TOP: 'flex-direction: column-reverse;',
+        CONTAINER_RIGHT: 'flex-direction: row;',
+        CONTAINER_BOTTOM: 'flex-direction: column;',
+        CONTAINER_LEFT: 'flex-direction: row-reverse;',
+        getStyleByPosition: function( position: LayoutPosition ){
+            if( position == 'top' ){
+                return this.CONTAINER_TOP;
+            } else if( position == 'right' ){
+                return this.CONTAINER_RIGHT;
+            } else if( position == 'bottom' ){
+                return this.CONTAINER_BOTTOM;
+            } else {
+                return this.CONTAINER_LEFT;
+            };
+        }
+    },
+    ChartBody: {
+        BODY_HORIZON: 'width: 100%; height: 70%;',
+        BODY_VERTICAL: 'width: 70%; height: 100%;'
+    },
+    LegendContainer: {
+        CONTAINER_HORIZON: 'width: 100%; height: 30%;',
+        CONTAINER_VERTICAL: 'width: 30%; height: 100%;'
+    }
+}
 
 export const TestDataMaker = {
     host: 20,
