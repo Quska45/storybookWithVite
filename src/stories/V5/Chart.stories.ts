@@ -10,7 +10,7 @@ export default {
     componentWidth: {
       control: { type: 'select' },
       options: [ 800, 1000 ],
-      description: '컴포넌트의 전체 width를 지정'
+      description: '컴포넌트의 전체 width를 지정',
     },
     componentHeight: {
       control: { type: 'select' },
@@ -67,6 +67,11 @@ export default {
       options: [ 1, 2, 3 ],
       description: '전체 series의 width',
     },
+    showCrossHair: {
+      control: { type: 'select' },
+      options: [ true, false ],
+      description: 'crosshair show / hide 여부',
+    },
     labels: {
       control: { type: 'object' },
       description: 'x축 데이터',
@@ -103,6 +108,7 @@ Primary.args = {
   yAxesPosition : 'left',
   showLegendValue : true,
   globalLineWidth : globalLineWidth,
+  showCrossHair : true,
   labels : TestDataMaker.getTerm(),
   datasets : TestDataMaker.getHost( globalLineWidth )
 };

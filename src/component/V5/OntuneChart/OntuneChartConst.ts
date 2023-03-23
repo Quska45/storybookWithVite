@@ -16,6 +16,7 @@ export const DefaultValue = {
     RIGHT_Y_AXES_MAX: 100,
     Y_AXES_POSITION: 'left',
     GLOBAL_LINE_WIDTH: 1,
+    SHOW_CROSS_HAIR: true,
     unicodeBoldNumber: {
         0: '\u{1D7EC}',
         1: '\u{1D7ED}',

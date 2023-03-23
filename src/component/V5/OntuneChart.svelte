@@ -24,6 +24,7 @@
     export let yAxesPosition: TYAxesPosition = DefaultValue.Y_AXES_POSITION as TYAxesPosition;
     export let showLegendValue: boolean = DefaultValue.SHOW_LEGEND_VALUE;
     export let globalLineWidth: number = DefaultValue.GLOBAL_LINE_WIDTH;
+    export let showCrossHair: boolean = DefaultValue.SHOW_CROSS_HAIR;
     export let labels: unknown[] = [];
     export let datasets: ChartDataset[] = [];
 
@@ -73,6 +74,11 @@
                 mode: 'dataset',
                 intersect: false
             },
+            // layout: {
+            //     padding: {
+            //         left: 10
+            //     }
+            // },
             scales: {
                 x: {
                     // type: 'time',
@@ -133,7 +139,7 @@
                     //         maxValueTooltipItem.formattedValue = boldValue;
                     //     }
                     // }
-                    // enabled: false,
+                    enabled: true,
                     // external: externalTooltipHandler,
                     position: 'nearest',
                     mode: 'index',
@@ -147,7 +153,7 @@
         // plugin register
         // 아마 툴팁 정도만 추가해서 쓰지 싶다. 안쓸수도 있고.
         // plugins.push(htmlLegendPlugin);
-        plugins.push(crossHairLabel);
+        showCrossHair ? plugins.push(crossHairLabel) : null;
 
         // set chartjs config
         config = {
