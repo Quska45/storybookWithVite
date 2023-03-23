@@ -1,38 +1,39 @@
 import {
-    Chart as ChartJS
-    , type ChartConfiguration
-    , Title
-    , Tooltip
-    , Legend
-    , LineElement
-    , LinearScale
-    , PointElement
-    , CategoryScale
-    , TimeScale
-    , LineController
-    , Filler
-    , BarElement
-    , BarController,
+    Chart as ChartJS,
+    type ChartConfiguration,
+    Title,
+    Tooltip,
+    Legend,
+    LineElement,
+    LinearScale,
+    PointElement,
+    CategoryScale,
+    TimeScale,
+    LineController,
+    Filler,
+    BarElement,
+    BarController,
     type LayoutPosition,
-    type ChartData
+    type ChartData,
 } from 'chart.js';
+import {} from 'chartjs-adapter-moment'
 import { OntuneChartConfig } from './OntuneChartConfig';
 import type { TLengendOptions } from './OntuneChartType';
 import { OntuneLegend } from './OntuneLegend';
 
 ChartJS.register(
-    Title
-    , Tooltip
-    , Legend
-    , LineElement
-    , LinearScale
-    , PointElement
-    , CategoryScale
-    , TimeScale
-    , LineController
-    , Filler
-    , BarElement
-    , BarController
+    Title,
+    Tooltip,
+    Legend,
+    LineElement,
+    LinearScale,
+    PointElement,
+    CategoryScale,
+    TimeScale,
+    LineController,
+    Filler,
+    BarElement,
+    BarController,
 );
 
 export class OntuneChart {

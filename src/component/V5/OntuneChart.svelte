@@ -8,6 +8,7 @@
     import { Chart as ChartJS } from 'chart.js';
     import { externalTooltipHandler } from "./OntuneChart/OntuneChartUtils";
     import { htmlLegendPlugin } from "./OntuneChart/OntuneChartPlugins/htmlLegendPlugin";
+    import { crossHairLabel } from "./OntuneChart/OntuneChartPlugins/crossHairLabel";
     import { OntuneLegend } from "./OntuneChart/OntuneLegend";
 
     // props
@@ -64,17 +65,28 @@
         options = {
             responsive: true,
             maintainAspectRatio: false,
-            interaction: {
-                mode: 'index',
-                intersect: false,
+            // interaction: {
+            //     mode: 'dataset',
+            //     intersect: false,
+            // },
+            hover: {
+                mode: 'dataset',
+                intersect: false
             },
             scales: {
                 x: {
+                    // type: 'time',
+                    // time: {
+                    //     unit: 'second',
+                    //     displayFormats: {
+                    //         second: "hh:mm:ss"
+                    //     }
+                    // },
                     min: data.labels.length - 10,
                     max: data.labels.length,
                     ticks: {
-                        minRotation: 90,
-                        maxRotation: 90
+                        minRotation: 0,
+                        maxRotation: 0
                     }
                 },
                 y: {
@@ -123,15 +135,19 @@
                     // }
                     // enabled: false,
                     // external: externalTooltipHandler,
-                    position: 'average'
+                    position: 'nearest',
+                    mode: 'index',
+                },
+                decimation: {
+                    enabled: true
                 }
             },
-
         };
 
         // plugin register
         // 아마 툴팁 정도만 추가해서 쓰지 싶다. 안쓸수도 있고.
         // plugins.push(htmlLegendPlugin);
+        plugins.push(crossHairLabel);
 
         // set chartjs config
         config = {
@@ -165,7 +181,8 @@
         <div bind:this={settingCloseButton} class="ontune_chart_setting_close_button">
             x &nbsp;
         </div>
-        storybook의 옵션 패널에서 옵션 변경 가능
+        화면 하단 패널에 Controls 탭에서 옵션 변경 가능.
+        설정 패널의 구현은 컴포넌트 구조를 고민해보고 개발 예정.
     </div>
     <div bind:this={chartBlocker} class="ontune_chart_block"></div>
     <div class="ontune_chart_title_container">

@@ -106,6 +106,7 @@ export const TestDataMaker = {
             timeStr = `${hour}:${min}:${sec}`;
 
             resultTermArr.push(timeStr);
+            // resultTermArr.push(tempDate);
         };
         
         return resultTermArr;
@@ -129,10 +130,7 @@ export const TestDataMaker = {
                 tension: false,
                 stepped: 0,
                 borderDash: [],
-                tick: {
-                    minRotation: 90,
-                    maxRotation: 90,
-                }
+                hoverBorderWidth: 5
                 // yAxisID: 
                 //     i < 10
                 //     ? 'y'
