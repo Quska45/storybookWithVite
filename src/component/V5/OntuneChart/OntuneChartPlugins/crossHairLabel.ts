@@ -1,9 +1,9 @@
 import type { Chart, ChartTypeRegistry, Plugin } from "chart.js";
 import type { AnyObject } from "chart.js/dist/types/basic";
-import type { TCrossHairInfo } from "../OntuneChartType";
+import type { TChartAreaInfo } from "../OntuneChartType";
 
 // crosshairLabel plugin block
-let crosshairInfos: TCrossHairInfo[];
+let crosshairInfos: TChartAreaInfo[];
 export const crossHairLabel: Plugin<keyof ChartTypeRegistry, AnyObject> = {
     id: 'crossHairLabel',
     // drawing part
@@ -44,7 +44,6 @@ export const crossHairLabel: Plugin<keyof ChartTypeRegistry, AnyObject> = {
     // mousemove
     afterEvent( chart, args, options ) {
         const { ctx, chartArea: { left, right, top, bottom } } = chart;
-
         const xCoor = args.event.x;
         const yCoor = args.event.y;
 
@@ -68,6 +67,6 @@ export const crossHairLabel: Plugin<keyof ChartTypeRegistry, AnyObject> = {
             ];
 
             args.changed = true;
-        }
+        };
     },
 }

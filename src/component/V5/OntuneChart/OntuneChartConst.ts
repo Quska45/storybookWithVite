@@ -17,6 +17,8 @@ export const DefaultValue = {
     Y_AXES_POSITION: 'left',
     GLOBAL_LINE_WIDTH: 1,
     SHOW_CROSS_HAIR: true,
+    USE_INDICATOR: true,
+    USE_ANIMATION: false,
     unicodeBoldNumber: {
         0: '\u{1D7EC}',
         1: '\u{1D7ED}',
@@ -131,7 +133,7 @@ export const TestDataMaker = {
                 tension: false,
                 stepped: 0,
                 borderDash: [],
-                hoverBorderWidth: 5
+                hoverBorderWidth: 2
                 // yAxisID: 
                 //     i < 10
                 //     ? 'y'

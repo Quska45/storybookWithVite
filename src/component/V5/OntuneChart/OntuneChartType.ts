@@ -8,7 +8,7 @@ export type TLengendOptions = {
     showLegendValue: boolean
 };
 
-export type TCrossHairInfo = {
+export type TChartAreaInfo = {
     startX: number,
     startY: number,
     endX: number,

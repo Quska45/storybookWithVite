@@ -72,6 +72,16 @@ export default {
       options: [ true, false ],
       description: 'crosshair show / hide 여부',
     },
+    useIndicator: {
+      control: { type: 'select' },
+      options: [ true, false ],
+      description: '차트 내에서 click 이벤트 발생 시 indicator 생성',
+    },
+    useAnimation: {
+      control: { type: 'select' },
+      options: [ true, false ],
+      description: '차트 전체 애니메이션 on / off',
+    },
     labels: {
       control: { type: 'object' },
       description: 'x축 데이터',
@@ -109,6 +119,8 @@ Primary.args = {
   showLegendValue : true,
   globalLineWidth : globalLineWidth,
   showCrossHair : true,
+  useIndicator : true,
+  useAnimation : false,
   labels : TestDataMaker.getTerm(),
   datasets : TestDataMaker.getHost( globalLineWidth )
 };

@@ -16,6 +16,7 @@ import {
     type LayoutPosition,
     type ChartData,
 } from 'chart.js';
+import zoomPlugin from 'chartjs-plugin-zoom'
 import {} from 'chartjs-adapter-moment'
 import { OntuneChartConfig } from './OntuneChartConfig';
 import type { TLengendOptions } from './OntuneChartType';
@@ -34,6 +35,7 @@ ChartJS.register(
     Filler,
     BarElement,
     BarController,
+    zoomPlugin
 );
 
 export class OntuneChart {
@@ -52,6 +54,11 @@ export class OntuneChart {
 
     makeLegend( id: string, legendOptions: TLengendOptions ){
         this.ontuneLegend.makeLegend( this.chart, id, legendOptions );
+    };
+
+    resetZoom(){
+        console.log(123);
+        this.chart.resetZoom();
     };
 
     static setGlobalLineWidth( lineWidth: number, data: ChartData ){

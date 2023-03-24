@@ -2,14 +2,12 @@
     import type { ChartConfiguration, ChartData, ChartDataset, ChartOptions, ChartTypeRegistry, LayoutPosition, Plugin, TooltipItem } from "chart.js";
     import { onMount } from "svelte";
     import { OntuneChart } from "./OntuneChart/OntuneChart";
-    import { DefaultValue, Style, TestDataMaker } from "./OntuneChart/OntuneChartConst";
+    import { DefaultValue, Style } from "./OntuneChart/OntuneChartConst";
     import type { TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
-    import { OntuneChartConfig } from "./OntuneChart/OntuneChartConfig";
-    import { Chart as ChartJS } from 'chart.js';
-    import { externalTooltipHandler } from "./OntuneChart/OntuneChartUtils";
-    import { htmlLegendPlugin } from "./OntuneChart/OntuneChartPlugins/htmlLegendPlugin";
     import { crossHairLabel } from "./OntuneChart/OntuneChartPlugins/crossHairLabel";
-    import { OntuneLegend } from "./OntuneChart/OntuneLegend";
+    import { indicator } from "./OntuneChart/OntuneChartPlugins/indicator";
+    import { chart } from "highcharts";
+    import { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar";
 
     // props
     export let componentWidth: number = DefaultValue.COMPONENT_WIDTH;
@@ -25,6 +23,8 @@
     export let showLegendValue: boolean = DefaultValue.SHOW_LEGEND_VALUE;
     export let globalLineWidth: number = DefaultValue.GLOBAL_LINE_WIDTH;
     export let showCrossHair: boolean = DefaultValue.SHOW_CROSS_HAIR;
+    export let useIndicator: boolean = DefaultValue.USE_INDICATOR;
+    export let useAnimation: boolean = DefaultValue.USE_ANIMATION
     export let labels: unknown[] = [];
     export let datasets: ChartDataset[] = [];
 
@@ -38,12 +38,18 @@
     // dom element
     let chartCanvas: HTMLCanvasElement;
     let chartBlocker: HTMLElement;
+    let chartContainer: HTMLElement;
+    let chartBody: HTMLElement;
+    let chartLegendConatiner: HTMLElement;
     let settingButton: HTMLDivElement;
     let settingContainer: HTMLDivElement;
     let settingCloseButton: HTMLElement;
+    let zoomReset: HTMLElement;
+    let resizeBar: HTMLElement;
     
     // class instance
     let ontuneChart: OntuneChart;
+    let ontuneChartResizeBar: ResizeBar;
 
     // reactivity declaration
     $: ChartContainerStyle
@@ -72,6 +78,7 @@
             // },
             hover: {
                 mode: 'dataset',
+                axis: 'xy',
                 intersect: false
             },
             // layout: {
@@ -110,6 +117,14 @@
                     position: 'right',
                 }
             },
+            transitions: {
+                zoom: {
+                    animation: {
+                        duration: 0
+                    }
+                }
+            },
+            animation: useAnimation as false,
             plugins: {
                 legend: {
                     display: false // 기본 레전드는 무조건 hide
@@ -141,11 +156,31 @@
                     // }
                     enabled: true,
                     // external: externalTooltipHandler,
-                    position: 'nearest',
+                    position: 'average',
                     mode: 'index',
                 },
                 decimation: {
                     enabled: true
+                },
+                zoom: {
+                    zoom: {
+                        mode: "xy",
+                        drag: {
+                            enabled: true,
+                            borderColor: 'rgb(54, 162, 235)',
+                            borderWidth: 1,
+                            backgroundColor: 'rgba(54, 162, 235, 0.3)'
+                        },
+                        pinch: {
+                            enabled: true
+                        }
+                    },
+                    pan: {
+                        enabled: true,
+                        mode: 'xy',
+                        modifierKey: 'ctrl',
+                        threshold: 10,
+                    }
                 }
             },
         };
@@ -153,6 +188,7 @@
         // plugin register
         // 아마 툴팁 정도만 추가해서 쓰지 싶다. 안쓸수도 있고.
         // plugins.push(htmlLegendPlugin);
+        useIndicator ? plugins.push(indicator) : null;
         showCrossHair ? plugins.push(crossHairLabel) : null;
 
         // set chartjs config
@@ -170,7 +206,13 @@
         ontuneChart = new OntuneChart( chartCanvas, config );
         ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
 
-        // component event binding
+        // make ontuneChart support instance
+        ontuneChartResizeBar = new ResizeBar( resizeBar );
+
+        /**
+         * component event binding
+        */
+        // setting
         settingButton.onclick = ( event: MouseEvent ) => {
             chartBlocker.style.display = 'block';
             settingContainer.style.display = 'block';
@@ -179,6 +221,14 @@
             chartBlocker.style.display = 'none';
             settingContainer.style.display = 'none';
         };
+
+        // zoom
+        zoomReset.onclick = ( event: MouseEvent ) => {
+            ontuneChart.resetZoom();
+        };
+
+        // resize
+        resizeBar.addEventListener('mousedown', ontuneChartResizeBar.mouseDownHandler.bind( ontuneChartResizeBar ) );
     });
 </script>
 
@@ -195,15 +245,22 @@
         <div class="ontune_chart_title">
             타이틀 : CPU
         </div>
+        <div class="ontune_chart_zoom_container">
+            <!-- <div class="ontune_chart_zoom_item">zoom start</div> -->
+            <div bind:this={zoomReset} class="ontune_chart_zoom_item ontune_chart_zoom_reset">zoom 원복</div>
+        </div>
         <div bind:this={settingButton} class="ontune_chart_config">
             설정
         </div>
     </div>
-    <div class="ontune_chart_container" style="{ChartContainerStyle}">
-        <div class="ontune_chart_body" style="{ChartBodyStyle}">
+    <div bind:this={chartContainer} class="ontune_chart_container" style="{ChartContainerStyle}">
+        <div bind:this={chartBody} class="ontune_chart_body" style="{ChartBodyStyle}">
             <canvas bind:this={chartCanvas} id="ontuneChart"></canvas>
         </div>
-        <div id="ontune_chart_legend_container" class="ontune_chart_legend_container" style="{LegendContainerStyle}">
+        <div bind:this={resizeBar} id="ontune_chart_resize_bar" class="ontune_chart_resize_bar">
+
+        </div>
+        <div bind:this={chartLegendConatiner} id="ontune_chart_legend_container" class="ontune_chart_legend_container" style="{LegendContainerStyle}">
             
         </div>
     </div>
@@ -282,5 +339,29 @@
         text-align: end;
         cursor: pointer;
         height: 20px;
+    }
+
+    .ontune_chart_zoom_container {
+        width: 70px;
+        height: 30px;
+        display: flex;
+        flex-flow: column;
+        justify-content: space-between;
+    }
+
+    .ontune_chart_resize_bar {
+        height: 100%;
+        border: 1px solid blue;
+        cursor: col-resize;
+    }
+
+    .ontune_chart_zoom_item {
+        width: 100%;
+        height: 100%;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .ontune_chart_zoom_item:active{
+        color: red;
     }
 </style>
