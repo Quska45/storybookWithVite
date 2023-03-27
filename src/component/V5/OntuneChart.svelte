@@ -6,8 +6,13 @@
     import type { TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
     import { crossHairLabel } from "./OntuneChart/OntuneChartPlugins/crossHairLabel";
     import { indicator } from "./OntuneChart/OntuneChartPlugins/indicator";
-    import { chart } from "highcharts";
-    import { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar";
+    import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
+    import { OntuneChartData } from "./OntuneChart/OntuneChartData";
+    import type { SerieseResizer } from "./OntuneChart/OntuneComponent/SerieseResizer";
+    import { RightResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/RightResizeBar";
+    import { LeftResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/LeftResizeBar";
+    import { TopResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/TopResizebar";
+    import { BottomResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/BottomResizebar";
 
     // props
     export let componentWidth: number = DefaultValue.COMPONENT_WIDTH;
@@ -37,37 +42,33 @@
     
     // dom element
     let chartCanvas: HTMLCanvasElement;
-    let chartBlocker: HTMLElement;
+    let blocker: HTMLElement;
     let chartContainer: HTMLElement;
     let chartBody: HTMLElement;
-    let chartLegendConatiner: HTMLElement;
+    let legendConatiner: HTMLElement;
     let settingButton: HTMLDivElement;
     let settingContainer: HTMLDivElement;
     let settingCloseButton: HTMLElement;
     let zoomReset: HTMLElement;
     let resizeBar: HTMLElement;
+    let serieseResizer: HTMLElement;
     
     // class instance
     let ontuneChart: OntuneChart;
     let ontuneChartResizeBar: ResizeBar;
+    let ontuneChartSerieseResizer: SerieseResizer
 
     // reactivity declaration
     $: ChartContainerStyle
         = Style.ChartContainer.getStyleByPosition( legendPosition )
     $: ChartBodyStyle
-        = legendPosition == 'top' || legendPosition == 'bottom'
-        ? Style.ChartBody.BODY_HORIZON
-        : Style.ChartBody.BODY_VERTICAL;
+        = Style.ChartBody.getStyleByPositionAndShowLegend( legendPosition, showLegend )
+    $: ResizeBarStyle
+        = Style.ResizeBar.getStyleByPositionAndShowLegend( legendPosition, showLegend )
     $: LegendContainerStyle
-        = legendPosition == 'top' || legendPosition == 'bottom'
-        ? Style.LegendContainer.CONTAINER_HORIZON
-        : Style.LegendContainer.CONTAINER_VERTICAL;
+        = Style.LegendContainer.getStyleByPositionAndShowLegend( legendPosition, showLegend )
 
     onMount(() => {
-        // set canvas full size
-        chartCanvas.style.width = DefaultValue.CANVAS_WIDTH;
-        chartCanvas.style.height = DefaultValue.CANVAS_HEIGHT;
-        
         // set chartjs options
         options = {
             responsive: true,
@@ -186,8 +187,6 @@
         };
 
         // plugin register
-        // 아마 툴팁 정도만 추가해서 쓰지 싶다. 안쓸수도 있고.
-        // plugins.push(htmlLegendPlugin);
         useIndicator ? plugins.push(indicator) : null;
         showCrossHair ? plugins.push(crossHairLabel) : null;
 
@@ -200,32 +199,41 @@
         };
 
         // set global line width
-        OntuneChart.setGlobalLineWidth( globalLineWidth, data );
+        OntuneChartData.setAllDataByLineWidth( data, globalLineWidth );
 
         // make ontuneChart main instance
         ontuneChart = new OntuneChart( chartCanvas, config );
         ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
 
         // make ontuneChart support instance
-        ontuneChartResizeBar = new ResizeBar( resizeBar );
+        if( legendPosition == 'top' ){
+            ontuneChartResizeBar = new TopResizeBar( resizeBar );
+        } else if(legendPosition == 'right'){
+            ontuneChartResizeBar = new RightResizeBar( resizeBar );
+        } else if(legendPosition == 'bottom'){
+            ontuneChartResizeBar = new BottomResizeBar( resizeBar );
+        } else {
+            ontuneChartResizeBar = new LeftResizeBar( resizeBar );
+        };
+        ontuneChartResizeBar.setFirstAndSecondSide( chartBody, legendConatiner );
 
         /**
          * component event binding
         */
         // setting
-        settingButton.onclick = ( event: MouseEvent ) => {
-            chartBlocker.style.display = 'block';
+        settingButton.addEventListener('click', ( event: MouseEvent ) => {
+            blocker.style.display = 'block';
             settingContainer.style.display = 'block';
-        };
-        settingCloseButton.onclick = ( event: MouseEvent ) => {
-            chartBlocker.style.display = 'none';
+        });
+        settingCloseButton.addEventListener('click', ( event: MouseEvent ) => {
+            blocker.style.display = 'none';
             settingContainer.style.display = 'none';
-        };
+        });
 
         // zoom
-        zoomReset.onclick = ( event: MouseEvent ) => {
+        zoomReset.addEventListener('click', ( event: MouseEvent ) => {
             ontuneChart.resetZoom();
-        };
+        });
 
         // resize
         resizeBar.addEventListener('mousedown', ontuneChartResizeBar.mouseDownHandler.bind( ontuneChartResizeBar ) );
@@ -240,14 +248,10 @@
         화면 하단 패널에 Controls 탭에서 옵션 변경 가능.
         설정 패널의 구현은 컴포넌트 구조를 고민해보고 개발 예정.
     </div>
-    <div bind:this={chartBlocker} class="ontune_chart_block"></div>
+    <div bind:this={blocker} class="ontune_chart_block"></div>
     <div class="ontune_chart_title_container">
         <div class="ontune_chart_title">
             타이틀 : CPU
-        </div>
-        <div class="ontune_chart_zoom_container">
-            <!-- <div class="ontune_chart_zoom_item">zoom start</div> -->
-            <div bind:this={zoomReset} class="ontune_chart_zoom_item ontune_chart_zoom_reset">zoom 원복</div>
         </div>
         <div bind:this={settingButton} class="ontune_chart_config">
             설정
@@ -255,13 +259,18 @@
     </div>
     <div bind:this={chartContainer} class="ontune_chart_container" style="{ChartContainerStyle}">
         <div bind:this={chartBody} class="ontune_chart_body" style="{ChartBodyStyle}">
+            <div class="ontune_chart_zoom_container">
+                <!-- <div class="ontune_chart_zoom_item">zoom start</div> -->
+                <div bind:this={zoomReset} class="ontune_chart_zoom_item ontune_chart_zoom_reset">zoom 원복</div>
+            </div>
             <canvas bind:this={chartCanvas} id="ontuneChart"></canvas>
         </div>
-        <div bind:this={resizeBar} id="ontune_chart_resize_bar" class="ontune_chart_resize_bar">
+        <div bind:this={resizeBar} id="ontune_chart_resize_bar" class="ontune_chart_resize_bar" style="{ResizeBarStyle}">
 
         </div>
-        <div bind:this={chartLegendConatiner} id="ontune_chart_legend_container" class="ontune_chart_legend_container" style="{LegendContainerStyle}">
-            
+        <div bind:this={legendConatiner} id="ontune_chart_legend_container" class="ontune_chart_legend_container" style="{LegendContainerStyle}">
+            <div></div>
+            <!-- <div bind:this={serieseResizer} class="ontune_chart_seriese_resizer"></div> -->
         </div>
     </div>
 </div>
@@ -299,7 +308,11 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
-        height: 20%;
+        height: 50px;
+    }
+
+    .ontune_chart_body {
+        position: relative;
     }
     
     .ontune_chart_title {
@@ -318,11 +331,12 @@
     .ontune_chart_container {
         display: flex;
         width: 100%;
-        height: 80%;
+        height: calc(100% - 50px);
     }
     
     .ontune_chart_legend_container {
         overflow-y: auto;
+        position: relative;
     }
 
     .ontune_chart_setting_container {
@@ -340,28 +354,35 @@
         cursor: pointer;
         height: 20px;
     }
-
+    
+    .ontune_chart_resize_bar {
+        border: 2px solid blue;
+    }
+    
     .ontune_chart_zoom_container {
-        width: 70px;
-        height: 30px;
+        width: 100%;
+        height: 20px;
         display: flex;
         flex-flow: column;
-        justify-content: space-between;
+        flex-direction: row-reverse;
+        position: absolute;
+        border: none;
     }
-
-    .ontune_chart_resize_bar {
-        height: 100%;
-        border: 1px solid blue;
-        cursor: col-resize;
-    }
-
     .ontune_chart_zoom_item {
-        width: 100%;
+        width: 70px;
         height: 100%;
         font-size: 14px;
         cursor: pointer;
     }
     .ontune_chart_zoom_item:active{
         color: red;
+    }
+    .ontune_chart_seriese_resizer{
+        width: 70px;
+        height: 30px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        border: 1px solid red;
     }
 </style>

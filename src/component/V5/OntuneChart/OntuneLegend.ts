@@ -3,7 +3,9 @@ import type { TLengendOptions } from "./OntuneChartType";
 import { OntuneChartColorUtil } from "./OntuneChartUtils";
 
 export class OntuneLegend {
+    containerId: string;
     legend: LegendElement;
+    textContainers: HTMLElement[] = [];
 
     constructor( legend: LegendElement ){
         this.legend = legend;
@@ -19,7 +21,7 @@ export class OntuneLegend {
         // Remove old legend items
         while ( container.firstChild ) {
             container.firstChild.remove();
-        }
+        };
 
         // Reuse the built-in legendItems generator
         const items = chart.options.plugins.legend.labels.generateLabels(chart);
@@ -59,10 +61,15 @@ export class OntuneLegend {
             });
 
             // Text
-            const textContainer = document.createElement('p');
+            const textContainer = document.createElement('div');
             textContainer.style.color = item.fontColor as string;
             textContainer.style.margin = '0';
             textContainer.style.padding = '0';
+            textContainer.style.textOverflow = 'ellipsis';
+            textContainer.style.width = '50px'
+            textContainer.style.whiteSpace = 'nowrap';
+            textContainer.style.overflow = 'hidden';
+            this.textContainers.push( textContainer );
             
             const seriesName = document.createTextNode(item.text);
             textContainer.appendChild(seriesName);
@@ -83,6 +90,22 @@ export class OntuneLegend {
             };
             container.appendChild( itemDiv );
         });
+        
+        let _this = this;
+        function outputsize( entry: ResizeObserverEntry[] ) {
+            let legendContainer = entry[0].target as HTMLElement;
+            let width = legendContainer.clientWidth;
+            if( width > 130 ){
+                _this.textContainers.forEach(( cur ) => {
+                    cur.style.width = `${(width - 100)}px`;
+                })
+            } else {
+                _this.textContainers.forEach(( cur ) => {
+                    cur.style.width = '50px';
+                })
+            };
+        };
+        new ResizeObserver( outputsize ).observe( container.parentElement );
     };
 
     private domElementMaker = {
@@ -102,18 +125,22 @@ export class OntuneLegend {
     };
 
     private getOrCreateLegendContainer = (chart: Chart, id: string) => {
+        this.containerId = id;
+
         const legendContainer = document.getElementById(id);
-        let listContainer = legendContainer.querySelector('div');
+        let listContainer = legendContainer.querySelector('div') as HTMLElement;
       
         if (!listContainer) {
           listContainer = document.createElement('div');
-          listContainer.style.display = 'flex';
-          listContainer.style.flexDirection = 'column';
-          listContainer.style.margin = '0';
-          listContainer.style.padding = '0';
-      
+          
           legendContainer.appendChild(listContainer);
-        }
+        };
+
+        listContainer.style.display = 'flex';
+        listContainer.style.flexDirection = 'column';
+        listContainer.style.margin = '0';
+        listContainer.style.padding = '0';
+        listContainer.style.height = '100%';
       
         return listContainer;
     };

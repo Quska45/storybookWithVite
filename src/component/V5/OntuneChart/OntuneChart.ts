@@ -57,13 +57,6 @@ export class OntuneChart {
     };
 
     resetZoom(){
-        console.log(123);
         this.chart.resetZoom();
-    };
-
-    static setGlobalLineWidth( lineWidth: number, data: ChartData ){
-        data.datasets.forEach(( cur ) => {
-            cur.borderWidth = lineWidth;
-        });
     };
 };

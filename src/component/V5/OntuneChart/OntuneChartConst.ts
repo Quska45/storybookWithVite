@@ -4,8 +4,6 @@ import { OntuneChartDateUtil, OntuneChartColorUtil } from "./OntuneChartUtils";
 export const DefaultValue = {
     COMPONENT_WIDTH: 800,
     COMPONENT_HEIGHT: 500,
-    CANVAS_WIDTH: '100%',
-    CANVAS_HEIGHT: '100%',
     CHART_TYPE: 'line',
     LEGEND_POSITION: 'right',
     SHOW_LEGEND: true,
@@ -35,29 +33,81 @@ export const DefaultValue = {
 
 export const Style = {
     ChartContainer: {
-        CONTAINER_TOP: 'flex-direction: column-reverse;',
-        CONTAINER_RIGHT: 'flex-direction: row;',
-        CONTAINER_BOTTOM: 'flex-direction: column;',
-        CONTAINER_LEFT: 'flex-direction: row-reverse;',
+        TOP: 'flex-direction: column-reverse;',
+        RIGHT: 'flex-direction: row;',
+        BOTTOM: 'flex-direction: column;',
+        LEFT: 'flex-direction: row-reverse;',
         getStyleByPosition: function( position: LayoutPosition ){
+            const _this = this;
             if( position == 'top' ){
-                return this.CONTAINER_TOP;
+                return _this.TOP;
             } else if( position == 'right' ){
-                return this.CONTAINER_RIGHT;
+                return _this.RIGHT;
             } else if( position == 'bottom' ){
-                return this.CONTAINER_BOTTOM;
+                return _this.BOTTOM;
             } else {
-                return this.CONTAINER_LEFT;
+                return _this.LEFT;
             };
         }
     },
     ChartBody: {
-        BODY_HORIZON: 'width: 100%; height: 70%;',
-        BODY_VERTICAL: 'width: 70%; height: 100%;'
+        HORIZON: 'width: 100%; height: 70%;',
+        VERTICAL: 'width: 70%; height: 100%;',
+        FULL_HORIZON: 'width: 100%; height: 100%;',
+        FULL_VERTICAL: 'width: 100%; height: 100%;',
+        getStyleByPositionAndShowLegend( position: LayoutPosition, showLegend: boolean ){
+            const _this = this;
+            if( position == 'top' || position == 'bottom' ){
+                if( showLegend ){
+                    return _this.HORIZON;
+                } else {
+                    return _this.FULL_HORIZON;
+                };
+            } else {
+                if( showLegend ){
+                    return _this.VERTICAL;
+                } else {
+                    return _this.FULL_VERTICAL;
+                };
+
+            };
+        }
+    },
+    ResizeBar: {
+        HORIZON: 'width: 100%; cursor: row-resize;',
+        VERTICAL: 'height: 100%; cursor: col-resize;',
+        HIDDEN: 'display: none;',
+        getStyleByPositionAndShowLegend( position: LayoutPosition, showLegend: boolean ){
+            const _this = this;
+
+            if( !showLegend ){
+                return _this.HIDDEN;
+            };
+
+            if( position == 'top' || position == 'bottom' ){
+                return _this.HORIZON;
+            } else {
+                return _this.VERTICAL;
+            };
+        }
     },
     LegendContainer: {
-        CONTAINER_HORIZON: 'width: 100%; height: 30%;',
-        CONTAINER_VERTICAL: 'width: 30%; height: 100%;'
+        HORIZON: 'width: 100%; height: 30%;',
+        VERTICAL: 'width: 30%; height: 100%;',
+        HIDDEN: 'display: none;',
+        getStyleByPositionAndShowLegend( position: LayoutPosition, showLegend: boolean ){
+            const _this = this;
+
+            if( !showLegend ){
+                return _this.HIDDEN;
+            };
+
+            if( position == 'top' || position == 'bottom' ){
+                return _this.HORIZON;
+            } else {
+                return _this.VERTICAL;
+            };
+        }
     }
 };
 

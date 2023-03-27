@@ -9,4 +9,10 @@ export class OntuneChartData implements ChartData {
         data ? this.labels = data.labels : [];
         data ? this.datasets = data.datasets : [];
     };
+
+    static setAllDataByLineWidth( data: ChartData, lineWidth: number ){
+        data.datasets.forEach(( cur ) => {
+            cur.borderWidth = lineWidth;
+        });
+    };
 };

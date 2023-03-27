@@ -75,7 +75,7 @@ export default {
     useIndicator: {
       control: { type: 'select' },
       options: [ true, false ],
-      description: '차트 내에서 click 이벤트 발생 시 indicator 생성',
+      description: '차트 내에서 dbclick 이벤트 발생 시 indicator 생성',
     },
     useAnimation: {
       control: { type: 'select' },
@@ -110,7 +110,7 @@ Primary.args = {
   componentHeight : 500,
   chartType : 'line',
   showLegend : true,
-  legendPosition : 'right',
+  legendPosition : 'top',
   leftYAxesMin : 0,
   leftYAxesMax : 100,
   rightYAxesMin : 0,
