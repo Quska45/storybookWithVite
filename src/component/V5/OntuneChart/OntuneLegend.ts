@@ -141,6 +141,7 @@ export class OntuneLegend {
         listContainer.style.margin = '0';
         listContainer.style.padding = '0';
         listContainer.style.height = '100%';
+        listContainer.style.overflowY = 'auto';
       
         return listContainer;
     };

@@ -335,7 +335,6 @@
     }
     
     .ontune_chart_legend_container {
-        overflow-y: auto;
         position: relative;
     }
 
