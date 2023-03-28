@@ -176,6 +176,10 @@ export const TestDataMaker = {
                     i < 20 
                     ? LineDefaultColor[ i ]
                     : `rgb(${OntuneChartColorUtil.randomColorFactor()}, ${OntuneChartColorUtil.randomColorFactor()}, ${OntuneChartColorUtil.randomColorFactor()})`,
+                backgroundColor: 
+                    i < 20 
+                    ? LineDefaultColor[ i ]
+                    : `rgb(${OntuneChartColorUtil.randomColorFactor()}, ${OntuneChartColorUtil.randomColorFactor()}, ${OntuneChartColorUtil.randomColorFactor()})`,
                 // borderColor: OntuneChartColorUtil.makeHexColor(),
                 data: [],
                 radius: 0,
@@ -183,7 +187,7 @@ export const TestDataMaker = {
                 tension: false,
                 stepped: 0,
                 borderDash: [],
-                hoverBorderWidth: 2
+                hoverBorderWidth: (globalLineWidth * 2)
                 // yAxisID: 
                 //     i < 10
                 //     ? 'y'

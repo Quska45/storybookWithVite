@@ -13,6 +13,7 @@
     import { LeftResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/LeftResizeBar";
     import { TopResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/TopResizebar";
     import { BottomResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/BottomResizebar";
+    import { maxValueTooltip } from "./OntuneChart/OntuneChartPlugins/maxValueTooltip";
 
     // props
     export let componentWidth: number = DefaultValue.COMPONENT_WIDTH;
@@ -192,6 +193,7 @@
         // plugin register
         useIndicator ? plugins.push(indicator) : null;
         showCrossHair ? plugins.push(crossHairLabel) : null;
+        plugins.push(maxValueTooltip)
 
         // set chartjs config
         config = {
