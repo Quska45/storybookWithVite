@@ -1,3 +1,4 @@
+link
 <script lang="ts">
     import type { ChartConfiguration, ChartData, ChartDataset, ChartOptions, ChartTypeRegistry, LayoutPosition, Plugin, TooltipItem } from "chart.js";
     import { onMount } from "svelte";
@@ -30,7 +31,8 @@
     export let globalLineWidth: number = DefaultValue.GLOBAL_LINE_WIDTH;
     export let showCrossHair: boolean = DefaultValue.SHOW_CROSS_HAIR;
     export let useIndicator: boolean = DefaultValue.USE_INDICATOR;
-    export let useAnimation: boolean = DefaultValue.USE_ANIMATION
+    export let useAnimation: boolean = DefaultValue.USE_ANIMATION;
+    export let maxValueTooltipPosition: string = 'test';
     export let labels: unknown[] = [];
     export let datasets: ChartDataset[] = [];
 
