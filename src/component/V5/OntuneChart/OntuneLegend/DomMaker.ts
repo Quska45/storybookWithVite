@@ -53,6 +53,8 @@ export const DomElementMaker = {
             textContainer.style.whiteSpace = 'nowrap';
             textContainer.style.overflow = 'hidden';
             textContainer.style.cursor = 'pointer';
+            textContainer.className = 'legend_text_container';
+
             textContainer.title = item.text;
             
             return textContainer;
@@ -66,7 +68,7 @@ export const DomElementMaker = {
         return itemInnerDiv;
     },
     LineWidth: {
-        getLineWidthContainer: () => {
+        getLineWidthContainer: ( chart: Chart ) => {
             const lineWidthContainer = document.createElement( 'div' );
             lineWidthContainer.style.position = 'absolute';
             lineWidthContainer.style.top = '0';
@@ -77,21 +79,54 @@ export const DomElementMaker = {
             lineWidthContainer.style.marginLeft = '50px';
             lineWidthContainer.style.backgroundColor = 'white';
             lineWidthContainer.style.display = 'none';
+            lineWidthContainer.className = 'legend_text_container';
 
-            const label = DomElementMaker.LineWidth.getLineWidthLabel();
-            lineWidthContainer.appendChild( label );
+            const lineWidthLabel = DomElementMaker.LineWidth.getLineWidthLabel();
+            lineWidthContainer.appendChild( lineWidthLabel );
             
-            const input = DomElementMaker.LineWidth.getLineWidthInput();
-            lineWidthContainer.appendChild( input );
+            const lineWidthInput = DomElementMaker.LineWidth.getLineWidthInput();
+            lineWidthContainer.appendChild( lineWidthInput );
 
-            const button = DomElementMaker.LineWidth.getLineWidthButton();
-            lineWidthContainer.appendChild( button );
+            const lineWidthButton = DomElementMaker.LineWidth.getLineWidthButton();
+            lineWidthContainer.appendChild( lineWidthButton );
 
-            return lineWidthContainer;
+            lineWidthButton.addEventListener('click', () => {
+                const legendItemIndex = parseInt(lineWidthInput.dataset.legendItemIndex);
+                const lineWidthValue = parseInt(lineWidthInput.value);
+                let datasets = chart.data.datasets;
+                
+                let dataIndex = datasets.findIndex(( dataset, index ) => {
+                    return index == legendItemIndex;
+                });
+
+                datasets[ dataIndex ].hoverBorderWidth = lineWidthValue * 2;
+                datasets[ dataIndex ].borderWidth = lineWidthValue;
+                chart.update();
+
+                lineWidthContainer.style.display = 'none';
+            });
+
+            document.addEventListener('click', ( event: MouseEvent ) => {
+                if( (event.target as HTMLElement).className.indexOf( 'legend_text_container') >= 0 ){
+                    if( lineWidthContainer.style.display == 'flex' ){
+                        return;
+                    }
+                };
+
+                lineWidthContainer.style.display = 'none';
+            });
+
+            return {
+                lineWidthContainer,
+                lineWidthLabel,
+                lineWidthInput,
+                lineWidthButton
+            };
         },
         getLineWidthLabel: () => {
             const lineWidthLabel = document.createElement( 'label' );
             lineWidthLabel.style.marginRight = '5px';
+            lineWidthLabel.className = 'legend_text_container_label';
             lineWidthLabel.innerText = 'width : '
             
             return lineWidthLabel;
@@ -99,6 +134,7 @@ export const DomElementMaker = {
         getLineWidthInput: () => {
             const lineWidthInput = document.createElement( 'input' );
             lineWidthInput.style.width = '20px';
+            lineWidthInput.className = 'legend_text_container_inpute';
             lineWidthInput.style.marginRight = '5px';
             
             return lineWidthInput;
@@ -106,6 +142,7 @@ export const DomElementMaker = {
         getLineWidthButton: () => {
             const lineWidthButton = document.createElement( 'button' );
             lineWidthButton.style.width = '50px';
+            lineWidthButton.className = 'legend_text_container_button';
             lineWidthButton.innerText = '적용';
 
             return lineWidthButton;

@@ -26,7 +26,7 @@ export class OntuneLegend {
 
         // Reuse the built-in legendItems generator
         const items = chart.options.plugins.legend.labels.generateLabels(chart);
-        const lineWidthContainer = DomElementMaker.LineWidth.getLineWidthContainer();
+        const { lineWidthContainer, lineWidthLabel, lineWidthInput, lineWidthButton } = DomElementMaker.LineWidth.getLineWidthContainer( chart );
         container.appendChild( lineWidthContainer );
 
         items.forEach(( item, i ) => {
@@ -46,9 +46,12 @@ export class OntuneLegend {
             this.textContainers.push( textContainer );
             textContainer.addEventListener('click', ( event: MouseEvent ) => {
                 let containerBBox = container.getBoundingClientRect();
+
                 lineWidthContainer.style.display = 'flex';
-                lineWidthContainer.style.left = `${event.clientX - containerBBox.x}px`;
                 lineWidthContainer.style.top = `${event.clientY - containerBBox.y}px`;
+
+                lineWidthInput.value = chart.data.datasets[item.datasetIndex].borderWidth.toString();
+                lineWidthInput.dataset.legendItemIndex = item.datasetIndex.toFixed();
             });
             
             const seriesName = document.createTextNode(item.text);
