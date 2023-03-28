@@ -174,14 +174,17 @@
                         },
                         pinch: {
                             enabled: true
-                        }
+                        },
+                        onZoom: function(){
+                            zoomReset.style.display = 'block'
+                        },
                     },
                     pan: {
                         enabled: true,
                         mode: 'xy',
                         modifierKey: 'ctrl',
                         threshold: 10,
-                    }
+                    },
                 }
             },
         };
@@ -233,6 +236,7 @@
         // zoom
         zoomReset.addEventListener('click', ( event: MouseEvent ) => {
             ontuneChart.resetZoom();
+            zoomReset.style.display = 'none';
         });
 
         // resize
@@ -276,6 +280,8 @@
 </div>
 
 <style>
+    @import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
+    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
     div {
         border: 1px solid black;
         margin: 0;
@@ -373,15 +379,19 @@
         font-size: 14px;
         cursor: pointer;
     }
-    .ontune_chart_zoom_item:active{
+    .ontune_chart_zoom_item:active {
         color: red;
     }
-    .ontune_chart_seriese_resizer{
+    .ontune_chart_seriese_resizer {
         width: 70px;
         height: 30px;
         position: absolute;
         left: 0;
         top: 0;
         border: 1px solid red;
+    }
+
+    .ontune_chart_zoom_reset {
+        display: none;
     }
 </style>

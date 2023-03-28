@@ -110,7 +110,7 @@ Primary.args = {
   componentHeight : 500,
   chartType : 'line',
   showLegend : true,
-  legendPosition : 'top',
+  legendPosition : 'right',
   leftYAxesMin : 0,
   leftYAxesMax : 100,
   rightYAxesMin : 0,

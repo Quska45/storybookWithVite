@@ -49,7 +49,7 @@ export class ResizeBar implements IResizeBar {
     mouseMoveHandler( event: MouseEvent ){};
 
     mouseUpHandler( event: MouseEvent ){
-        this.dom.style.removeProperty('cursor');
+        // this.dom.style.removeProperty('cursor');
         document.body.style.removeProperty('cursor');
 
         this.firstSide.style.removeProperty('user-select');

@@ -15,12 +15,13 @@ import {
     BarController,
     type LayoutPosition,
     type ChartData,
+    LogarithmicScale,
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom'
 import {} from 'chartjs-adapter-moment'
 import { OntuneChartConfig } from './OntuneChartConfig';
 import type { TLengendOptions } from './OntuneChartType';
-import { OntuneLegend } from './OntuneLegend';
+import { OntuneLegend } from './OntuneLegend/OntuneLegend';
 
 ChartJS.register(
     Title,
@@ -35,7 +36,8 @@ ChartJS.register(
     Filler,
     BarElement,
     BarController,
-    zoomPlugin
+    zoomPlugin,
+    LogarithmicScale,
 );
 
 export class OntuneChart {

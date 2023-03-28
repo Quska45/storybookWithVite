@@ -11,7 +11,6 @@ export class TopResizeBar extends ResizeBar {
     };
 
     mouseMoveHandler( event: MouseEvent ) {
-        const dx = event.clientX - this.mouseX;
         const dy = event.clientY - this.mouseY;
 
         document.body.style.cursor = 'row-resize';
@@ -25,6 +24,8 @@ export class TopResizeBar extends ResizeBar {
         
         const newFirstHeight = ((this.firstBBox.height + dy) * 100) / (this.dom.parentNode as HTMLElement).getBoundingClientRect().height;
         const newSecondHeight = 100 - newFirstHeight;
+        console.log(newFirstHeight);
+        console.log(newSecondHeight);
         
         if( newFirstHeight < 15 ){
             return;
