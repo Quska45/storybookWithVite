@@ -54,6 +54,9 @@
     let zoomReset: HTMLElement;
     let resizeBar: HTMLElement;
     let serieseResizer: HTMLElement;
+    let chartCategoryInput: HTMLElement;
+    let chartCategoryButton: HTMLElement;
+    let chartCategorySelect: HTMLElement;
     
     // class instance
     let ontuneChart: OntuneChart;
@@ -69,6 +72,7 @@
         = Style.ResizeBar.getStyleByPositionAndShowLegend( legendPosition, showLegend )
     $: LegendContainerStyle
         = Style.LegendContainer.getStyleByPositionAndShowLegend( legendPosition, showLegend )
+    $: 
 
     onMount(() => {
         // set chartjs options
@@ -213,7 +217,7 @@
         ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
 
         // make ontuneChart support instance
-        ontuneChartResizeBar = new ResizeBars[ legendPosition as string ];
+        ontuneChartResizeBar = new ResizeBars[ legendPosition as string ]( resizeBar );
         ontuneChartResizeBar.setFirstAndSecondSide( chartBody, legendConatiner );
 
         /**
@@ -257,12 +261,18 @@
     <div class="ontune_chart_title_container">
         <div class="ontune_chart_title">
 
-            타이틀 : CPU
-            <!-- <select name="ontune_chart_category" id="ontune_chart_category">
-                { #each chartCatetories as category }
-                    <option value="{category}">category</option>
-                {/each }
-            </select> -->
+            타이틀 : 
+            <input bind:this={chartCategoryInput} class="ontune_chart_category_input" type="text">
+            <button bind:this={chartCategoryButton} class="ontune_chart_category_button">변경</button>
+            <select bind:this={chartCategorySelect} name="ontune_chart_category_select" class="ontune_chart_category_select">
+                {#each chartCatetories as category}
+                    {#if category.id == chartCategory.id}
+                        <option value="{category.id}" selected>{category.name}</option>
+                    {:else}
+                    <option value="{category.id}">{category.name}</option>
+                    {/if}
+                {/each}
+            </select>
         </div>
         <div bind:this={settingButton} class="ontune_chart_config">
             설정
@@ -337,9 +347,25 @@
     }
     
     .ontune_chart_title {
-        width: 100px;
+        width: 270px;
         height: 30px;
         margin-left: 10px;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .ontune_chart_category_input {
+        width: 50px;
+        /* display: inline-block; */
+    }
+    
+    .ontune_chart_category_select {
+        width: 100px;
+    }
+
+    .ontune_chart_category_button {
+        width: 50px;
+        height: 30px;
     }
     
     .ontune_chart_config {

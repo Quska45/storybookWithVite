@@ -93,13 +93,12 @@ export default {
       description: 'Max 값에 대한 tooltip show / hide',
     },
     chartCategory: {
-      control: { type: 'select' },
-      options: [ 'CPU', 'Memory' ],
-      description: 'Max 값에 대한 tooltip show / hide',
+      control: { type: 'object' },
+      description: '현재 선택된 차트 카테고리',
     },
     chartCatetories: {
       control: { type: 'object' },
-      description: '차트 카테고리 데이터',
+      description: '차트 카테고리 데이터 세트',
     },
     labels: {
       control: { type: 'object' },
@@ -142,10 +141,8 @@ Primary.args = {
   useAnimation : false,
   aodMaxTooltipPosition: 'last',
   showAodMaxTooltip: true,
-  chartCatetory: 'CPU',
-
-  chartCatetories: [ 'CPU', 'Memory' ],
-
+  chartCategory: { id: 'CPU', name: 'CPU' },
+  chartCatetories: [ { id: 'CPU', name: 'CPU' }, { id: 'Memory', name: 'Memory' } ],
   labels : TestDataMaker.getTerm(),
   datasets : TestDataMaker.getHost( globalLineWidth )
 };
