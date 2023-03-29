@@ -22,6 +22,7 @@ import {} from 'chartjs-adapter-moment'
 import { OntuneChartConfig } from './OntuneChartConfig';
 import type { TLengendOptions } from './OntuneChartType';
 import { OntuneLegend } from './OntuneLegend/OntuneLegend';
+import { indicator } from './OntuneChartPlugins/indicator';
 
 ChartJS.register(
     Title,

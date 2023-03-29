@@ -17,6 +17,10 @@ export const DefaultValue = {
     SHOW_CROSS_HAIR: true,
     USE_INDICATOR: true,
     USE_ANIMATION: false,
+    AOD_MAX_TOOLTIP_POSITION: 'last',
+    SHOW_AOD_MAX_TOOLTIP: true,
+    CHART_CATEGORY: { id: 'CPU', name: 'CPU' },
+    CHART_CATEGORIES: [{ id: 'CPU', name: 'CPU' }, { id: 'Memory', name: 'Memory' }],
     unicodeBoldNumber: {
         0: '\u{1D7EC}',
         1: '\u{1D7ED}',
@@ -203,5 +207,8 @@ export const TestDataMaker = {
         };
 
         return resultHostArr;
+    },
+    getChartCategories(){
+
     },
 };

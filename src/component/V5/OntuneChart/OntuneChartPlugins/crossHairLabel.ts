@@ -7,18 +7,18 @@ let crosshairInfos: TChartAreaInfo[];
 export const crossHairLabel: Plugin<keyof ChartTypeRegistry, AnyObject> = {
     id: 'crossHairLabel',
     // drawing part
-    afterDatasetDraw(chart, args, options) {
+    afterRender(chart, args, options) {
         const { ctx, chartArea: { left, right, top, bottom }, scales: { x, y } } = chart;
-
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = 'grey';
-
+        
         if( !crosshairInfos ){
             return;
         };
-
+        
         ctx.save();
         ctx.beginPath();
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'grey';
 
         // line
         crosshairInfos.forEach(( crosshairInfo ) => {
@@ -40,6 +40,8 @@ export const crossHairLabel: Plugin<keyof ChartTypeRegistry, AnyObject> = {
         ctx.fillText( x.getLabels()[x.getValueForPixel(crosshairInfos[1].startX)], crosshairInfos[1].startX, bottom + 15 );
 
         ctx.stroke();
+
+        ctx.restore()
     },
     // mousemove
     afterEvent( chart, args, options ) {

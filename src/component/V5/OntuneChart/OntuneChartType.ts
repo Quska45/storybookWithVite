@@ -13,4 +13,11 @@ export type TChartAreaInfo = {
     startY: number,
     endX: number,
     endY: number
-}
+};
+
+export type TAODMaxTooltipPostion = 'first' | 'middle' | 'last';
+
+export type TChartCategory = {
+    id: string,
+    name: string
+};

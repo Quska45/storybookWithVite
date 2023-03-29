@@ -1,20 +1,16 @@
-link
 <script lang="ts">
     import type { ChartConfiguration, ChartData, ChartDataset, ChartOptions, ChartTypeRegistry, LayoutPosition, Plugin, TooltipItem } from "chart.js";
     import { onMount } from "svelte";
     import { OntuneChart } from "./OntuneChart/OntuneChart";
     import { DefaultValue, Style } from "./OntuneChart/OntuneChartConst";
-    import type { TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
+    import type { TAODMaxTooltipPostion, TChartCategory, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
     import { crossHairLabel } from "./OntuneChart/OntuneChartPlugins/crossHairLabel";
     import { indicator } from "./OntuneChart/OntuneChartPlugins/indicator";
-    import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
     import { OntuneChartData } from "./OntuneChart/OntuneChartData";
     import type { SerieseResizer } from "./OntuneChart/OntuneComponent/SerieseResizer";
-    import { RightResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/RightResizeBar";
-    import { LeftResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/LeftResizeBar";
-    import { TopResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/TopResizebar";
-    import { BottomResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/BottomResizebar";
-    import { maxValueTooltip } from "./OntuneChart/OntuneChartPlugins/maxValueTooltip";
+    import { maxValueTooltip } from "./OntuneChart/OntuneChartPlugins/maxValueTooltip/maxValueTooltip";
+    import { ResizeBars } from "./OntuneChart/OntuneComponent/ResizeBar";
+    import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
 
     // props
     export let componentWidth: number = DefaultValue.COMPONENT_WIDTH;
@@ -32,7 +28,10 @@ link
     export let showCrossHair: boolean = DefaultValue.SHOW_CROSS_HAIR;
     export let useIndicator: boolean = DefaultValue.USE_INDICATOR;
     export let useAnimation: boolean = DefaultValue.USE_ANIMATION;
-    export let maxValueTooltipPosition: string = 'test';
+    export let aodMaxTooltipPosition: TAODMaxTooltipPostion = DefaultValue.AOD_MAX_TOOLTIP_POSITION as TAODMaxTooltipPostion;
+    export let showAodMaxTooltip: boolean = DefaultValue.SHOW_AOD_MAX_TOOLTIP;
+    export let chartCategory: TChartCategory = DefaultValue.CHART_CATEGORY as TChartCategory;
+    export let chartCatetories: TChartCategory[];
     export let labels: unknown[] = [];
     export let datasets: ChartDataset[] = [];
 
@@ -195,7 +194,8 @@ link
         // plugin register
         useIndicator ? plugins.push(indicator) : null;
         showCrossHair ? plugins.push(crossHairLabel) : null;
-        plugins.push(maxValueTooltip)
+        maxValueTooltip.aodMaxTooltipPosition = aodMaxTooltipPosition;
+        showAodMaxTooltip ? plugins.push(maxValueTooltip) : null;
 
         // set chartjs config
         config = {
@@ -213,15 +213,7 @@ link
         ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
 
         // make ontuneChart support instance
-        if( legendPosition == 'top' ){
-            ontuneChartResizeBar = new TopResizeBar( resizeBar );
-        } else if(legendPosition == 'right'){
-            ontuneChartResizeBar = new RightResizeBar( resizeBar );
-        } else if(legendPosition == 'bottom'){
-            ontuneChartResizeBar = new BottomResizeBar( resizeBar );
-        } else {
-            ontuneChartResizeBar = new LeftResizeBar( resizeBar );
-        };
+        ontuneChartResizeBar = new ResizeBars[ legendPosition as string ];
         ontuneChartResizeBar.setFirstAndSecondSide( chartBody, legendConatiner );
 
         /**
@@ -249,6 +241,7 @@ link
 </script>
 
 <div class="ontune_chart_component" style="width: {componentWidth}px; height: {componentHeight}px">
+    <!-- setting 메뉴 -->
     <div bind:this={settingContainer} class="ontune_chart_setting_container">
         <div bind:this={settingCloseButton} class="ontune_chart_setting_close_button">
             x &nbsp;
@@ -256,26 +249,44 @@ link
         화면 하단 패널에 Controls 탭에서 옵션 변경 가능.
         설정 패널의 구현은 컴포넌트 구조를 고민해보고 개발 예정.
     </div>
+
+    <!-- blocker -->
     <div bind:this={blocker} class="ontune_chart_block"></div>
+
+    <!-- title 영역 -->
     <div class="ontune_chart_title_container">
         <div class="ontune_chart_title">
+
             타이틀 : CPU
+            <!-- <select name="ontune_chart_category" id="ontune_chart_category">
+                { #each chartCatetories as category }
+                    <option value="{category}">category</option>
+                {/each }
+            </select> -->
         </div>
         <div bind:this={settingButton} class="ontune_chart_config">
             설정
         </div>
     </div>
+
+    <!-- 차트 영역 -->
     <div bind:this={chartContainer} class="ontune_chart_container" style="{ChartContainerStyle}">
+
+        <!-- chartjs가 그려지는 영역 -->
         <div bind:this={chartBody} class="ontune_chart_body" style="{ChartBodyStyle}">
+
+            <!-- zoom에 대한 컨텍스트 메뉴 여역 -->
             <div class="ontune_chart_zoom_container">
                 <!-- <div class="ontune_chart_zoom_item">zoom start</div> -->
                 <div bind:this={zoomReset} class="ontune_chart_zoom_item ontune_chart_zoom_reset">zoom 원복</div>
             </div>
             <canvas bind:this={chartCanvas} id="ontuneChart"></canvas>
         </div>
-        <div bind:this={resizeBar} id="ontune_chart_resize_bar" class="ontune_chart_resize_bar" style="{ResizeBarStyle}">
 
-        </div>
+        <!-- chartjs영역과 레전드 영역의 resizebar -->
+        <div bind:this={resizeBar} id="ontune_chart_resize_bar" class="ontune_chart_resize_bar" style="{ResizeBarStyle}"></div>
+
+        <!-- 레전드 영역 -->
         <div bind:this={legendConatiner} id="ontune_chart_legend_container" class="ontune_chart_legend_container" style="{LegendContainerStyle}">
             <div></div>
             <!-- <div bind:this={serieseResizer} class="ontune_chart_seriese_resizer"></div> -->

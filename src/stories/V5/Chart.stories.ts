@@ -82,6 +82,25 @@ export default {
       options: [ true, false ],
       description: '차트 전체 애니메이션 on / off',
     },
+    aodMaxTooltipPosition: {
+      control: { type: 'select' },
+      options: [ 'first', 'middle', 'last' ],
+      description: 'Max 값에 대한 tooltip을 어떤 위치에 보여줄지에 대한 값',
+    },
+    showAodMaxTooltip: {
+      control: { type: 'select' },
+      options: [ true, false ],
+      description: 'Max 값에 대한 tooltip show / hide',
+    },
+    chartCategory: {
+      control: { type: 'select' },
+      options: [ 'CPU', 'Memory' ],
+      description: 'Max 값에 대한 tooltip show / hide',
+    },
+    chartCatetories: {
+      control: { type: 'object' },
+      description: '차트 카테고리 데이터',
+    },
     labels: {
       control: { type: 'object' },
       description: 'x축 데이터',
@@ -121,6 +140,12 @@ Primary.args = {
   showCrossHair : true,
   useIndicator : true,
   useAnimation : false,
+  aodMaxTooltipPosition: 'last',
+  showAodMaxTooltip: true,
+  chartCatetory: 'CPU',
+
+  chartCatetories: [ 'CPU', 'Memory' ],
+
   labels : TestDataMaker.getTerm(),
   datasets : TestDataMaker.getHost( globalLineWidth )
 };
