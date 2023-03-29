@@ -56,10 +56,21 @@ export class OntuneChart {
     };
 
     makeLegend( id: string, legendOptions: TLengendOptions ){
-        this.ontuneLegend.makeLegend( this.chart, id, legendOptions );
+        this.ontuneLegend.make( this.chart, id, legendOptions );
     };
 
     resetZoom(){
         this.chart.resetZoom();
+    };
+
+    destroyLegend( id: string ){
+        this.ontuneLegend.destroy( id );
+    };
+
+    destroy(){
+        this.chart.destroy();
+        this.ontuneChartConfig = null;
+        this.ontuneLegend = null;
+        this.chart = null;
     };
 };

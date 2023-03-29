@@ -108,14 +108,14 @@ function quickSort ( array ) {
     if ( array.length < 2 ) {
         return array;
     }
-    const pivot = array[ 0 ];
+    const pivot = [array[ 0 ]];
     const left = [];
     const right = [];
 
     for (let i = 1; i < array.length; i++) {
-        if ( array[ i ].maxDataValueIndex < pivot.maxDataValueIndex ) {
+        if ( array[ i ].maxDataValueIndex < pivot[0].maxDataValueIndex ) {
             left.push( array[ i ] );
-        } else if ( array[ i ].maxDataValueIndex > pivot.maxDataValueIndex ) {
+        } else if ( array[ i ].maxDataValueIndex > pivot[0].maxDataValueIndex ) {
             right.push( array[ i ] );
         } else {
             pivot.push( array[ i ] );

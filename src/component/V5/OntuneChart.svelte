@@ -2,7 +2,7 @@
     import type { ChartConfiguration, ChartData, ChartDataset, ChartOptions, ChartTypeRegistry, LayoutPosition, Plugin, TooltipItem } from "chart.js";
     import { onMount } from "svelte";
     import { OntuneChart } from "./OntuneChart/OntuneChart";
-    import { DefaultValue, Style } from "./OntuneChart/OntuneChartConst";
+    import { DefaultValue, Style, TestDataMaker } from "./OntuneChart/OntuneChartConst";
     import type { TAODMaxTooltipPostion, TChartCategory, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
     import { crossHairLabel } from "./OntuneChart/OntuneChartPlugins/crossHairLabel";
     import { indicator } from "./OntuneChart/OntuneChartPlugins/indicator";
@@ -51,12 +51,13 @@
     let settingButton: HTMLDivElement;
     let settingContainer: HTMLDivElement;
     let settingCloseButton: HTMLElement;
+    let zoomContainer: HTMLElement;
     let zoomReset: HTMLElement;
     let resizeBar: HTMLElement;
     let serieseResizer: HTMLElement;
-    let chartCategoryInput: HTMLElement;
+    let chartCategoryInput: HTMLInputElement;
     let chartCategoryButton: HTMLElement;
-    let chartCategorySelect: HTMLElement;
+    let chartCategorySelect: HTMLSelectElement;
     
     // class instance
     let ontuneChart: OntuneChart;
@@ -72,9 +73,9 @@
         = Style.ResizeBar.getStyleByPositionAndShowLegend( legendPosition, showLegend )
     $: LegendContainerStyle
         = Style.LegendContainer.getStyleByPositionAndShowLegend( legendPosition, showLegend )
-    $: 
-
+        
     onMount(() => {
+        console.log('chartCategorySelect.value', chartCategorySelect.value);
         // set chartjs options
         options = {
             responsive: true,
@@ -182,7 +183,8 @@
                             enabled: true
                         },
                         onZoom: function(){
-                            zoomReset.style.display = 'block'
+                            zoomContainer.style.display = 'flex';
+                            zoomReset.style.display = 'block';
                         },
                     },
                     pan: {
@@ -236,11 +238,41 @@
         // zoom
         zoomReset.addEventListener('click', ( event: MouseEvent ) => {
             ontuneChart.resetZoom();
-            zoomReset.style.display = 'none';
+            zoomContainer.style.display = 'none';
+            // zoomReset.style.display = 'none';
         });
 
         // resize
         resizeBar.addEventListener('mousedown', ontuneChartResizeBar.mouseDownHandler.bind( ontuneChartResizeBar ) );
+
+        // chart category input button
+        chartCategoryInput.value = chartCategorySelect.value;
+        chartCategoryInput.dataset.id = chartCategorySelect.value;
+        chartCategoryButton.addEventListener('click', () => {
+            let categoryId = chartCategoryInput.dataset.id;
+            let newCategoryName = chartCategoryInput.value;
+            let categoryIndex = chartCatetories.findIndex(( category ) => {
+                return category.id == categoryId;
+            });
+
+            chartCatetories[ categoryIndex ].name = newCategoryName;
+        });
+
+        // chart category selectbox
+        chartCategorySelect.addEventListener('change', () => {
+            chartCategoryInput.value = chartCategorySelect.options[chartCategorySelect.selectedIndex].text;
+            chartCategoryInput.dataset.id = chartCategorySelect.value;
+            ontuneChart.destroyLegend( 'ontune_chart_legend_container' );
+            ontuneChart.destroy();
+            
+            const labels = TestDataMaker.getTerm();
+            const hosts = TestDataMaker.getHost( globalLineWidth );
+            config.data.labels = labels;
+            config.data.datasets = hosts;
+
+            ontuneChart = new OntuneChart( chartCanvas, config );
+            ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
+        });
     });
 </script>
 
@@ -286,7 +318,7 @@
         <div bind:this={chartBody} class="ontune_chart_body" style="{ChartBodyStyle}">
 
             <!-- zoom에 대한 컨텍스트 메뉴 여역 -->
-            <div class="ontune_chart_zoom_container">
+            <div bind:this={zoomContainer} class="ontune_chart_zoom_container">
                 <!-- <div class="ontune_chart_zoom_item">zoom start</div> -->
                 <div bind:this={zoomReset} class="ontune_chart_zoom_item ontune_chart_zoom_reset">zoom 원복</div>
             </div>
@@ -408,7 +440,7 @@
     .ontune_chart_zoom_container {
         width: 100%;
         height: 20px;
-        display: flex;
+        display: none;
         flex-flow: column;
         flex-direction: row-reverse;
         position: absolute;

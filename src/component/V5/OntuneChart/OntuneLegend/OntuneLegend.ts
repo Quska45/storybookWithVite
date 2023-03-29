@@ -12,7 +12,7 @@ export class OntuneLegend {
         this.legend = legend;
     };
 
-    makeLegend( chart: Chart, containerId: string, legendOptions: TLengendOptions ){
+    make( chart: Chart, containerId: string, legendOptions: TLengendOptions ){
         if( !legendOptions.showLegend ){
             return;
         };
@@ -95,6 +95,13 @@ export class OntuneLegend {
             };
         };
         new ResizeObserver( outputsize ).observe( container.parentElement );
+    };
+
+    destroy( containerId: string ){
+        let container = document.getElementById( containerId );
+        while ( container.firstChild ) {
+            container.firstChild.remove();
+        };
     };
 
     private getOrCreateLegendContainer = (chart: Chart, id: string) => {
