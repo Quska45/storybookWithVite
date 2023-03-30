@@ -41,12 +41,14 @@ export class EventIndicator {
         ctx.save();
         ctx.beginPath();
 
+        ctx.setLineDash( [2, 8] );
+        ctx.lineDashOffset = 4;
         ctx.moveTo( left, yHeight );
         ctx.lineTo( right, yHeight );
 
         ctx.fillText( this.value.toString(), left - rectWidth + 3, yHeight + 3 );
         
-        ctx.fillStyle = this.color.replace( 'rgb', 'rgba' ).replace( ')', ',0.4)' );
+        ctx.fillStyle = this.color.replace( 'rgb', 'rgba' ).replace( ')', ',0.6)' );
         ctx.fillRect( left - rectWidth, yHeight - (rectHeight/2), rectWidth, rectHeight );
 
         ctx.stroke();

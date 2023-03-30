@@ -12,6 +12,9 @@
     import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
     import { EventIndicator } from "./OntuneChart/OntuneChartPlugins/eventIndicator/EventIndicator";
 
+    // global
+    let isMount = false;
+
     // props
     export let componentWidth: number = DefaultValue.COMPONENT_WIDTH;
     export let componentHeight: number = DefaultValue.COMPONENT_HEIGHT;
@@ -64,7 +67,6 @@
     let zoomContainer: HTMLElement;
     let zoomReset: HTMLElement;
     let resizeBar: HTMLElement;
-    let serieseResizer: HTMLElement;
     let chartCategoryInput: HTMLInputElement;
     let chartCategoryButton: HTMLElement;
     let chartCategorySelect: HTMLSelectElement;
@@ -82,6 +84,18 @@
         = Style.ResizeBar.getStyleByPositionAndShowLegend( legendPosition, showLegend )
     $: LegendContainerStyle
         = Style.LegendContainer.getStyleByPositionAndShowLegend( legendPosition, showLegend )
+    $: if( isMount ){ // indicator
+        if( useIndicator ){
+            plugins.push( indicator );
+            ontuneChart.chart.update();
+        } else {
+            let indicatorIndex = plugins.findIndex(( plugin ) => {
+                return plugin === indicator;
+            });
+            plugins.splice( indicatorIndex, 1 );
+            ontuneChart.chart.update();
+        }
+    };
 
     // Event Indicator plugin
     let eventIndicatorInfos: TEventIndicator[] = [];
@@ -104,8 +118,8 @@
         eventIndicators.push( eventIndicator );
     });
     
-    
     onMount(() => {
+        isMount = true;
         // set chartjs options
         options = {
             responsive: true,
