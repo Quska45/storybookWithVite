@@ -3,14 +3,14 @@
     import { onMount } from "svelte";
     import { OntuneChart } from "./OntuneChart/OntuneChart";
     import { DefaultValue, Style, TestDataMaker } from "./OntuneChart/OntuneChartConst";
-    import type { TAODMaxTooltipPostion, TChartCategory, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
+    import type { TAODMaxTooltipPostion, TChartCategory, TEventIndicator, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
     import { crossHairLabel } from "./OntuneChart/OntuneChartPlugins/crossHairLabel";
     import { indicator } from "./OntuneChart/OntuneChartPlugins/indicator";
     import { OntuneChartData } from "./OntuneChart/OntuneChartData";
-    import type { SerieseResizer } from "./OntuneChart/OntuneComponent/SerieseResizer";
     import { maxValueTooltip } from "./OntuneChart/OntuneChartPlugins/maxValueTooltip/maxValueTooltip";
     import { ResizeBars } from "./OntuneChart/OntuneComponent/ResizeBar";
     import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
+    import { EventIndicator } from "./OntuneChart/OntuneChartPlugins/eventIndicator/EventIndicator";
 
     // props
     export let componentWidth: number = DefaultValue.COMPONENT_WIDTH;
@@ -30,6 +30,16 @@
     export let useAnimation: boolean = DefaultValue.USE_ANIMATION;
     export let aodMaxTooltipPosition: TAODMaxTooltipPostion = DefaultValue.AOD_MAX_TOOLTIP_POSITION as TAODMaxTooltipPostion;
     export let showAodMaxTooltip: boolean = DefaultValue.SHOW_AOD_MAX_TOOLTIP;
+    export let showLevel1Event: boolean = DefaultValue.SHOW_LEVEL_1_EVENT;
+    export let showLevel2Event: boolean = DefaultValue.SHOW_LEVEL_2_EVENT;
+    export let showLevel3Event: boolean = DefaultValue.SHOW_LEVEL_3_EVENT;
+    export let showLevel4Event: boolean = DefaultValue.SHOW_LEVEL_4_EVENT;
+    export let showLevel5Event: boolean = DefaultValue.SHOW_LEVEL_5_EVENT;
+    export let level1EventValue: number = DefaultValue.LEVEL_1_EVENT_VALUE;
+    export let level2EventValue: number = DefaultValue.LEVEL_2_EVENT_VALUE;
+    export let level3EventValue: number = DefaultValue.LEVEL_3_EVENT_VALUE;
+    export let level4EventValue: number = DefaultValue.LEVEL_4_EVENT_VALUE;
+    export let level5EventValue: number = DefaultValue.LEVEL_5_EVENT_VALUE;
     export let chartCategory: TChartCategory = DefaultValue.CHART_CATEGORY as TChartCategory;
     export let chartCatetories: TChartCategory[];
     export let labels: unknown[] = [];
@@ -62,7 +72,6 @@
     // class instance
     let ontuneChart: OntuneChart;
     let ontuneChartResizeBar: ResizeBar;
-    let ontuneChartSerieseResizer: SerieseResizer
 
     // reactivity declaration
     $: ChartContainerStyle
@@ -73,9 +82,30 @@
         = Style.ResizeBar.getStyleByPositionAndShowLegend( legendPosition, showLegend )
     $: LegendContainerStyle
         = Style.LegendContainer.getStyleByPositionAndShowLegend( legendPosition, showLegend )
-        
+
+    // Event Indicator plugin
+    let eventIndicatorInfos: TEventIndicator[] = [];
+    eventIndicatorInfos.push( {id: 'eventIndicator1', isShow: showLevel1Event, value: level1EventValue, color: 'rgb(153,204,255)', level: 1} );
+    eventIndicatorInfos.push( {id: 'eventIndicator2', isShow: showLevel2Event, value: level2EventValue, color: 'rgb(127,255,0)', level: 2} );
+    eventIndicatorInfos.push( {id: 'eventIndicator3', isShow: showLevel3Event, value: level3EventValue, color: 'rgb(255,255,0)', level: 3} );
+    eventIndicatorInfos.push( {id: 'eventIndicator4', isShow: showLevel4Event, value: level4EventValue, color: 'rgb(255,165,0)', level: 4} );
+    eventIndicatorInfos.push( {id: 'eventIndicator5', isShow: showLevel5Event, value: level5EventValue, color: 'rgb(255,0,0)', level: 5} );
+
+    let eventIndicators: EventIndicator[] = [];
+    eventIndicatorInfos.forEach(( eventIndicatorInfo ) => {
+        let eventIndicator: EventIndicator = new EventIndicator( 
+            eventIndicatorInfo.id,
+            eventIndicatorInfo.value,
+            eventIndicatorInfo.level,
+            eventIndicatorInfo.isShow,
+            eventIndicatorInfo.color
+        );
+
+        eventIndicators.push( eventIndicator );
+    });
+    
+    
     onMount(() => {
-        console.log('chartCategorySelect.value', chartCategorySelect.value);
         // set chartjs options
         options = {
             responsive: true,
@@ -202,6 +232,9 @@
         showCrossHair ? plugins.push(crossHairLabel) : null;
         maxValueTooltip.aodMaxTooltipPosition = aodMaxTooltipPosition;
         showAodMaxTooltip ? plugins.push(maxValueTooltip) : null;
+        eventIndicators.forEach(( eventIndicator ) => {
+            eventIndicator.isShow ? plugins.push( eventIndicator.plugin ) : null;
+        });
 
         // set chartjs config
         config = {
@@ -239,7 +272,6 @@
         zoomReset.addEventListener('click', ( event: MouseEvent ) => {
             ontuneChart.resetZoom();
             zoomContainer.style.display = 'none';
-            // zoomReset.style.display = 'none';
         });
 
         // resize

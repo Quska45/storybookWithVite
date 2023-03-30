@@ -21,3 +21,13 @@ export type TChartCategory = {
     id: string,
     name: string
 };
+
+export type TTest1 = '';
+
+export interface TEventIndicator {
+    id: string;
+    isShow: boolean;
+    value: number;
+    color: string;
+    level: number;
+};

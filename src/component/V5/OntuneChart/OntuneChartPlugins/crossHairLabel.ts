@@ -1,10 +1,9 @@
-import type { Chart, ChartTypeRegistry, Plugin } from "chart.js";
-import type { AnyObject } from "chart.js/dist/types/basic";
+import type { Plugin } from "chart.js";
 import type { TChartAreaInfo } from "../OntuneChartType";
 
 // crosshairLabel plugin block
 let crosshairInfos: TChartAreaInfo[];
-export const crossHairLabel: Plugin<keyof ChartTypeRegistry, AnyObject> = {
+export const crossHairLabel: Plugin = {
     id: 'crossHairLabel',
     // drawing part
     afterRender(chart, args, options) {

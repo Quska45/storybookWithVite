@@ -100,6 +100,56 @@ export default {
       control: { type: 'object' },
       description: '차트 카테고리 데이터 세트',
     },
+    showLevel1Event: {
+      control: { type: 'select' },
+      options: [ true, false ],
+      description: '레벨1 이벤트에 대한 가이드 라인 on / off',
+    },
+    showLevel2Event: {
+      control: { type: 'select' },
+      options: [ true, false ],
+      description: '레벨2 이벤트에 대한 가이드 라인 on / off',
+    },
+    showLevel3Event: {
+      control: { type: 'select' },
+      options: [ true, false ],
+      description: '레벨3 이벤트에 대한 가이드 라인 on / off',
+    },
+    showLevel4Event: {
+      control: { type: 'select' },
+      options: [ true, false ],
+      description: '레벨4 이벤트에 대한 가이드 라인 on / off',
+    },
+    showLevel5Event: {
+      control: { type: 'select' },
+      options: [ true, false ],
+      description: '레벨5 이벤트에 대한 가이드 라인 on / off',
+    },
+    level1EventValue: {
+      control: { type: 'select' },
+      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ],
+      description: '레벨1 이벤트에 대한 value',
+    },
+    level2EventValue: {
+      control: { type: 'select' },
+      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ],
+      description: '레벨2 이벤트에 대한 value',
+    },
+    level3EventValue: {
+      control: { type: 'select' },
+      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ],
+      description: '레벨3 이벤트에 대한 value',
+    },
+    level4EventValue: {
+      control: { type: 'select' },
+      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ],
+      description: '레벨4 이벤트에 대한 value',
+    },
+    level5EventValue: {
+      control: { type: 'select' },
+      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ],
+      description: '레벨5 이벤트에 대한 value',
+    },
     labels: {
       control: { type: 'object' },
       description: 'x축 데이터',
@@ -143,6 +193,16 @@ Primary.args = {
   showAodMaxTooltip: true,
   chartCategory: { id: 'CPU', name: 'CPU' },
   chartCatetories: [ { id: 'CPU', name: 'CPU' }, { id: 'Memory', name: 'Memory' } ],
+  showLevel1Event: true,
+  showLevel2Event: true,
+  showLevel3Event: true,
+  showLevel4Event: true,
+  showLevel5Event: true,
+  level1EventValue: 10,
+  level2EventValue: 20,
+  level3EventValue: 30,
+  level4EventValue: 40,
+  level5EventValue: 50,
   labels : TestDataMaker.getTerm(),
   datasets : TestDataMaker.getHost( globalLineWidth )
 };

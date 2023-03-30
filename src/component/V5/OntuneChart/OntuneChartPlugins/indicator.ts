@@ -9,9 +9,9 @@ let click = {
     clickStartTime: null,
 };
 let clickStartTime = null;
-export const indicator: Plugin<keyof ChartTypeRegistry, AnyObject> = {
+export const indicator: Plugin = {
     id: 'indicator',
-    afterDatasetDraw(chart, args, options) {
+    afterRender( chart, args, options ) {
         if( !lineInfo ){
             return;
         };
@@ -29,7 +29,7 @@ export const indicator: Plugin<keyof ChartTypeRegistry, AnyObject> = {
 
         ctx.stroke();
     },
-    afterEvent(chart, args, options) {
+    afterEvent( chart, args, options ) {
         if( args.event.type != 'click' ){
             return;
         };

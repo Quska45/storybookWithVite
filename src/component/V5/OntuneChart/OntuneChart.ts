@@ -16,6 +16,7 @@ import {
     type LayoutPosition,
     type ChartData,
     LogarithmicScale,
+    type Plugin,
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom'
 import {} from 'chartjs-adapter-moment'
@@ -72,5 +73,15 @@ export class OntuneChart {
         this.ontuneChartConfig = null;
         this.ontuneLegend = null;
         this.chart = null;
+    };
+
+    addPlugin( plugin: Plugin ){
+        ChartJS.register( plugin );
+        this.chart.update();
+    };
+
+    removePlugin( plugin: Plugin ){
+        ChartJS.unregister( plugin );
+        this.chart.update();
     };
 };

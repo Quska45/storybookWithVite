@@ -57,9 +57,6 @@ export const htmlLegendPlugin = {
             colorPicker.style.cursor = 'pointer';
             colorPicker.style.backgroundColor = 'transparent';
             colorPicker.value = OntuneChartColorUtil.rgbToHex( item.strokeStyle );
-            colorPicker.addEventListener('input', ( event: Event ) => {
-                console.log( 'event.target', (event.target as HTMLInputElement).value );
-            });
 
             // Text
             const textContainer = document.createElement('p');
