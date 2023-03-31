@@ -30,4 +30,5 @@ export interface TEventIndicator {
     value: number;
     color: string;
     level: number;
+    lineWidth: number;
 };

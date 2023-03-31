@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { ChartConfiguration, ChartData, ChartDataset, ChartOptions, ChartTypeRegistry, LayoutPosition, Plugin, TooltipItem } from "chart.js";
+    import { Chart, type ChartConfiguration, type ChartData, type ChartDataset, type ChartOptions, type ChartTypeRegistry, type LayoutPosition, type Plugin, type TooltipItem } from "chart.js";
     import { onMount } from "svelte";
     import { OntuneChart } from "./OntuneChart/OntuneChart";
     import { DefaultValue, Style, TestDataMaker } from "./OntuneChart/OntuneChartConst";
@@ -43,6 +43,11 @@
     export let level3EventValue: number = DefaultValue.LEVEL_3_EVENT_VALUE;
     export let level4EventValue: number = DefaultValue.LEVEL_4_EVENT_VALUE;
     export let level5EventValue: number = DefaultValue.LEVEL_5_EVENT_VALUE;
+    export let level1EventLineWidth: number = DefaultValue.LEVEL_1_EVENT_LINE_WIDTH;
+    export let level2EventLineWidth: number = DefaultValue.LEVEL_2_EVENT_LINE_WIDTH;
+    export let level3EventLineWidth: number = DefaultValue.LEVEL_3_EVENT_LINE_WIDTH;
+    export let level4EventLineWidth: number = DefaultValue.LEVEL_4_EVENT_LINE_WIDTH;
+    export let level5EventLineWidth: number = DefaultValue.LEVEL_5_EVENT_LINE_WIDTH;
     export let chartCategory: TChartCategory = DefaultValue.CHART_CATEGORY as TChartCategory;
     export let chartCatetories: TChartCategory[];
     export let labels: unknown[] = [];
@@ -84,26 +89,28 @@
         = Style.ResizeBar.getStyleByPositionAndShowLegend( legendPosition, showLegend )
     $: LegendContainerStyle
         = Style.LegendContainer.getStyleByPositionAndShowLegend( legendPosition, showLegend )
-    $: if( isMount ){ // indicator
-        if( useIndicator ){
-            plugins.push( indicator );
-            ontuneChart.chart.update();
-        } else {
-            let indicatorIndex = plugins.findIndex(( plugin ) => {
-                return plugin === indicator;
-            });
-            plugins.splice( indicatorIndex, 1 );
-            ontuneChart.chart.update();
-        }
+    $: if( isMount && useIndicator ){ // indicator
+        console.log('useIndicator');
+        plugins.push( indicator );
+        ontuneChart.chart.update();
+    };
+    $: if( isMount && !useIndicator ){ // indicator
+        console.log('!useIndicator');
+        let indicatorIndex = plugins.findIndex(( plugin ) => {
+            return plugin === indicator;
+        });
+        plugins.splice( indicatorIndex, 1 );
+        Chart.unregister(plugins)
+        ontuneChart.chart.update();
     };
 
     // Event Indicator plugin
     let eventIndicatorInfos: TEventIndicator[] = [];
-    eventIndicatorInfos.push( {id: 'eventIndicator1', isShow: showLevel1Event, value: level1EventValue, color: 'rgb(153,204,255)', level: 1} );
-    eventIndicatorInfos.push( {id: 'eventIndicator2', isShow: showLevel2Event, value: level2EventValue, color: 'rgb(127,255,0)', level: 2} );
-    eventIndicatorInfos.push( {id: 'eventIndicator3', isShow: showLevel3Event, value: level3EventValue, color: 'rgb(255,255,0)', level: 3} );
-    eventIndicatorInfos.push( {id: 'eventIndicator4', isShow: showLevel4Event, value: level4EventValue, color: 'rgb(255,165,0)', level: 4} );
-    eventIndicatorInfos.push( {id: 'eventIndicator5', isShow: showLevel5Event, value: level5EventValue, color: 'rgb(255,0,0)', level: 5} );
+    eventIndicatorInfos.push( {id: 'eventIndicator1', isShow: showLevel1Event, value: level1EventValue, color: 'rgb(153,204,255)', level: 1, lineWidth: level1EventLineWidth} );
+    eventIndicatorInfos.push( {id: 'eventIndicator2', isShow: showLevel2Event, value: level2EventValue, color: 'rgb(127,255,0)', level: 2, lineWidth: level2EventLineWidth} );
+    eventIndicatorInfos.push( {id: 'eventIndicator3', isShow: showLevel3Event, value: level3EventValue, color: 'rgb(255,255,0)', level: 3, lineWidth: level3EventLineWidth} );
+    eventIndicatorInfos.push( {id: 'eventIndicator4', isShow: showLevel4Event, value: level4EventValue, color: 'rgb(255,165,0)', level: 4, lineWidth: level4EventLineWidth} );
+    eventIndicatorInfos.push( {id: 'eventIndicator5', isShow: showLevel5Event, value: level5EventValue, color: 'rgb(255,0,0)', level: 5, lineWidth: level5EventLineWidth} );
 
     let eventIndicators: EventIndicator[] = [];
     eventIndicatorInfos.forEach(( eventIndicatorInfo ) => {
@@ -112,7 +119,8 @@
             eventIndicatorInfo.value,
             eventIndicatorInfo.level,
             eventIndicatorInfo.isShow,
-            eventIndicatorInfo.color
+            eventIndicatorInfo.color,
+            eventIndicatorInfo.lineWidth
         );
 
         eventIndicators.push( eventIndicator );
@@ -124,6 +132,11 @@
         options = {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    top: 30
+                }
+            },
             // interaction: {
             //     mode: 'dataset',
             //     intersect: false,
@@ -319,10 +332,16 @@
             ontuneChart = new OntuneChart( chartCanvas, config );
             ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
         });
+
+        // document.getElementById('test').addEventListener('click', function(){
+        //     useIndicator = !useIndicator;
+        //     console.log('useIndicator', useIndicator)
+        // });
     });
 </script>
 
 <div class="ontune_chart_component" style="width: {componentWidth}px; height: {componentHeight}px">
+    <!-- <button id="test">useIndicator</button> -->
     <!-- setting 메뉴 -->
     <div bind:this={settingContainer} class="ontune_chart_setting_container">
         <div bind:this={settingCloseButton} class="ontune_chart_setting_close_button">

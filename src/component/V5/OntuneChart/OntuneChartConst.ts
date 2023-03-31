@@ -31,6 +31,11 @@ export const DefaultValue = {
     LEVEL_3_EVENT_VALUE: 30,
     LEVEL_4_EVENT_VALUE: 40,
     LEVEL_5_EVENT_VALUE: 50,
+    LEVEL_1_EVENT_LINE_WIDTH: 2,
+    LEVEL_2_EVENT_LINE_WIDTH: 2,
+    LEVEL_3_EVENT_LINE_WIDTH: 2,
+    LEVEL_4_EVENT_LINE_WIDTH: 2,
+    LEVEL_5_EVENT_LINE_WIDTH: 2,
     unicodeBoldNumber: {
         0: '\u{1D7EC}',
         1: '\u{1D7ED}',

@@ -68,7 +68,7 @@ const Template = (args) => ({
 // More on args: https://storybook.js.org/docs/svelte/writing-stories/args
 export const Primary = Template.bind({});
 Primary.args = {
-  host: 1000,
+  host: 10,
   term: 10,
   isStreamStart: true,
   isShowAllData: false,

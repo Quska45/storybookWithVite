@@ -95,7 +95,7 @@
                 },
                 series: {
                     shift: true, //false 이면 데이터가 쌓인다.
-                    spline:true,
+                    // spline:true,
                 },
                 responsive: {
                     animation: false

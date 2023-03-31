@@ -171,11 +171,13 @@ export let zoomOption = {
 export let options: ChartOptions = {
   // responsive: true,
   // maintainAspectRatio: false,
-  animation:false,
+  // animation: {
+  //   duration: 500
+  // },
   scales: {
     x:{
       position: 'bottom',
-      type: 'time',
+      // type: 'time',
       ticks: {
       },
     },

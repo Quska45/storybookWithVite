@@ -150,6 +150,31 @@ export default {
       options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ],
       description: '레벨5 이벤트에 대한 value',
     },
+    level1EventLineWidth: {
+      control: { type: 'select' },
+      options: [ 1, 2, 3, 4 ],
+      description: '레벨1 이벤트에 대한 lineWidth',
+    },
+    level2EventLineWidth: {
+      control: { type: 'select' },
+      options: [ 1, 2, 3, 4 ],
+      description: '레벨2 이벤트에 대한 lineWidth',
+    },
+    level3EventLineWidth: {
+      control: { type: 'select' },
+      options: [ 1, 2, 3, 4 ],
+      description: '레벨3 이벤트에 대한 lineWidth',
+    },
+    level4EventLineWidth: {
+      control: { type: 'select' },
+      options: [ 1, 2, 3, 4 ],
+      description: '레벨4 이벤트에 대한 lineWidth',
+    },
+    level5EventLineWidth: {
+      control: { type: 'select' },
+      options: [ 1, 2, 3, 4 ],
+      description: '레벨5 이벤트에 대한 lineWidth',
+    },
     labels: {
       control: { type: 'object' },
       description: 'x축 데이터',
@@ -203,6 +228,11 @@ Primary.args = {
   level3EventValue: 30,
   level4EventValue: 40,
   level5EventValue: 50,
+  level1EventLineWidth: 2,
+  level2EventLineWidth: 2,
+  level3EventLineWidth: 2,
+  level4EventLineWidth: 2,
+  level5EventLineWidth: 2,
   labels : TestDataMaker.getTerm(),
   datasets : TestDataMaker.getHost( globalLineWidth )
 };

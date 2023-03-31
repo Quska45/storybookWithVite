@@ -80,8 +80,24 @@ export class OntuneChart {
         this.chart.update();
     };
 
+    addPlugins( plugins: Plugin[] ){
+        plugins.forEach(( plugin ) => {
+            ChartJS.register( plugin );
+        });
+
+        this.chart.update();
+    };
+
     removePlugin( plugin: Plugin ){
         ChartJS.unregister( plugin );
+        this.chart.update();
+    };
+
+    removePlugins( plugins: Plugin[] ){
+        plugins.forEach(( plugin ) => {
+            ChartJS.unregister( plugin );
+        });
+        
         this.chart.update();
     };
 };
