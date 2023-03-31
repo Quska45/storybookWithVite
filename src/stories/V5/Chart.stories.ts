@@ -175,6 +175,36 @@ export default {
       options: [ 1, 2, 3, 4 ],
       description: '레벨5 이벤트에 대한 lineWidth',
     },
+    level1EventPosition: {
+      control: { type: 'select' },
+      options: [ 'left', 'right' ],
+      description: '레벨1 이벤트의 position',
+    },
+    level2EventPosition: {
+      control: { type: 'select' },
+      options: [ 'left', 'right' ],
+      description: '레벨2 이벤트의 position',
+    },
+    level3EventPosition: {
+      control: { type: 'select' },
+      options: [ 'left', 'right' ],
+      description: '레벨3 이벤트의 position',
+    },
+    level4EventPosition: {
+      control: { type: 'select' },
+      options: [ 'left', 'right' ],
+      description: '레벨4 이벤트의 position',
+    },
+    level5EventPosition: {
+      control: { type: 'select' },
+      options: [ 'left', 'right' ],
+      description: '레벨5 이벤트의 position',
+    },
+    lineTension: {
+      control: { type: 'select' },
+      options: [ 0, 0.1, 0.2, 0.3, 0.5, 1 ],
+      description: '레벨5 이벤트의 position',
+    },
     labels: {
       control: { type: 'object' },
       description: 'x축 데이터',
@@ -198,6 +228,7 @@ const Template = (args) => ({
 // More on args: https://storybook.js.org/docs/svelte/writing-stories/args
 export const Primary = Template.bind({});
 const globalLineWidth = 1;
+const globalLineTension = 0;
 Primary.args = {
   componentWidth : 800,
   componentHeight : 500,
@@ -233,6 +264,12 @@ Primary.args = {
   level3EventLineWidth: 2,
   level4EventLineWidth: 2,
   level5EventLineWidth: 2,
+  level1EventPosition: 'right',
+  level2EventPosition: 'right',
+  level3EventPosition: 'right',
+  level4EventPosition: 'right',
+  level5EventPosition: 'right',
+  lineTension: globalLineTension,
   labels : TestDataMaker.getTerm(),
-  datasets : TestDataMaker.getHost( globalLineWidth )
+  datasets : TestDataMaker.getHost( globalLineWidth, globalLineTension )
 };

@@ -36,6 +36,13 @@ export const DefaultValue = {
     LEVEL_3_EVENT_LINE_WIDTH: 2,
     LEVEL_4_EVENT_LINE_WIDTH: 2,
     LEVEL_5_EVENT_LINE_WIDTH: 2,
+    LEVEL_1_EVENT_POSITION: 'right',
+    LEVEL_2_EVENT_POSITION: 'right',
+    LEVEL_3_EVENT_POSITION: 'right',
+    LEVEL_4_EVENT_POSITION: 'right',
+    LEVEL_5_EVENT_POSITION: 'right',
+    LINE_TENSION: 0,
+    Y_AXES_UNIT: "100%",
     unicodeBoldNumber: {
         0: '\u{1D7EC}',
         1: '\u{1D7ED}',
@@ -183,7 +190,7 @@ export const TestDataMaker = {
         
         return resultTermArr;
     },
-    getHost: function getHost( globalLineWidth: number ){
+    getHost: function getHost( globalLineWidth: number, globalLineTension: number ){
         let _this = this;
         let resultHostArr: ChartDataset[] = [];
 
@@ -203,7 +210,8 @@ export const TestDataMaker = {
                 data: [],
                 radius: 0,
                 borderWidth: globalLineWidth,
-                tension: false,
+                tension: globalLineTension,
+                // tension: false,
                 stepped: 0,
                 borderDash: [],
                 hoverBorderWidth: (globalLineWidth * 2)

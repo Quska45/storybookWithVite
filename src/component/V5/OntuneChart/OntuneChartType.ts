@@ -22,8 +22,7 @@ export type TChartCategory = {
     name: string
 };
 
-export type TTest1 = '';
-
+export type TEventIndicatorPosition = 'left' | 'right';
 export interface TEventIndicator {
     id: string;
     isShow: boolean;
@@ -31,4 +30,5 @@ export interface TEventIndicator {
     color: string;
     level: number;
     lineWidth: number;
+    position: TEventIndicatorPosition
 };

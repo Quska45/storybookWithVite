@@ -3,14 +3,15 @@
     import { onMount } from "svelte";
     import { OntuneChart } from "./OntuneChart/OntuneChart";
     import { DefaultValue, Style, TestDataMaker } from "./OntuneChart/OntuneChartConst";
-    import type { TAODMaxTooltipPostion, TChartCategory, TEventIndicator, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
+    import type { TAODMaxTooltipPostion, TChartCategory, TEventIndicator, TEventIndicatorPosition, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
     import { crossHairLabel } from "./OntuneChart/OntuneChartPlugins/crossHairLabel";
     import { indicator } from "./OntuneChart/OntuneChartPlugins/indicator";
     import { OntuneChartData } from "./OntuneChart/OntuneChartData";
     import { maxValueTooltip } from "./OntuneChart/OntuneChartPlugins/maxValueTooltip/maxValueTooltip";
     import { ResizeBars } from "./OntuneChart/OntuneComponent/ResizeBar";
     import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
-    import { EventIndicator } from "./OntuneChart/OntuneChartPlugins/eventIndicator/EventIndicator";
+    import type { EventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/EventIndicator";
+    import { EventIndicators } from "./OntuneChart/OntuneChartPlugins/EventIndicator";
 
     // global
     let isMount = false;
@@ -48,6 +49,13 @@
     export let level3EventLineWidth: number = DefaultValue.LEVEL_3_EVENT_LINE_WIDTH;
     export let level4EventLineWidth: number = DefaultValue.LEVEL_4_EVENT_LINE_WIDTH;
     export let level5EventLineWidth: number = DefaultValue.LEVEL_5_EVENT_LINE_WIDTH;
+    export let level1EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_1_EVENT_POSITION as TEventIndicatorPosition;
+    export let level2EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_2_EVENT_POSITION as TEventIndicatorPosition;
+    export let level3EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_3_EVENT_POSITION as TEventIndicatorPosition;
+    export let level4EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_4_EVENT_POSITION as TEventIndicatorPosition;
+    export let level5EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_5_EVENT_POSITION as TEventIndicatorPosition;
+    export let yAxesUnit: string = DefaultValue.Y_AXES_POSITION;
+    export let lineTension: number = DefaultValue.LINE_TENSION;
     export let chartCategory: TChartCategory = DefaultValue.CHART_CATEGORY as TChartCategory;
     export let chartCatetories: TChartCategory[];
     export let labels: unknown[] = [];
@@ -104,27 +112,29 @@
         ontuneChart.chart.update();
     };
 
-    // Event Indicator plugin
+    // plugin
     let eventIndicatorInfos: TEventIndicator[] = [];
-    eventIndicatorInfos.push( {id: 'eventIndicator1', isShow: showLevel1Event, value: level1EventValue, color: 'rgb(153,204,255)', level: 1, lineWidth: level1EventLineWidth} );
-    eventIndicatorInfos.push( {id: 'eventIndicator2', isShow: showLevel2Event, value: level2EventValue, color: 'rgb(127,255,0)', level: 2, lineWidth: level2EventLineWidth} );
-    eventIndicatorInfos.push( {id: 'eventIndicator3', isShow: showLevel3Event, value: level3EventValue, color: 'rgb(255,255,0)', level: 3, lineWidth: level3EventLineWidth} );
-    eventIndicatorInfos.push( {id: 'eventIndicator4', isShow: showLevel4Event, value: level4EventValue, color: 'rgb(255,165,0)', level: 4, lineWidth: level4EventLineWidth} );
-    eventIndicatorInfos.push( {id: 'eventIndicator5', isShow: showLevel5Event, value: level5EventValue, color: 'rgb(255,0,0)', level: 5, lineWidth: level5EventLineWidth} );
+    eventIndicatorInfos.push( {id: 'eventIndicator1', isShow: showLevel1Event, value: level1EventValue, color: 'rgb(153,204,255)', level: 1, lineWidth: level1EventLineWidth, position: level1EventPosition} );
+    eventIndicatorInfos.push( {id: 'eventIndicator2', isShow: showLevel2Event, value: level2EventValue, color: 'rgb(127,255,0)', level: 2, lineWidth: level2EventLineWidth, position: level2EventPosition} );
+    eventIndicatorInfos.push( {id: 'eventIndicator3', isShow: showLevel3Event, value: level3EventValue, color: 'rgb(255,255,0)', level: 3, lineWidth: level3EventLineWidth, position: level3EventPosition} );
+    eventIndicatorInfos.push( {id: 'eventIndicator4', isShow: showLevel4Event, value: level4EventValue, color: 'rgb(255,165,0)', level: 4, lineWidth: level4EventLineWidth, position: level4EventPosition} );
+    eventIndicatorInfos.push( {id: 'eventIndicator5', isShow: showLevel5Event, value: level5EventValue, color: 'rgb(255,0,0)', level: 5, lineWidth: level5EventLineWidth, position: level5EventPosition} );
 
     let eventIndicators: EventIndicator[] = [];
     eventIndicatorInfos.forEach(( eventIndicatorInfo ) => {
-        let eventIndicator: EventIndicator = new EventIndicator( 
+        let eventIndicator: EventIndicator = new EventIndicators[ eventIndicatorInfo.position ](
             eventIndicatorInfo.id,
             eventIndicatorInfo.value,
             eventIndicatorInfo.level,
             eventIndicatorInfo.isShow,
             eventIndicatorInfo.color,
-            eventIndicatorInfo.lineWidth
+            eventIndicatorInfo.lineWidth,
+            eventIndicatorInfo.position
         );
 
         eventIndicators.push( eventIndicator );
     });
+
     
     onMount(() => {
         isMount = true;
@@ -325,7 +335,7 @@
             ontuneChart.destroy();
             
             const labels = TestDataMaker.getTerm();
-            const hosts = TestDataMaker.getHost( globalLineWidth );
+            const hosts = TestDataMaker.getHost( globalLineWidth, lineTension );
             config.data.labels = labels;
             config.data.datasets = hosts;
 

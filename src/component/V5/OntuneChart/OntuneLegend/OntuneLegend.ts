@@ -26,7 +26,7 @@ export class OntuneLegend {
 
         // Reuse the built-in legendItems generator
         const items = chart.options.plugins.legend.labels.generateLabels(chart);
-        const { lineWidthContainer, lineWidthLabel, lineWidthInput, lineWidthButton } = DomElementMaker.LineWidth.getLineWidthContainer( chart );
+        const { lineWidthContainer, lineWidthInput } = DomElementMaker.LineWidth.getLineWidthContainer( chart );
         container.appendChild( lineWidthContainer );
 
         items.forEach(( item, i ) => {
