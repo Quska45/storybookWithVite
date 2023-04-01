@@ -205,6 +205,11 @@ export default {
       options: [ 0, 0.1, 0.2, 0.3, 0.5, 1 ],
       description: '레벨5 이벤트의 position',
     },
+    showDataValueTooltip: {
+      control: { type: 'select' },
+      options: [ true, false ],
+      description: '레벨5 이벤트의 position',
+    },
     labels: {
       control: { type: 'object' },
       description: 'x축 데이터',
@@ -270,6 +275,7 @@ Primary.args = {
   level4EventPosition: 'right',
   level5EventPosition: 'right',
   lineTension: globalLineTension,
+  showDataValueTooltip: true,
   labels : TestDataMaker.getTerm(),
   datasets : TestDataMaker.getHost( globalLineWidth, globalLineTension )
 };

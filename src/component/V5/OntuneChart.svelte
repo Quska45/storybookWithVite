@@ -12,6 +12,8 @@
     import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
     import type { EventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/EventIndicator";
     import { EventIndicators } from "./OntuneChart/OntuneChartPlugins/EventIndicator";
+    import ChartDataLels from 'chartjs-plugin-datalabels'
+
 
     // global
     let isMount = false;
@@ -56,6 +58,7 @@
     export let level5EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_5_EVENT_POSITION as TEventIndicatorPosition;
     export let yAxesUnit: string = DefaultValue.Y_AXES_POSITION;
     export let lineTension: number = DefaultValue.LINE_TENSION;
+    export let showDataValueTooltip: boolean = DefaultValue.SHOW_DATA_VALUE_TOOLTIP;
     export let chartCategory: TChartCategory = DefaultValue.CHART_CATEGORY as TChartCategory;
     export let chartCatetories: TChartCategory[];
     export let labels: unknown[] = [];
@@ -272,6 +275,7 @@
         eventIndicators.forEach(( eventIndicator ) => {
             eventIndicator.isShow ? plugins.push( eventIndicator.plugin ) : null;
         });
+        // showDataValueTooltip ? plugins.push( ChartDataLels ) : null;
 
         // set chartjs config
         config = {

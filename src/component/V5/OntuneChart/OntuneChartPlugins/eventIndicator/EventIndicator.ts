@@ -47,16 +47,18 @@ export class EventIndicator implements TEventIndicator {
         const yFirstHeight = yLabelItems[ 0 ].options.translation[ 1 ];
         const yLastHeight = yLabelItems[ yLabelItems.length - 1 ].options.translation[ 1 ];
         const yFullHeight = yFirstHeight - yLastHeight;
-        const yTick = yFullHeight / parseInt( yLabelItems[ yLabelItems.length - 1 ].label as string );
+        let yTick = yFullHeight / (Number(yLabelItems[ yLabelItems.length - 1 ].label as string) - Number(yLabelItems[ 0 ].label as string));
+        let _value: number;
+        _value = this.value - Number(yLabelItems[0].label as string);
 
         if( 
-            !(parseInt(yLabelItems[0].label as string) <= this.value
-            && parseInt(yLabelItems[ yLabelItems.length - 1 ].label as string) >= this.value)
+            !(Number(yLabelItems[0].label as string) <= this.value
+            && Number(yLabelItems[ yLabelItems.length - 1 ].label as string) >= this.value)
         ){
             return;
         };
 
-        const yHeight =  yFullHeight - ( yTick * this.value ) + yLabelItems[ yLabelItems.length-1 ].options.translation[ 1 ];
+        let yHeight =  yFullHeight - ( yTick * _value ) + yLabelItems[ yLabelItems.length-1 ].options.translation[ 1 ];
         const rectWidth = 20;
         const rectHeight = 20;
 
@@ -69,13 +71,10 @@ export class EventIndicator implements TEventIndicator {
         this.setDashLine( ctx, yHeight, left, right );
         
         ctx.beginPath();
-        // ctx.fillText( this.value.toString(), left - rectWidth + 3, yHeight + 3 );
         this.setText( ctx, yHeight, left, right, rectHeight );
         
         ctx.fillStyle = this.color.replace( 'rgb', 'rgba' ).replace( ')', ',0.6)' );
-        // ctx.fillStyle = this.color;
         this.setRect( ctx, yHeight, left, right, rectWidth, rectHeight );
-        // ctx.fillRect( left - rectWidth, yHeight - (rectHeight/2), rectWidth, rectHeight );
 
         ctx.stroke();
         ctx.restore();
@@ -90,12 +89,8 @@ export class EventIndicator implements TEventIndicator {
     };
 
     setText( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number ){
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText( this.value.toString(), left - (rectWidth/2), yHeight );
     };
 
     setRect( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number, rectHeight: number ){
-        ctx.fillRect( left - rectWidth, yHeight - (rectHeight/2), rectWidth, rectHeight );
     };
 };
