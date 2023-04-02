@@ -39,7 +39,7 @@ export default {
     },
     leftYAxesMax: {
       control: { type: 'select' },
-      options: [ 0, 50, 100 ],
+      options: [ 0, 50, 100, 5000, 10000 ],
       description: '왼쪽 y 축의 최대 값',
     },
     rightYAxesMin: {

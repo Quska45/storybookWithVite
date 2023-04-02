@@ -47,13 +47,15 @@ export class EventIndicator implements TEventIndicator {
         const yFirstHeight = yLabelItems[ 0 ].options.translation[ 1 ];
         const yLastHeight = yLabelItems[ yLabelItems.length - 1 ].options.translation[ 1 ];
         const yFullHeight = yFirstHeight - yLastHeight;
-        let yTick = yFullHeight / (Number(yLabelItems[ yLabelItems.length - 1 ].label as string) - Number(yLabelItems[ 0 ].label as string));
+        const yMinLabel = Number((yLabelItems[ 0 ].label as string).replaceAll(',', ''));
+        const yMaxLabel = Number((yLabelItems[ yLabelItems.length - 1 ].label as string).replaceAll(',', ''))
+        let yTick = yFullHeight / (yMaxLabel - yMinLabel);
         let _value: number;
-        _value = this.value - Number(yLabelItems[0].label as string);
+        _value = this.value - yMinLabel;
 
         if( 
-            !(Number(yLabelItems[0].label as string) <= this.value
-            && Number(yLabelItems[ yLabelItems.length - 1 ].label as string) >= this.value)
+            !(yMinLabel <= this.value
+            && yMaxLabel >= this.value)
         ){
             return;
         };

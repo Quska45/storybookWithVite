@@ -224,7 +224,7 @@ export const TestDataMaker = {
 
             resultHostArr.push( dataset );
             for( let j=0; j<this.term; ++j ){
-                dataset.data.push(parseInt((Math.random() * 100).toString()));
+                dataset.data.push(parseInt((Math.random() * 10000).toString()));
             };
 
             this.testDataIndex++;
