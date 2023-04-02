@@ -203,12 +203,12 @@ export default {
     lineTension: {
       control: { type: 'select' },
       options: [ 0, 0.1, 0.2, 0.3, 0.5, 1 ],
-      description: '레벨5 이벤트의 position',
+      description: '전체 series의 tension 값',
     },
     showDataValueTooltip: {
       control: { type: 'select' },
       options: [ true, false ],
-      description: '레벨5 이벤트의 position',
+      description: '모든 꼭지점에 대해 데이터 표시 show / hide',
     },
     labels: {
       control: { type: 'object' },
@@ -275,7 +275,7 @@ Primary.args = {
   level4EventPosition: 'right',
   level5EventPosition: 'right',
   lineTension: globalLineTension,
-  showDataValueTooltip: true,
+  showDataValueTooltip: false,
   labels : TestDataMaker.getTerm(),
   datasets : TestDataMaker.getHost( globalLineWidth, globalLineTension )
 };

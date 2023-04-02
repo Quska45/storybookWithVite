@@ -275,7 +275,7 @@
         eventIndicators.forEach(( eventIndicator ) => {
             eventIndicator.isShow ? plugins.push( eventIndicator.plugin ) : null;
         });
-        // showDataValueTooltip ? plugins.push( ChartDataLels ) : null;
+        showDataValueTooltip ? plugins.push( ChartDataLels ) : null;
 
         // set chartjs config
         config = {
