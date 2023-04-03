@@ -127,27 +127,27 @@ export default {
     },
     level1EventValue: {
       control: { type: 'select' },
-      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ],
+      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 ],
       description: '레벨1 이벤트에 대한 value',
     },
     level2EventValue: {
       control: { type: 'select' },
-      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ],
+      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 ],
       description: '레벨2 이벤트에 대한 value',
     },
     level3EventValue: {
       control: { type: 'select' },
-      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ],
+      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 ],
       description: '레벨3 이벤트에 대한 value',
     },
     level4EventValue: {
       control: { type: 'select' },
-      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ],
+      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 ],
       description: '레벨4 이벤트에 대한 value',
     },
     level5EventValue: {
       control: { type: 'select' },
-      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 ],
+      options: [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 ],
       description: '레벨5 이벤트에 대한 value',
     },
     level1EventLineWidth: {
@@ -210,6 +210,11 @@ export default {
       options: [ true, false ],
       description: '모든 꼭지점에 대해 데이터 표시 show / hide',
     },
+    yAxesUnit: {
+      control: { type: 'select' },
+      options: [ '%', 'kg', 'm' ],
+      description: 'y axes 값의 단위',
+    },
     labels: {
       control: { type: 'object' },
       description: 'x축 데이터',
@@ -241,7 +246,7 @@ Primary.args = {
   showLegend : true,
   legendPosition : 'right',
   leftYAxesMin : 0,
-  leftYAxesMax : 100,
+  leftYAxesMax : 10000,
   rightYAxesMin : 0,
   rightYAxesMax : 100,
   yAxesPosition : 'left',
@@ -259,11 +264,11 @@ Primary.args = {
   showLevel3Event: true,
   showLevel4Event: true,
   showLevel5Event: true,
-  level1EventValue: 10,
-  level2EventValue: 20,
-  level3EventValue: 30,
-  level4EventValue: 40,
-  level5EventValue: 50,
+  level1EventValue: 1000,
+  level2EventValue: 2000,
+  level3EventValue: 3000,
+  level4EventValue: 4000,
+  level5EventValue: 5000,
   level1EventLineWidth: 2,
   level2EventLineWidth: 2,
   level3EventLineWidth: 2,
@@ -276,6 +281,7 @@ Primary.args = {
   level5EventPosition: 'right',
   lineTension: globalLineTension,
   showDataValueTooltip: false,
+  yAxesUnit: '%',
   labels : TestDataMaker.getTerm(),
   datasets : TestDataMaker.getHost( globalLineWidth, globalLineTension )
 };

@@ -13,6 +13,7 @@
     import type { EventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/EventIndicator";
     import { EventIndicators } from "./OntuneChart/OntuneChartPlugins/EventIndicator";
     import ChartDataLels from 'chartjs-plugin-datalabels'
+    import { YAxesUnit } from './OntuneChart/OntuneChartPlugins/YAxesUnit/YAxesUnit';
 
 
     // global
@@ -56,7 +57,7 @@
     export let level3EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_3_EVENT_POSITION as TEventIndicatorPosition;
     export let level4EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_4_EVENT_POSITION as TEventIndicatorPosition;
     export let level5EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_5_EVENT_POSITION as TEventIndicatorPosition;
-    export let yAxesUnit: string = DefaultValue.Y_AXES_POSITION;
+    export let yAxesUnit: string = DefaultValue.Y_AXES_UNIT;
     export let lineTension: number = DefaultValue.LINE_TENSION;
     export let showDataValueTooltip: boolean = DefaultValue.SHOW_DATA_VALUE_TOOLTIP;
     export let chartCategory: TChartCategory = DefaultValue.CHART_CATEGORY as TChartCategory;
@@ -68,7 +69,9 @@
     const legendOptions: TLengendOptions = { position: legendPosition, showLegend: showLegend, showLegendValue: showLegendValue };
     let data: ChartData = { labels: labels, datasets: datasets };
     let options: ChartOptions = {};
+    let minimapOptions: ChartOptions = {};
     let config: ChartConfiguration;
+    let minimapConfig: ChartConfiguration;
     let plugins: Plugin[] = [];
     
     // dom element
@@ -86,6 +89,7 @@
     let chartCategoryInput: HTMLInputElement;
     let chartCategoryButton: HTMLElement;
     let chartCategorySelect: HTMLSelectElement;
+    let minimapCanvas: HTMLCanvasElement;
     
     // class instance
     let ontuneChart: OntuneChart;
@@ -101,28 +105,26 @@
     $: LegendContainerStyle
         = Style.LegendContainer.getStyleByPositionAndShowLegend( legendPosition, showLegend )
     $: if( isMount && useIndicator ){ // indicator
-        console.log('useIndicator');
         plugins.push( indicator );
         ontuneChart.chart.update();
     };
     $: if( isMount && !useIndicator ){ // indicator
-        console.log('!useIndicator');
         let indicatorIndex = plugins.findIndex(( plugin ) => {
             return plugin === indicator;
         });
+        // ontuneChart.removePlugin( plugins[ indicatorIndex ] );
         plugins.splice( indicatorIndex, 1 );
         Chart.unregister(plugins)
         ontuneChart.chart.update();
     };
 
-    // plugin
+    // plugins
     let eventIndicatorInfos: TEventIndicator[] = [];
     eventIndicatorInfos.push( {id: 'eventIndicator1', isShow: showLevel1Event, value: level1EventValue, color: 'rgb(153,204,255)', level: 1, lineWidth: level1EventLineWidth, position: level1EventPosition} );
     eventIndicatorInfos.push( {id: 'eventIndicator2', isShow: showLevel2Event, value: level2EventValue, color: 'rgb(127,255,0)', level: 2, lineWidth: level2EventLineWidth, position: level2EventPosition} );
     eventIndicatorInfos.push( {id: 'eventIndicator3', isShow: showLevel3Event, value: level3EventValue, color: 'rgb(255,255,0)', level: 3, lineWidth: level3EventLineWidth, position: level3EventPosition} );
     eventIndicatorInfos.push( {id: 'eventIndicator4', isShow: showLevel4Event, value: level4EventValue, color: 'rgb(255,165,0)', level: 4, lineWidth: level4EventLineWidth, position: level4EventPosition} );
     eventIndicatorInfos.push( {id: 'eventIndicator5', isShow: showLevel5Event, value: level5EventValue, color: 'rgb(255,0,0)', level: 5, lineWidth: level5EventLineWidth, position: level5EventPosition} );
-
     let eventIndicators: EventIndicator[] = [];
     eventIndicatorInfos.forEach(( eventIndicatorInfo ) => {
         let eventIndicator: EventIndicator = new EventIndicators[ eventIndicatorInfo.position ](
@@ -138,6 +140,9 @@
         eventIndicators.push( eventIndicator );
     });
 
+    let yAxesUnitPlugin = new YAxesUnit( yAxesUnit );
+
+
     
     onMount(() => {
         isMount = true;
@@ -147,7 +152,9 @@
             maintainAspectRatio: false,
             layout: {
                 padding: {
-                    top: 30
+                    top: 30,
+                    right: 30,
+                    bottom: 40,
                 }
             },
             // interaction: {
@@ -253,6 +260,7 @@
                             enabled: true
                         },
                         onZoom: function(){
+                            console.log('onZoom arguments', arguments);
                             zoomContainer.style.display = 'flex';
                             zoomReset.style.display = 'block';
                         },
@@ -262,10 +270,33 @@
                         mode: 'xy',
                         modifierKey: 'ctrl',
                         threshold: 10,
+                        onPan: () => {
+                            console.log('onPan arguments', arguments);
+                        }
                     },
                 }
             },
         };
+
+        minimapOptions = {
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    display: false
+                },
+                y: {
+                    display: false
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    enabled: false
+                }
+            }
+        }
 
         // plugin register
         useIndicator ? plugins.push(indicator) : null;
@@ -276,6 +307,7 @@
             eventIndicator.isShow ? plugins.push( eventIndicator.plugin ) : null;
         });
         showDataValueTooltip ? plugins.push( ChartDataLels ) : null;
+        plugins.push( yAxesUnitPlugin.plugin );
 
         // set chartjs config
         config = {
@@ -285,12 +317,19 @@
             plugins: plugins
         };
 
+        minimapConfig = {
+            type: chartType,
+            data: data,
+            options: minimapOptions
+        };
+
         // set global line width
         OntuneChartData.setAllDataByLineWidth( data, globalLineWidth );
 
         // make ontuneChart main instance
         ontuneChart = new OntuneChart( chartCanvas, config );
         ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
+        // let minimap = new OntuneChart( minimapCanvas, minimapConfig );
 
         // make ontuneChart support instance
         ontuneChartResizeBar = new ResizeBars[ legendPosition as string ]( resizeBar );
@@ -401,7 +440,16 @@
                 <!-- <div class="ontune_chart_zoom_item">zoom start</div> -->
                 <div bind:this={zoomReset} class="ontune_chart_zoom_item ontune_chart_zoom_reset">zoom 원복</div>
             </div>
-            <canvas bind:this={chartCanvas} id="ontuneChart"></canvas>
+                <canvas bind:this={chartCanvas} id="ontuneChart"></canvas>
+                <div class="chart_timeline">
+                    <canvas bind:this={minimapCanvas} class="chart_timeline_canvas" id="minimap" height="40"></canvas>
+            
+                    <div id="left" class="chart_timeline_rest_left" style="width: 0%;"></div>
+                    <div id="center" class="chart_timeline_handle" style="left: 0%; right: 0%;">
+                      <div class="chart_timeline_handle_touch_area"></div>
+                    </div>
+                    <div id="right" class="chart_timeline_rest_right" style="width: 0%;"></div>
+                </div>
         </div>
 
         <!-- chartjs영역과 레전드 영역의 resizebar -->
@@ -546,4 +594,76 @@
     .ontune_chart_zoom_reset {
         display: none;
     }
+
+
+
+
+    .chart_timeline {
+        position: relative;
+        height: 40px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        margin-top: -40px;
+    }
+    .chart_timeline_canvas {
+        height: 40px;
+        border-radius: 5px;
+    }
+
+    .chart_timeline_handle {
+        cursor: ew-resize;
+        z-index: 1;
+        position: absolute;
+        top: -1px;
+        bottom: -1px;
+        right: 0;
+        border: #C0D1E1 solid;
+        border-width: 1px 10px;
+        border-radius: 5px;
+        box-sizing: border-box;
+        box-shadow: 0 0 0 1px #fff, inset 1px 0 0 0 #fff, inset -1px 0 0 0 #fff;
+        /*   cursor: pointer; */
+        touch-action: pan-x;
+        user-select: none;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+    .chart_timeline_handle_touch_area {
+        position: absolute;
+        height: 100%;
+        left: -20px;
+        right: -20px;
+    }
+    .chart_timeline_handle::before,
+    .chart_timeline_handle::after {
+        content: '';
+        position: absolute;
+        left: -6px;
+        top: 15px;
+        bottom: 15px;
+        width: 2px;
+        background: #fff;
+        border-radius: 2px;
+    }
+    .chart_timeline_handle:after {
+        left: auto;
+        right: -6px;
+    }
+    .chart_timeline_rest_left,
+    .chart_timeline_rest_right {
+        position: absolute;
+        top: 0;
+        background: rgba(226, 238, 249, 0.5);
+        height: 100%;
+        padding: 0 5px;
+        border-radius: 5px;
+    }
+    .chart_timeline_rest_left {
+        left: 0;
+    }
+    .chart_timeline_rest_right {
+        right: 0;
+    }
+
+
+
 </style>

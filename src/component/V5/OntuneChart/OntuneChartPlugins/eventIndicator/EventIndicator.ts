@@ -1,6 +1,5 @@
 import type { Chart, Plugin } from "chart.js";
 import type { AnyObject, EmptyObject } from "chart.js/dist/types/basic";
-import type { FONT_SIZE } from "../../../../../stories/TS/Common/ConstValue";
 import type { TEventIndicator, TEventIndicatorPosition } from "../../OntuneChartType";
 
 export class EventIndicator implements TEventIndicator {
@@ -54,14 +53,13 @@ export class EventIndicator implements TEventIndicator {
         _value = this.value - yMinLabel;
 
         if( 
-            !(yMinLabel <= this.value
-            && yMaxLabel >= this.value)
+            !(yMinLabel <= this.value && yMaxLabel >= this.value)
         ){
             return;
         };
 
         let yHeight =  yFullHeight - ( yTick * _value ) + yLabelItems[ yLabelItems.length-1 ].options.translation[ 1 ];
-        const rectWidth = 20;
+        let rectWidth = 20;
         const rectHeight = 20;
 
         ctx.lineWidth = this.lineWidth;
@@ -72,7 +70,9 @@ export class EventIndicator implements TEventIndicator {
         
         this.setDashLine( ctx, yHeight, left, right );
         
+        const textWidth = ctx.measureText(this.value.toString()).width;
         ctx.beginPath();
+        textWidth > rectWidth ? rectWidth = textWidth : null;
         this.setText( ctx, yHeight, left, right, rectHeight );
         
         ctx.fillStyle = this.color.replace( 'rgb', 'rgba' ).replace( ')', ',0.6)' );

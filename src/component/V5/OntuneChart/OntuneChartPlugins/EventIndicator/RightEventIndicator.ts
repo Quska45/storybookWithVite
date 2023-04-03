@@ -7,9 +7,10 @@ export class RightEventIndicator extends EventIndicator {
     };
 
     setText(ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number): void {
+        let textWidth = ctx.measureText( this.value.toString() ).width;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText( this.value.toString(), right + (rectWidth / 2), yHeight );
+        ctx.fillText( this.value.toString(), right + (textWidth / 2), yHeight );
     };
 
     setRect(ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number, rectHeight: number): void {

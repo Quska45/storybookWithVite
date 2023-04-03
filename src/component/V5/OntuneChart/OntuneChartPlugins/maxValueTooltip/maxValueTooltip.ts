@@ -85,6 +85,9 @@ export const maxValueTooltip: Plugin & { aodMaxTooltipPosition } = {
         maxDatasetIndex = maxValue.maxDatasetIndex
         maxPointElement = fillteredDatasetMetas[maxDatasetIndex][maxDataValueIndex];
 
+        let textWidth = ctx.measureText( maxDataValue.toString() ).width;
+        tooltipWidth = textWidth + 5;
+
         // tooltip value
         const xPosition = maxPointElement.x - (tooltipWidth/2);
         const yPosition = maxPointElement.y - (tooltipHeight/2) - tooltipMargin - fontSize;

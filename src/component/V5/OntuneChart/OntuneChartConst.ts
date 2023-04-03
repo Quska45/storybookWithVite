@@ -42,7 +42,7 @@ export const DefaultValue = {
     LEVEL_4_EVENT_POSITION: 'right',
     LEVEL_5_EVENT_POSITION: 'right',
     LINE_TENSION: 0,
-    Y_AXES_UNIT: "100%",
+    Y_AXES_UNIT: "%",
     SHOW_DATA_VALUE_TOOLTIP: true,
     unicodeBoldNumber: {
         0: '\u{1D7EC}',

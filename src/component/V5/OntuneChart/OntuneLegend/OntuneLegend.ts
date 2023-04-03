@@ -7,6 +7,7 @@ export class OntuneLegend {
     containerId: string;
     legend: LegendElement;
     textContainers: HTMLElement[] = [];
+    curTextContainerInfo = {} as {dom: HTMLElement, index: number, originalLineWidth: number};
 
     constructor( legend: LegendElement ){
         this.legend = legend;
@@ -53,6 +54,24 @@ export class OntuneLegend {
                 lineWidthInput.value = chart.data.datasets[item.datasetIndex].borderWidth.toString();
                 lineWidthInput.dataset.legendItemIndex = item.datasetIndex.toFixed();
             });
+            textContainer.addEventListener('mouseenter', () => {
+                const dataset = chart.data.datasets;
+                const datasetIndex = item.datasetIndex;
+
+                this.curTextContainerInfo.dom = textContainer;
+                this.curTextContainerInfo.index = datasetIndex;
+                this.curTextContainerInfo.originalLineWidth = dataset[ datasetIndex ].borderWidth as number;
+
+                dataset[ datasetIndex ].borderWidth = (dataset[ datasetIndex ].borderWidth as number) * 2;
+                chart.update();
+            });
+            textContainer.addEventListener('mouseleave', () => {
+                const dataset = chart.data.datasets;
+                const datasetIndex = item.datasetIndex;
+
+                dataset[ this.curTextContainerInfo.index ].borderWidth = this.curTextContainerInfo.originalLineWidth;
+                chart.update();
+            });
             
             const seriesName = document.createTextNode(item.text);
             textContainer.appendChild(seriesName);
@@ -73,6 +92,7 @@ export class OntuneLegend {
         });
         
         let _this = this;
+        // 레전드 series name ... 처리
         function outputsize( entry: ResizeObserverEntry[] ) {
             let legendContainer = entry[0].target as HTMLElement;
             let width = legendContainer.clientWidth;
