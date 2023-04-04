@@ -3,14 +3,14 @@
     import { onMount } from "svelte";
     import { OntuneChart } from "./OntuneChart/OntuneChart";
     import { DefaultValue, Style, TestDataMaker } from "./OntuneChart/OntuneChartConst";
-    import type { TAODMaxTooltipPostion, TChartCategory, TEventIndicatorPosition, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
+    import type { IEventIndicator, TAODMaxTooltipPostion, TChartCategory, TEventIndicatorPosition, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
     import { crossHairLabel } from "./OntuneChart/OntuneChartPlugins/crossHairLabel";
     import { indicator } from "./OntuneChart/OntuneChartPlugins/indicator";
     import { OntuneChartData } from "./OntuneChart/OntuneChartData";
     import { maxValueTooltip } from "./OntuneChart/OntuneChartPlugins/maxValueTooltip/maxValueTooltip";
     import { ResizeBars } from "./OntuneChart/OntuneComponent/ResizeBar";
     import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
-    import type { EventIndicator, IEventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/EventIndicator";
+    import type { EventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/EventIndicator";
     import { EventIndicators } from "./OntuneChart/OntuneChartPlugins/EventIndicator";
     import ChartDataLels from 'chartjs-plugin-datalabels'
     import { YAxesUnit } from './OntuneChart/OntuneChartPlugins/YAxesUnit/YAxesUnit';

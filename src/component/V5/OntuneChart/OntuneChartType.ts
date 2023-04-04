@@ -23,3 +23,12 @@ export type TChartCategory = {
 };
 
 export type TEventIndicatorPosition = 'left' | 'right';
+export interface IEventIndicator {
+    id: string;
+    isShow: boolean;
+    value: number;
+    color: string;
+    level: number;
+    lineWidth: number;
+    position: TEventIndicatorPosition
+};
