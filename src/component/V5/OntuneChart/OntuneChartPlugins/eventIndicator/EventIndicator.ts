@@ -1,5 +1,4 @@
 import type { Chart, Plugin } from "chart.js";
-import type { AnyObject, EmptyObject } from "chart.js/dist/types/basic";
 import type { IEventIndicator, TEventIndicatorPosition } from "../../OntuneChartType";
 
 export class EventIndicator implements IEventIndicator {
@@ -40,7 +39,7 @@ export class EventIndicator implements IEventIndicator {
         this.plugin = plugin;
     };
 
-    afterRender( chart: Chart, args: EmptyObject, options: AnyObject ) {
+    afterRender( chart: Chart, args, options ) {
         const { ctx, chartArea: { left, right, top, bottom }, scales: { x, y } } = chart;
         const yLabelItems = chart.scales['y'].getLabelItems();
         const yFirstHeight = yLabelItems[ 0 ].options.translation[ 1 ];
