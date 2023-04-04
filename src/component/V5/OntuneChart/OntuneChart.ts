@@ -103,7 +103,7 @@ export class OntuneChart {
     };
 
     addPlugin( plugin: Plugin ){
-        ChartJS.register( plugin );
+        this.chart.config.plugins.push( plugin );
         this.chart.update();
     };
 
@@ -115,9 +115,20 @@ export class OntuneChart {
         this.chart.update();
     };
 
-    removePlugin( plugin: Plugin ){
-        ChartJS.unregister( plugin );
+    removePluginByPluginIndex( index: number ){
+        this.chart.config.plugins.splice( index, 1 );
         this.chart.update();
+    };
+
+    removePlugin( plugin: Plugin ){
+        console.log( 'removePlugin start' );
+        const plugins = this.chart.config.plugins;
+
+        let pluginIndex = plugins.findIndex(( _plugin ) => {
+            return _plugin === plugin;
+        });
+
+        this.removePluginByPluginIndex( pluginIndex );
     };
 
     removePlugins( plugins: Plugin[] ){

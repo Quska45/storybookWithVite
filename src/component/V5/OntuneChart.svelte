@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Chart, type ChartConfiguration, type ChartData, type ChartDataset, type ChartOptions, type ChartTypeRegistry, type LayoutPosition, type Plugin, type TooltipItem } from "chart.js";
+    import type { ChartConfiguration, ChartData, ChartDataset, ChartOptions, ChartTypeRegistry, LayoutPosition, Plugin, TooltipItem } from "chart.js";
     import { onMount } from "svelte";
     import { OntuneChart } from "./OntuneChart/OntuneChart";
     import { DefaultValue, Style, TestDataMaker } from "./OntuneChart/OntuneChartConst";
@@ -16,7 +16,6 @@
     import { YAxesUnit } from './OntuneChart/OntuneChartPlugins/YAxesUnit/YAxesUnit';
     import { MiniMap } from "./OntuneChart/OntuneComponent/MiniMap/MiniMap";
     import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/MinimapResizer";
-
 
     // global
     let isMount = false;
@@ -110,18 +109,37 @@
         = Style.ResizeBar.getStyleByPositionAndShowLegend( legendPosition, showLegend )
     $: LegendContainerStyle
         = Style.LegendContainer.getStyleByPositionAndShowLegend( legendPosition, showLegend )
-    $: if( isMount && useIndicator ){ // indicator
-        plugins.push( indicator );
-        ontuneChart.chart.update();
+
+    // showYAxesUnit
+    $: if( isMount && showYAxesUnit ){
+        ontuneChart.addPlugin( yAxesUnitPlugin.plugin );
     };
-    $: if( isMount && !useIndicator ){ // indicator
-        let indicatorIndex = plugins.findIndex(( plugin ) => {
-            return plugin === indicator;
+    $: if( isMount && !showYAxesUnit ){
+        let maxValueTooltipIndex = plugins.findIndex(( plugin ) => {
+            return plugin === yAxesUnitPlugin.plugin;
         });
-        // ontuneChart.removePlugin( plugins[ indicatorIndex ] );
-        plugins.splice( indicatorIndex, 1 );
-        Chart.unregister(plugins)
-        ontuneChart.chart.update();
+        ontuneChart.removePluginByPluginIndex( maxValueTooltipIndex );
+    };
+    // useIndicator
+    $: if( isMount && useIndicator ){
+        ontuneChart.addPlugin( indicator );
+    };
+    $: if( isMount && !useIndicator ){
+        ontuneChart.removePlugin( indicator );
+    };
+    // showCrossHair
+    $: if( isMount && showCrossHair ){
+        ontuneChart.addPlugin( crossHairLabel );
+    };
+    $: if( isMount && !showCrossHair ){
+        ontuneChart.removePlugin( crossHairLabel );
+    };
+    // showCrossHair
+    $: if( isMount && showAodMaxTooltip ){
+        ontuneChart.addPlugin( maxValueTooltip );
+    };
+    $: if( isMount && !showAodMaxTooltip ){
+        ontuneChart.removePlugin( maxValueTooltip );
     };
 
     // plugins
@@ -150,7 +168,6 @@
     let minimapResizer: MinimapResizer;
 
     onMount(() => {
-        isMount = true;
         // set chartjs options
         options = {
             responsive: true,
@@ -305,15 +322,14 @@
         };
 
         // plugin register
-        useIndicator ? plugins.push(indicator) : null;
-        showCrossHair ? plugins.push(crossHairLabel) : null;
+        // useIndicator ? plugins.push(indicator) : null;
+        // showCrossHair ? plugins.push(crossHairLabel) : null;
         maxValueTooltip.aodMaxTooltipPosition = aodMaxTooltipPosition;
-        showAodMaxTooltip ? plugins.push(maxValueTooltip) : null;
+        // showAodMaxTooltip ? plugins.push(maxValueTooltip) : null;
         eventIndicators.forEach(( eventIndicator ) => {
             eventIndicator.isShow ? plugins.push( eventIndicator.plugin ) : null;
         });
         showDataValueTooltip ? plugins.push( ChartDataLels ) : null;
-        showYAxesUnit ? plugins.push( yAxesUnitPlugin.plugin ) : null;
 
         // set chartjs config
         config = {
@@ -392,15 +408,16 @@
             ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
         });
 
-        // document.getElementById('test').addEventListener('click', function(){
-        //     useIndicator = !useIndicator;
-        //     console.log('useIndicator', useIndicator)
-        // });
+        document.getElementById('test').addEventListener('click', function(){
+            showAodMaxTooltip = !showAodMaxTooltip;
+        });
+
+        isMount = true;
     });
 </script>
 
 <div class="ontune_chart_component" style="width: {componentWidth}px; height: {componentHeight}px">
-    <!-- <button id="test">useIndicator</button> -->
+    <button id="test">showMaxValueTooltip</button>
     <!-- setting 메뉴 -->
     <div bind:this={settingContainer} class="ontune_chart_setting_container">
         <div bind:this={settingCloseButton} class="ontune_chart_setting_close_button">
@@ -638,6 +655,7 @@
         height: 100%;
         left: -20px;
         right: -20px;
+        border: none;
     }
     .chart_timeline_handle::before,
     .chart_timeline_handle::after {

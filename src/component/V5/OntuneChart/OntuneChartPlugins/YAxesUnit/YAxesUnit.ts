@@ -28,9 +28,10 @@ export class YAxesUnit {
         const xPosition = yLabelItems[ yLabelItems.length - 1 ].options.translation[0] - yLabelItems[ yLabelItems.length - 1 ].font.size + (fontSize /2);
         const yPosition = yLabelItems[ yLabelItems.length - 1 ].options.translation[1] - yLabelItems[ yLabelItems.length - 1 ].font.size - (fontSize /2);
 
-        ctx.strokeStyle = 'black';
-
+        
         ctx.save();
+        // ctx.strokeStyle = 'black';
+
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText( `(${this.unit})`, xPosition, yPosition );
