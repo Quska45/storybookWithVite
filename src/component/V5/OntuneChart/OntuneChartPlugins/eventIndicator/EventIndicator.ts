@@ -2,7 +2,17 @@ import type { Chart, Plugin } from "chart.js";
 import type { AnyObject, EmptyObject } from "chart.js/dist/types/basic";
 import type { TEventIndicatorPosition } from "../../OntuneChartType";
 
-export class EventIndicator {
+export interface IEventIndicator {
+    id: string;
+    isShow: boolean;
+    value: number;
+    color: string;
+    level: number;
+    lineWidth: number;
+    position: TEventIndicatorPosition
+};
+
+export class EventIndicator implements IEventIndicator {
     id: string;
     value: number;
     level: number;
@@ -82,11 +92,11 @@ export class EventIndicator {
         ctx.restore();
     };
 
-    setProperties(){
+    protected setProperties(){
 
     };
 
-    setDashLine( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number ){
+    protected setDashLine( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number ){
         ctx.setLineDash( [2, 8] );
         ctx.lineDashOffset = 4;
         ctx.moveTo( left, yHeight );
@@ -94,9 +104,9 @@ export class EventIndicator {
         ctx.stroke();
     };
 
-    setText( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number ){
+    protected setText( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number ){
     };
 
-    setRect( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number, rectHeight: number ){
+    protected setRect( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number, rectHeight: number ){
     };
 };
