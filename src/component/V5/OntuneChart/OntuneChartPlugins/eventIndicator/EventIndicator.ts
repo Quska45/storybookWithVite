@@ -82,11 +82,11 @@ export class EventIndicator {
         ctx.restore();
     };
 
-    protected setProperties(){
+    setProperties(){
 
     };
 
-    protected setDashLine( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number ){
+    setDashLine( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number ){
         ctx.setLineDash( [2, 8] );
         ctx.lineDashOffset = 4;
         ctx.moveTo( left, yHeight );
@@ -94,9 +94,9 @@ export class EventIndicator {
         ctx.stroke();
     };
 
-    protected setText( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number ){
+    setText( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number ){
     };
 
-    protected setRect( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number, rectHeight: number ){
+    setRect( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number, rectHeight: number ){
     };
 };
