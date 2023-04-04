@@ -1,8 +1,8 @@
 import type { Chart, Plugin } from "chart.js";
 import type { AnyObject, EmptyObject } from "chart.js/dist/types/basic";
-import type { TEventIndicator, TEventIndicatorPosition } from "../../OntuneChartType";
+import type { TEventIndicatorPosition } from "../../OntuneChartType";
 
-export class EventIndicator implements TEventIndicator {
+export class EventIndicator {
     id: string;
     value: number;
     level: number;
