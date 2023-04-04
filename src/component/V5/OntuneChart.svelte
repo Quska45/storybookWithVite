@@ -4,10 +4,10 @@
     import { OntuneChart } from "./OntuneChart/OntuneChart";
     import { DefaultValue, Style, TestDataMaker } from "./OntuneChart/OntuneChartConst";
     import type { IEventIndicator, TAODMaxTooltipPostion, TChartCategory, TEventIndicatorPosition, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
-    import { crossHairLabel } from "./OntuneChart/OntuneChartPlugins/crossHairLabel";
-    import { indicator } from "./OntuneChart/OntuneChartPlugins/indicator";
+    import { CrossHairLabel } from "./OntuneChart/OntuneChartPlugins/CrossHairLabel";
+    import { Indicator } from "./OntuneChart/OntuneChartPlugins/Indicator";
     import { OntuneChartData } from "./OntuneChart/OntuneChartData";
-    import { maxValueTooltip } from "./OntuneChart/OntuneChartPlugins/maxValueTooltip/maxValueTooltip";
+    import { MaxValueTooltip } from "./OntuneChart/OntuneChartPlugins/AodMaxValueTooltip/AodMaxValueTooltip";
     import { ResizeBars } from "./OntuneChart/OntuneComponent/ResizeBar";
     import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
     import type { EventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/EventIndicator1";
@@ -122,24 +122,24 @@
     };
     // useIndicator
     $: if( isMount && useIndicator ){
-        ontuneChart.addPlugin( indicator );
+        ontuneChart.addPlugin( Indicator );
     };
     $: if( isMount && !useIndicator ){
-        ontuneChart.removePlugin( indicator );
+        ontuneChart.removePlugin( Indicator );
     };
     // showCrossHair
     $: if( isMount && showCrossHair ){
-        ontuneChart.addPlugin( crossHairLabel );
+        ontuneChart.addPlugin( CrossHairLabel );
     };
     $: if( isMount && !showCrossHair ){
-        ontuneChart.removePlugin( crossHairLabel );
+        ontuneChart.removePlugin( CrossHairLabel );
     };
     // showCrossHair
     $: if( isMount && showAodMaxTooltip ){
-        ontuneChart.addPlugin( maxValueTooltip );
+        ontuneChart.addPlugin( MaxValueTooltip );
     };
     $: if( isMount && !showAodMaxTooltip ){
-        ontuneChart.removePlugin( maxValueTooltip );
+        ontuneChart.removePlugin( MaxValueTooltip );
     };
 
     // plugins
@@ -324,7 +324,7 @@
         // plugin register
         // useIndicator ? plugins.push(indicator) : null;
         // showCrossHair ? plugins.push(crossHairLabel) : null;
-        maxValueTooltip.aodMaxTooltipPosition = aodMaxTooltipPosition;
+        MaxValueTooltip.aodMaxTooltipPosition = aodMaxTooltipPosition;
         // showAodMaxTooltip ? plugins.push(maxValueTooltip) : null;
         eventIndicators.forEach(( eventIndicator ) => {
             eventIndicator.isShow ? plugins.push( eventIndicator.plugin ) : null;

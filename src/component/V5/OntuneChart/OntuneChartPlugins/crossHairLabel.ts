@@ -3,7 +3,7 @@ import type { TChartAreaInfo } from "../OntuneChartType";
 
 // crosshairLabel plugin block
 let crosshairInfos: TChartAreaInfo[];
-export const crossHairLabel: Plugin = {
+export const CrossHairLabel: Plugin = {
     id: 'crossHairLabel',
     // drawing part
     afterRender(chart, args, options) {

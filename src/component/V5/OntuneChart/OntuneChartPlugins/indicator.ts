@@ -9,7 +9,7 @@ let click = {
     clickStartTime: null,
 };
 let clickStartTime = null;
-export const indicator: Plugin = {
+export const Indicator: Plugin = {
     id: 'indicator',
     afterRender( chart, args, options ) {
         if( !lineInfo ){
