@@ -6,13 +6,13 @@ export class LeftEventIndicator extends EventIndicator {
         super( id, value, level, isShow, color, lineWidth, position );
     };
 
-    setText( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number ){
+    protected setText( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number ){
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText( this.value.toString(), left - (rectWidth/2), yHeight );
     };
 
-    setRect( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number, rectHeight: number ){
+    protected setRect( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number, rectHeight: number ){
         ctx.fillRect( left - rectWidth, yHeight - (rectHeight/2), rectWidth, rectHeight );
     };
 };

@@ -58,6 +58,7 @@
     export let level4EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_4_EVENT_POSITION as TEventIndicatorPosition;
     export let level5EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_5_EVENT_POSITION as TEventIndicatorPosition;
     export let yAxesUnit: string = DefaultValue.Y_AXES_UNIT;
+    export let showYAxesUnit: boolean = DefaultValue.SHOW_Y_AXES_UNIT;
     export let lineTension: number = DefaultValue.LINE_TENSION;
     export let showDataValueTooltip: boolean = DefaultValue.SHOW_DATA_VALUE_TOOLTIP;
     export let chartCategory: TChartCategory = DefaultValue.CHART_CATEGORY as TChartCategory;
@@ -307,7 +308,7 @@
             eventIndicator.isShow ? plugins.push( eventIndicator.plugin ) : null;
         });
         showDataValueTooltip ? plugins.push( ChartDataLels ) : null;
-        plugins.push( yAxesUnitPlugin.plugin );
+        showYAxesUnit ? plugins.push( yAxesUnitPlugin.plugin ) : null;
 
         // set chartjs config
         config = {
@@ -329,7 +330,7 @@
         // make ontuneChart main instance
         ontuneChart = new OntuneChart( chartCanvas, config );
         ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
-        // let minimap = new OntuneChart( minimapCanvas, minimapConfig );
+        let minimap = new OntuneChart( minimapCanvas, minimapConfig );
 
         // make ontuneChart support instance
         ontuneChartResizeBar = new ResizeBars[ legendPosition as string ]( resizeBar );

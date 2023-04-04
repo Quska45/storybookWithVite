@@ -46,7 +46,6 @@ export class OntuneChart {
     chart: ChartJS;
     ontuneChartConfig: OntuneChartConfig;
     ontuneLegend: OntuneLegend;
-
     
     constructor( canvas: HTMLCanvasElement, config: ChartConfiguration ){
         this.ontuneChartConfig = new OntuneChartConfig( config );

@@ -82,7 +82,11 @@ export class EventIndicator implements TEventIndicator {
         ctx.restore();
     };
 
-    setDashLine( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number ){
+    protected setProperties(){
+
+    };
+
+    protected setDashLine( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number ){
         ctx.setLineDash( [2, 8] );
         ctx.lineDashOffset = 4;
         ctx.moveTo( left, yHeight );
@@ -90,9 +94,9 @@ export class EventIndicator implements TEventIndicator {
         ctx.stroke();
     };
 
-    setText( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number ){
+    protected setText( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number ){
     };
 
-    setRect( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number, rectHeight: number ){
+    protected setRect( ctx: CanvasRenderingContext2D, yHeight: number, left: number, right: number, rectWidth: number, rectHeight: number ){
     };
 };

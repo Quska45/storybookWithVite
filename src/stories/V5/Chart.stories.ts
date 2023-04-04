@@ -215,6 +215,11 @@ export default {
       options: [ '%', 'kg', 'm' ],
       description: 'y axes 값의 단위',
     },
+    showYAxesUnit: {
+      control: { type: 'select' },
+      options: [ true, false ],
+      description: 'y axes 값의 단위 show / hide',
+    },
     labels: {
       control: { type: 'object' },
       description: 'x축 데이터',
@@ -282,6 +287,7 @@ Primary.args = {
   lineTension: globalLineTension,
   showDataValueTooltip: false,
   yAxesUnit: '%',
+  showYAxesUnit: true,
   labels : TestDataMaker.getTerm(),
   datasets : TestDataMaker.getHost( globalLineWidth, globalLineTension )
 };
