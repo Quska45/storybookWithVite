@@ -23,7 +23,7 @@ import {} from 'chartjs-adapter-moment'
 import { OntuneChartConfig } from './OntuneChartConfig';
 import type { TLengendOptions } from './OntuneChartType';
 import { OntuneLegend } from './OntuneLegend/OntuneLegend';
-import { indicator } from './OntuneChartPlugins/indicator';
+import { MiniMap } from './OntuneComponent/MiniMap/MiniMap';
 
 ChartJS.register(
     Title,
@@ -46,6 +46,7 @@ export class OntuneChart {
     chart: ChartJS;
     ontuneChartConfig: OntuneChartConfig;
     ontuneLegend: OntuneLegend;
+    minimap: MiniMap;
     
     constructor( canvas: HTMLCanvasElement, config: ChartConfiguration ){
         this.ontuneChartConfig = new OntuneChartConfig( config );
@@ -61,6 +62,33 @@ export class OntuneChart {
 
     resetZoom(){
         this.chart.resetZoom();
+    };
+
+    makeMinimap( minimapCanvas: HTMLCanvasElement ){
+        const chart = this.chart;
+
+        this.minimap = new MiniMap( minimapCanvas, chart.config.type, chart.config.data );
+    };
+
+    setMinimapController(  left: HTMLElement, center: HTMLElement, right: HTMLElement  ){
+        this.minimap.setController( left, center, right );
+    }
+
+    resizeMinimapController(){
+        const xScale = this.chart.scales[ 'x' ];
+        const oXScale = this.chart.getInitialScaleBounds().x;
+        if( !oXScale.min ){
+            oXScale.max = xScale.max;    
+        }
+        oXScale.min = 0;
+
+        const left = ( xScale.min - oXScale.min ) / ( oXScale.max - oXScale.min ) * 100;
+        const right = ( xScale.max - oXScale.min ) / ( oXScale.max - oXScale.min ) * 100;
+        
+        const l = left > 0 ? (left > 98 ? 98 : left) : 0;
+        const r = right < 100 ? (right < 2 ? 2 : right) : 100;
+
+        this.minimap.resizeMinimapController( l, r );
     };
 
     destroyLegend( id: string ){

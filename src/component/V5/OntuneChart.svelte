@@ -14,6 +14,8 @@
     import { EventIndicators } from "./OntuneChart/OntuneChartPlugins/EventIndicator";
     import ChartDataLels from 'chartjs-plugin-datalabels'
     import { YAxesUnit } from './OntuneChart/OntuneChartPlugins/YAxesUnit/YAxesUnit';
+    import { MiniMap } from "./OntuneChart/OntuneComponent/MiniMap/MiniMap";
+    import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/MinimapResizer";
 
 
     // global
@@ -91,6 +93,9 @@
     let chartCategoryButton: HTMLElement;
     let chartCategorySelect: HTMLSelectElement;
     let minimapCanvas: HTMLCanvasElement;
+    let minimapLeft: HTMLElement;
+    let minimapCenter: HTMLElement;
+    let minimapRight: HTMLElement;
     
     // class instance
     let ontuneChart: OntuneChart;
@@ -142,9 +147,8 @@
     });
 
     let yAxesUnitPlugin = new YAxesUnit( yAxesUnit );
+    let minimapResizer: MinimapResizer;
 
-
-    
     onMount(() => {
         isMount = true;
         // set chartjs options
@@ -261,9 +265,10 @@
                             enabled: true
                         },
                         onZoom: function(){
-                            console.log('onZoom arguments', arguments);
                             zoomContainer.style.display = 'flex';
                             zoomReset.style.display = 'block';
+
+                            ontuneChart.resizeMinimapController.bind( ontuneChart )();
                         },
                     },
                     pan: {
@@ -272,7 +277,7 @@
                         modifierKey: 'ctrl',
                         threshold: 10,
                         onPan: () => {
-                            console.log('onPan arguments', arguments);
+                            ontuneChart.resizeMinimapController.bind( ontuneChart )();
                         }
                     },
                 }
@@ -297,7 +302,7 @@
                     enabled: false
                 }
             }
-        }
+        };
 
         // plugin register
         useIndicator ? plugins.push(indicator) : null;
@@ -318,19 +323,19 @@
             plugins: plugins
         };
 
-        minimapConfig = {
-            type: chartType,
-            data: data,
-            options: minimapOptions
-        };
-
         // set global line width
         OntuneChartData.setAllDataByLineWidth( data, globalLineWidth );
 
+        
         // make ontuneChart main instance
         ontuneChart = new OntuneChart( chartCanvas, config );
         ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
-        let minimap = new OntuneChart( minimapCanvas, minimapConfig );
+        ontuneChart.makeMinimap( minimapCanvas );
+        ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
+
+        // set chart make after plugins
+        minimapResizer = new MinimapResizer( ontuneChart );
+        ontuneChart.addPlugin( minimapResizer.plugin );
 
         // make ontuneChart support instance
         ontuneChartResizeBar = new ResizeBars[ legendPosition as string ]( resizeBar );
@@ -443,13 +448,13 @@
             </div>
                 <canvas bind:this={chartCanvas} id="ontuneChart"></canvas>
                 <div class="chart_timeline">
-                    <canvas bind:this={minimapCanvas} class="chart_timeline_canvas" id="minimap" height="40"></canvas>
+                    <canvas bind:this={minimapCanvas} class="chart_timeline_canvas" id="minimapChart" height="40"></canvas>
             
-                    <div id="left" class="chart_timeline_rest_left" style="width: 0%;"></div>
-                    <div id="center" class="chart_timeline_handle" style="left: 0%; right: 0%;">
+                    <div bind:this={minimapLeft} id="left" class="chart_timeline_rest_left" style="width: 0%;"></div>
+                    <div bind:this={minimapCenter} id="center" class="chart_timeline_handle" style="left: 0%; right: 0%;">
                       <div class="chart_timeline_handle_touch_area"></div>
                     </div>
-                    <div id="right" class="chart_timeline_rest_right" style="width: 0%;"></div>
+                    <div bind:this={minimapRight} id="right" class="chart_timeline_rest_right" style="width: 0%;"></div>
                 </div>
         </div>
 

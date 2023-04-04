@@ -36,7 +36,6 @@ export class YAxesUnit {
         ctx.fillText( `(${this.unit})`, xPosition, yPosition );
 
         ctx.restore();
-
     };
 
 };
