@@ -408,16 +408,16 @@
             ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
         });
 
-        document.getElementById('test').addEventListener('click', function(){
-            showAodMaxTooltip = !showAodMaxTooltip;
-        });
+        // document.getElementById('test').addEventListener('click', function(){
+        //     showAodMaxTooltip = !showAodMaxTooltip;
+        // });
 
         isMount = true;
     });
 </script>
 
 <div class="ontune_chart_component" style="width: {componentWidth}px; height: {componentHeight}px">
-    <button id="test">showMaxValueTooltip</button>
+    <!-- <button id="test">showMaxValueTooltip</button> -->
     <!-- setting 메뉴 -->
     <div bind:this={settingContainer} class="ontune_chart_setting_container">
         <div bind:this={settingCloseButton} class="ontune_chart_setting_close_button">
