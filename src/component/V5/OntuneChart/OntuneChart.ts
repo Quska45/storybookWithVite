@@ -13,14 +13,12 @@ import {
     Filler,
     BarElement,
     BarController,
-    type LayoutPosition,
     type ChartData,
     LogarithmicScale,
     type Plugin,
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom'
 import {} from 'chartjs-adapter-moment'
-import { OntuneChartConfig } from './OntuneChartConfig';
 import type { TLengendOptions } from './OntuneChartType';
 import { OntuneLegend } from './OntuneLegend/OntuneLegend';
 import { MiniMap } from './OntuneComponent/MiniMap/MiniMap';
@@ -44,12 +42,10 @@ ChartJS.register(
 
 export class OntuneChart {
     chart: ChartJS;
-    ontuneChartConfig: OntuneChartConfig;
     ontuneLegend: OntuneLegend;
     minimap: MiniMap;
     
     constructor( canvas: HTMLCanvasElement, config: ChartConfiguration ){
-        this.ontuneChartConfig = new OntuneChartConfig( config );
         this.chart = new ChartJS( canvas, config );
         this.ontuneLegend = new OntuneLegend( this.chart.legend );
 
@@ -75,8 +71,10 @@ export class OntuneChart {
     }
 
     resizeMinimapController(){
-        const xScale = this.chart.scales[ 'x' ];
-        const oXScale = this.chart.getInitialScaleBounds().x;
+        const chart = this.chart;
+
+        const xScale = chart.scales[ 'x' ];
+        const oXScale = chart.getInitialScaleBounds().x;
         if( !oXScale.min ){
             oXScale.max = xScale.max;    
         }
@@ -97,7 +95,6 @@ export class OntuneChart {
 
     destroy(){
         this.chart.destroy();
-        this.ontuneChartConfig = null;
         this.ontuneLegend = null;
         this.chart = null;
     };
@@ -121,14 +118,13 @@ export class OntuneChart {
     };
 
     removePlugin( plugin: Plugin ){
-        console.log( 'removePlugin start' );
         const plugins = this.chart.config.plugins;
 
         let pluginIndex = plugins.findIndex(( _plugin ) => {
             return _plugin === plugin;
         });
 
-        this.removePluginByPluginIndex( pluginIndex );
+        this.removePluginByPluginIndex( pluginIndex-1 );
     };
 
     removePlugins( plugins: Plugin[] ){
@@ -137,5 +133,11 @@ export class OntuneChart {
         });
         
         this.chart.update();
+    };
+
+    static setAllDataByLineWidth( data: ChartData, lineWidth: number ){
+        data.datasets.forEach(( cur ) => {
+            cur.borderWidth = lineWidth;
+        });
     };
 };

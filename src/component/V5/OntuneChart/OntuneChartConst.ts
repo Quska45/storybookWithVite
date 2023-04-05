@@ -19,8 +19,6 @@ export const DefaultValue = {
     USE_ANIMATION: false,
     AOD_MAX_TOOLTIP_POSITION: 'last',
     SHOW_AOD_MAX_TOOLTIP: true,
-    CHART_CATEGORY: { id: 'CPU', name: 'CPU' },
-    CHART_CATEGORIES: [{ id: 'CPU', name: 'CPU' }, { id: 'Memory', name: 'Memory' }],
     SHOW_LEVEL_1_EVENT: true,
     SHOW_LEVEL_2_EVENT: true,
     SHOW_LEVEL_3_EVENT: true,

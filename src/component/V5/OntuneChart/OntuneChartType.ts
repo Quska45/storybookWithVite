@@ -17,11 +17,6 @@ export type TChartAreaInfo = {
 
 export type TAODMaxTooltipPostion = 'first' | 'middle' | 'last';
 
-export type TChartCategory = {
-    id: string,
-    name: string
-};
-
 export type TEventIndicatorPosition = 'left' | 'right';
 export interface IEventIndicator {
     id: string;
@@ -31,4 +26,14 @@ export interface IEventIndicator {
     level: number;
     lineWidth: number;
     position: TEventIndicatorPosition
+};
+
+export interface IEventDispacher {
+    id: string,
+    dispatchEvent: Function
+};
+
+export interface IEventDispacherIndexMap {
+    id: string,
+    index: number
 };
