@@ -27,13 +27,3 @@ export interface IEventIndicator {
     lineWidth: number;
     position: TEventIndicatorPosition
 };
-
-export interface IEventDispacher {
-    id: string,
-    dispatchEvent: Function
-};
-
-export interface IEventDispacherIndexMap {
-    id: string,
-    index: number
-};
