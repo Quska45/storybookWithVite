@@ -6,7 +6,6 @@ export const MaxValueTooltip: Plugin & { aodMaxTooltipPosition } = {
     aodMaxTooltipPosition: null, // 차트 컴포넌트에서 받아오는 값. 어느 위치에 있는 툴팁이 보여 질지에 대한 값.
     id: 'maxValueTooltip',
     afterRender( chart, args, options ) {
-        console.log('sdflghkj');
         const { ctx, chartArea: { left, right, top, bottom }, scales: { x, y } } = chart;
         
         let xScale = chart.scales['x']; // x축 스케일링 객체
