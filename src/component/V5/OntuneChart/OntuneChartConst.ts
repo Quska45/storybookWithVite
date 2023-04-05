@@ -44,7 +44,7 @@ export const DefaultValue = {
     LINE_TENSION: 0,
     Y_AXES_UNIT: "%",
     SHOW_Y_AXES_UNIT: true,
-    SHOW_DATA_VALUE_TOOLTIP: true,
+    SHOW_DATA_VALUE_TOOLTIP: false,
     unicodeBoldNumber: {
         0: '\u{1D7EC}',
         1: '\u{1D7ED}',

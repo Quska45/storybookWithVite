@@ -134,12 +134,19 @@
     $: if( isMount && !showCrossHair ){
         ontuneChart.removePlugin( CrossHairLabel );
     };
-    // showCrossHair
+    // showAodMaxTooltip
     $: if( isMount && showAodMaxTooltip ){
         ontuneChart.addPlugin( MaxValueTooltip );
     };
     $: if( isMount && !showAodMaxTooltip ){
         ontuneChart.removePlugin( MaxValueTooltip );
+    };
+    // showDataValueTooltip
+    $: if( isMount && showDataValueTooltip ){
+        ontuneChart.addPlugin( ChartDataLels );
+    };
+    $: if( isMount && !showDataValueTooltip ){
+        ontuneChart.removePlugin( ChartDataLels );
     };
 
     // plugins
@@ -321,15 +328,10 @@
             }
         };
 
-        // plugin register
-        // useIndicator ? plugins.push(indicator) : null;
-        // showCrossHair ? plugins.push(crossHairLabel) : null;
         MaxValueTooltip.aodMaxTooltipPosition = aodMaxTooltipPosition;
-        // showAodMaxTooltip ? plugins.push(maxValueTooltip) : null;
         eventIndicators.forEach(( eventIndicator ) => {
             eventIndicator.isShow ? plugins.push( eventIndicator.plugin ) : null;
         });
-        showDataValueTooltip ? plugins.push( ChartDataLels ) : null;
 
         // set chartjs config
         config = {
