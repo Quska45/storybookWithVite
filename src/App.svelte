@@ -1,5 +1,7 @@
 <script lang="ts">
   import svelteLogo from './assets/svelte.svg'
+    import OntuneChart from './component/V5/OntuneChart.svelte';
+    import { TestDataMaker } from './component/V5/OntuneChart/OntuneChartConst';
   import Counter from './lib/Counter.svelte'
 </script>
 
@@ -16,6 +18,10 @@
 
   <div class="card">
     <Counter />
+    <OntuneChart
+      labels={TestDataMaker.getTerm()}
+      datasets={TestDataMaker.getHost(1,2)}
+    ></OntuneChart>
   </div>
 
   <p>

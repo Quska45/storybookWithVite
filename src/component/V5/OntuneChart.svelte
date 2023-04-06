@@ -16,6 +16,9 @@
     import { MiniMap } from "./OntuneChart/OntuneComponent/MiniMap/MiniMap";
     import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/MinimapResizer";
     import { CanvasLegendMargin } from "./OntuneChart/OntuneChartPlugins/CanvasLegendMargin";
+    import OnTuneGrid from "./onTuneGrid/OnTuneGrid.svelte";
+    import { getOntuneGridData, getOntuneGridOptions } from "./OntuneGridOptionMaker.svelte";
+    import "flowbite/dist/flowbite.css";
 
     // global
     let isMount = false;
@@ -131,7 +134,6 @@
     // showAodMaxTooltip
     $: if( isMount && showAodMaxTooltip ){
         ontuneChart.addPlugin( MaxValueTooltip );
-        console.log(123);
     };
     $: if( isMount && !showAodMaxTooltip ){
         ontuneChart.removePlugin( MaxValueTooltip );
@@ -168,6 +170,9 @@
 
     let yAxesUnitPlugin = new YAxesUnit( yAxesUnit );
     let minimapResizer: MinimapResizer;
+
+
+    let legendGridOptions;
 
     onMount(() => {
         // set chartjs options
@@ -345,9 +350,12 @@
         
         // make ontuneChart main instance
         ontuneChart = new OntuneChart( chartCanvas, config );
-        ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
+        let legendItems = ontuneChart.getLegendItems();
+        let legendData = getOntuneGridData( legendItems, ontuneChart.chart );
+        legendGridOptions = getOntuneGridOptions( legendData );
+        // ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
         ontuneChart.makeMinimap( minimapCanvas );
-        ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
+        // ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
 
         // set chart make after plugins
         minimapResizer = new MinimapResizer( ontuneChart );
@@ -442,6 +450,12 @@
         <!-- 레전드 영역 -->
         <div bind:this={legendConatiner} id="ontune_chart_legend_container" class="ontune_chart_legend_container" style="{LegendContainerStyle}">
             <div></div>
+            {#if legendGridOptions}
+                <OnTuneGrid
+                    options={ legendGridOptions }
+                    w={Number(legendConatiner.style.width)}
+                ></OnTuneGrid>
+            {/if}
             <!-- <div bind:this={serieseResizer} class="ontune_chart_seriese_resizer"></div> -->
         </div>
     </div>
@@ -591,7 +605,4 @@
     .chart_timeline_rest_right {
         right: 0;
     }
-
-
-
 </style>

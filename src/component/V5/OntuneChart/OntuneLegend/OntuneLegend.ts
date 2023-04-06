@@ -14,6 +14,7 @@ export class OntuneLegend {
     };
 
     make( chart: Chart, containerId: string, legendOptions: TLengendOptions ){
+
         if( !legendOptions.showLegend ){
             return;
         };

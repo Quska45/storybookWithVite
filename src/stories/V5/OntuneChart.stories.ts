@@ -260,7 +260,7 @@ Primary.args = {
   chartType : 'line',
   showLegend : true,
   legendPosition : 'right',
-  showCanvasLegend : true,
+  showCanvasLegend : false,
   canvasLegendPosition : 'right',
   leftYAxesMin : 0,
   leftYAxesMax : 10000,

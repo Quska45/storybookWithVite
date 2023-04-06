@@ -69,6 +69,7 @@
     "svelte-jester": "^2.3.2",
     "svelte-loader": "^3.1.4",
     "svelte-preprocess": "^4.10.7",
+    "tabulator-tables": "^5.4.4",
     "tailwindcss": "^3.1.5",
     "ts-jest": "^29.0.3",
     "tslib": "^2.4.1",

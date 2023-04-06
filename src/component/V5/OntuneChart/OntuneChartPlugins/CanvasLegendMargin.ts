@@ -18,7 +18,6 @@ export class CanvasLegendMargin {
 
     beforeRender( chart: Chart, legend, options ){
         const { ctx, chartArea: { left, right, top, bottom }, legend: { position } } = chart;
-        console.log('position', position);
         if( position === 'right' ){
             chart.legend.left = right + 30;
         } else if( position === 'top' ){

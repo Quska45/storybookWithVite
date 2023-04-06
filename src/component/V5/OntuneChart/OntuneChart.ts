@@ -57,6 +57,10 @@ export class OntuneChart {
         this.ontuneLegend.make( this.chart, id, legendOptions );
     };
 
+    makeOntuneGridLegendOptions( id: string, legendOptions: TLengendOptions ){
+        this.ontuneLegend.make( this.chart, id, legendOptions );
+    };
+
     resetZoom(){
         this.chart.resetZoom();
     };
@@ -87,7 +91,14 @@ export class OntuneChart {
         const l = left > 0 ? (left > 98 ? 98 : left) : 0;
         const r = right < 100 ? (right < 2 ? 2 : right) : 100;
 
+        if( !this.minimap ){
+            return;
+        };
         this.minimap.resizeMinimapController( l, r );
+    };
+
+    getLegendItems(){
+        return this.chart.options.plugins.legend.labels.generateLabels( this.chart );
     };
 
     destroyLegend( id: string ){
