@@ -15,6 +15,7 @@
     import { YAxesUnit } from './OntuneChart/OntuneChartPlugins/YAxesUnit/YAxesUnit';
     import { MiniMap } from "./OntuneChart/OntuneComponent/MiniMap/MiniMap";
     import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/MinimapResizer";
+    import { CanvasLegendMargin } from "./OntuneChart/OntuneChartPlugins/CanvasLegendMargin";
 
     // global
     let isMount = false;
@@ -25,6 +26,8 @@
     export let chartType: keyof ChartTypeRegistry = DefaultValue.CHART_TYPE as keyof ChartTypeRegistry;
     export let showLegend: boolean = DefaultValue.SHOW_LEGEND;
     export let legendPosition: LayoutPosition = DefaultValue.LEGEND_POSITION as LayoutPosition;
+    export let showCanvasLegend: boolean = DefaultValue.SHOW_CANVAS_LEGEND;
+    export let canvasLegendPosition: LayoutPosition = DefaultValue.CANVAS_LEGEND_POSITION as LayoutPosition;
     export let leftYAxesMin: number = DefaultValue.LEFT_Y_AXES_MIN;
     export let leftYAxesMax: number = DefaultValue.LEFT_Y_AXES_MAX;
     export let rightYAxesMin: number = DefaultValue.RIGHT_Y_AXES_MIN;
@@ -176,7 +179,7 @@
                     top: 30,
                     right: 30,
                     bottom: 40,
-                }
+                },
             },
             // interaction: {
             //     mode: 'dataset',
@@ -233,7 +236,9 @@
             animation: useAnimation as false,
             plugins: {
                 legend: {
-                    display: false // 기본 레전드는 무조건 hide
+                    display: showCanvasLegend,
+                    position: canvasLegendPosition,
+                    align: 'start',
                 },
                 tooltip: {
                     // callbacks: {
@@ -324,6 +329,8 @@
         eventIndicators.forEach(( eventIndicator ) => {
             eventIndicator.isShow ? plugins.push( eventIndicator.plugin ) : null;
         });
+        let test = new CanvasLegendMargin();
+        plugins.push( test.plugin );
 
         // set chartjs config
         config = {

@@ -32,6 +32,16 @@ export default {
       options: [ 'top', 'right', 'bottom', 'left' ],
       description: '레전드의 컴포넌트 내에서 위치',
     },
+    showCanvasLegend: {
+      control: { type: 'select' },
+      options: [ true, false ],
+      description: 'canvas 레전드 show / hide 여부',
+    },
+    canvasLegendPosition: {
+      control: { type: 'select' },
+      options: [ 'top', 'right', 'bottom', 'left' ],
+      description: 'canvas 레전드의 컴포넌트 내에서 위치',
+    },
     leftYAxesMin: {
       control: { type: 'select' },
       options: [ 0, 50, 100 ],
@@ -250,6 +260,8 @@ Primary.args = {
   chartType : 'line',
   showLegend : true,
   legendPosition : 'right',
+  showCanvasLegend : true,
+  canvasLegendPosition : 'right',
   leftYAxesMin : 0,
   leftYAxesMax : 10000,
   rightYAxesMin : 0,

@@ -7,6 +7,8 @@ export const DefaultValue = {
     CHART_TYPE: 'line',
     LEGEND_POSITION: 'right',
     SHOW_LEGEND: true,
+    CANVAS_LEGEND_POSITION: 'right',
+    SHOW_CANVAS_LEGEND: false,
     SHOW_LEGEND_VALUE: true,
     LEFT_Y_AXES_MIN: 0,
     LEFT_Y_AXES_MAX: 100,

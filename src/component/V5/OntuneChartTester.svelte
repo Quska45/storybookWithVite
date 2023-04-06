@@ -9,12 +9,27 @@
     });
 </script>
 
-<div>
+<div id="container" class="tester">
+    <div id="titleContainer" class="tester">
+        <div id="title"></div>
+    </div>
     <OntuneChart
         labels = {labels}
         datasets = {datasets}
+        componentWidth = {700}
+        componentHeight = {400}
     ></OntuneChart>
 </div>
 
 <style>
+    .tester {
+        border: 1px solid black;
+    }
+    #container {
+        width: 800px;
+        height: 550px;
+    }
+    #titleContainer {
+        height: 50px;
+    }
  </style>

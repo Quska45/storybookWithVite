@@ -22,6 +22,7 @@ import {} from 'chartjs-adapter-moment'
 import type { TLengendOptions } from './OntuneChartType';
 import { OntuneLegend } from './OntuneLegend/OntuneLegend';
 import { MiniMap } from './OntuneComponent/MiniMap/MiniMap';
+import { Chart } from 'svelte-chartjs';
 
 ChartJS.register(
     Title,
