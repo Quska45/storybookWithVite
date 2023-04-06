@@ -2,22 +2,34 @@
     import { onMount } from "svelte";
     import OntuneChart from "./OntuneChart.svelte";
     import { TestDataMaker } from "./OntuneChart/OntuneChartConst";
-    import type { TChartCategory } from "./OntuneChart/OntuneChartType";
 
-    const chartCatetories: TChartCategory[] = [ { id: 'CPU', name: 'CPU' }, { id: 'Memory', name: 'Memory' } ];
     const labels = TestDataMaker.getTerm();
     const datasets = TestDataMaker.getHost( 1, 0 );
     onMount(() => {
     });
 </script>
 
-<div>
+<div id="container" class="tester">
+    <div id="titleContainer" class="tester">
+        <div id="title"></div>
+    </div>
     <OntuneChart
-        chartCatetories = {chartCatetories}
         labels = {labels}
         datasets = {datasets}
+        componentWidth = {700}
+        componentHeight = {400}
     ></OntuneChart>
 </div>
 
 <style>
+    .tester {
+        border: 1px solid black;
+    }
+    #container {
+        width: 800px;
+        height: 550px;
+    }
+    #titleContainer {
+        height: 50px;
+    }
  </style>

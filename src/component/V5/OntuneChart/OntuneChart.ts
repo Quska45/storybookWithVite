@@ -13,17 +13,16 @@ import {
     Filler,
     BarElement,
     BarController,
-    type LayoutPosition,
     type ChartData,
     LogarithmicScale,
     type Plugin,
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom'
 import {} from 'chartjs-adapter-moment'
-import { OntuneChartConfig } from './OntuneChartConfig';
 import type { TLengendOptions } from './OntuneChartType';
 import { OntuneLegend } from './OntuneLegend/OntuneLegend';
 import { MiniMap } from './OntuneComponent/MiniMap/MiniMap';
+import { Chart } from 'svelte-chartjs';
 
 ChartJS.register(
     Title,
@@ -44,12 +43,10 @@ ChartJS.register(
 
 export class OntuneChart {
     chart: ChartJS;
-    ontuneChartConfig: OntuneChartConfig;
     ontuneLegend: OntuneLegend;
     minimap: MiniMap;
     
     constructor( canvas: HTMLCanvasElement, config: ChartConfiguration ){
-        this.ontuneChartConfig = new OntuneChartConfig( config );
         this.chart = new ChartJS( canvas, config );
         this.ontuneLegend = new OntuneLegend( this.chart.legend );
 
@@ -57,6 +54,10 @@ export class OntuneChart {
     };
 
     makeLegend( id: string, legendOptions: TLengendOptions ){
+        this.ontuneLegend.make( this.chart, id, legendOptions );
+    };
+
+    makeOntuneGridLegendOptions( id: string, legendOptions: TLengendOptions ){
         this.ontuneLegend.make( this.chart, id, legendOptions );
     };
 
@@ -75,8 +76,10 @@ export class OntuneChart {
     }
 
     resizeMinimapController(){
-        const xScale = this.chart.scales[ 'x' ];
-        const oXScale = this.chart.getInitialScaleBounds().x;
+        const chart = this.chart;
+
+        const xScale = chart.scales[ 'x' ];
+        const oXScale = chart.getInitialScaleBounds().x;
         if( !oXScale.min ){
             oXScale.max = xScale.max;    
         }
@@ -88,7 +91,14 @@ export class OntuneChart {
         const l = left > 0 ? (left > 98 ? 98 : left) : 0;
         const r = right < 100 ? (right < 2 ? 2 : right) : 100;
 
+        if( !this.minimap ){
+            return;
+        };
         this.minimap.resizeMinimapController( l, r );
+    };
+
+    getLegendItems(){
+        return this.chart.options.plugins.legend.labels.generateLabels( this.chart );
     };
 
     destroyLegend( id: string ){
@@ -97,7 +107,6 @@ export class OntuneChart {
 
     destroy(){
         this.chart.destroy();
-        this.ontuneChartConfig = null;
         this.ontuneLegend = null;
         this.chart = null;
     };
@@ -121,14 +130,13 @@ export class OntuneChart {
     };
 
     removePlugin( plugin: Plugin ){
-        console.log( 'removePlugin start' );
         const plugins = this.chart.config.plugins;
 
         let pluginIndex = plugins.findIndex(( _plugin ) => {
             return _plugin === plugin;
         });
 
-        this.removePluginByPluginIndex( pluginIndex );
+        this.removePluginByPluginIndex( pluginIndex-1 );
     };
 
     removePlugins( plugins: Plugin[] ){
@@ -137,5 +145,11 @@ export class OntuneChart {
         });
         
         this.chart.update();
+    };
+
+    static setAllDataByLineWidth( data: ChartData, lineWidth: number ){
+        data.datasets.forEach(( cur ) => {
+            cur.borderWidth = lineWidth;
+        });
     };
 };

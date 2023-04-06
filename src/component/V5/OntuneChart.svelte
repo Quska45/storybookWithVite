@@ -3,10 +3,9 @@
     import { onMount } from "svelte";
     import { OntuneChart } from "./OntuneChart/OntuneChart";
     import { DefaultValue, Style, TestDataMaker } from "./OntuneChart/OntuneChartConst";
-    import type { IEventIndicator, TAODMaxTooltipPostion, TChartCategory, TEventIndicatorPosition, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
+    import type { IEventIndicator, TAODMaxTooltipPostion, TEventIndicatorPosition, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
     import { CrossHairLabel } from "./OntuneChart/OntuneChartPlugins/CrossHairLabel";
     import { Indicator } from "./OntuneChart/OntuneChartPlugins/Indicator";
-    import { OntuneChartData } from "./OntuneChart/OntuneChartData";
     import { MaxValueTooltip } from "./OntuneChart/OntuneChartPlugins/AodMaxValueTooltip/AodMaxValueTooltip";
     import { ResizeBars } from "./OntuneChart/OntuneComponent/ResizeBar";
     import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
@@ -16,6 +15,10 @@
     import { YAxesUnit } from './OntuneChart/OntuneChartPlugins/YAxesUnit/YAxesUnit';
     import { MiniMap } from "./OntuneChart/OntuneComponent/MiniMap/MiniMap";
     import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/MinimapResizer";
+    import { CanvasLegendMargin } from "./OntuneChart/OntuneChartPlugins/CanvasLegendMargin";
+    import OnTuneGrid from "./onTuneGrid/OnTuneGrid.svelte";
+    import { getOntuneGridData, getOntuneGridOptions } from "./OntuneGridOptionMaker.svelte";
+    import "flowbite/dist/flowbite.css";
 
     // global
     let isMount = false;
@@ -26,6 +29,8 @@
     export let chartType: keyof ChartTypeRegistry = DefaultValue.CHART_TYPE as keyof ChartTypeRegistry;
     export let showLegend: boolean = DefaultValue.SHOW_LEGEND;
     export let legendPosition: LayoutPosition = DefaultValue.LEGEND_POSITION as LayoutPosition;
+    export let showCanvasLegend: boolean = DefaultValue.SHOW_CANVAS_LEGEND;
+    export let canvasLegendPosition: LayoutPosition = DefaultValue.CANVAS_LEGEND_POSITION as LayoutPosition;
     export let leftYAxesMin: number = DefaultValue.LEFT_Y_AXES_MIN;
     export let leftYAxesMax: number = DefaultValue.LEFT_Y_AXES_MAX;
     export let rightYAxesMin: number = DefaultValue.RIGHT_Y_AXES_MIN;
@@ -62,8 +67,6 @@
     export let showYAxesUnit: boolean = DefaultValue.SHOW_Y_AXES_UNIT;
     export let lineTension: number = DefaultValue.LINE_TENSION;
     export let showDataValueTooltip: boolean = DefaultValue.SHOW_DATA_VALUE_TOOLTIP;
-    export let chartCategory: TChartCategory = DefaultValue.CHART_CATEGORY as TChartCategory;
-    export let chartCatetories: TChartCategory[];
     export let labels: unknown[] = [];
     export let datasets: ChartDataset[] = [];
 
@@ -82,15 +85,9 @@
     let chartContainer: HTMLElement;
     let chartBody: HTMLElement;
     let legendConatiner: HTMLElement;
-    let settingButton: HTMLDivElement;
-    let settingContainer: HTMLDivElement;
-    let settingCloseButton: HTMLElement;
     let zoomContainer: HTMLElement;
     let zoomReset: HTMLElement;
     let resizeBar: HTMLElement;
-    let chartCategoryInput: HTMLInputElement;
-    let chartCategoryButton: HTMLElement;
-    let chartCategorySelect: HTMLSelectElement;
     let minimapCanvas: HTMLCanvasElement;
     let minimapLeft: HTMLElement;
     let minimapCenter: HTMLElement;
@@ -174,6 +171,9 @@
     let yAxesUnitPlugin = new YAxesUnit( yAxesUnit );
     let minimapResizer: MinimapResizer;
 
+
+    let legendGridOptions;
+
     onMount(() => {
         // set chartjs options
         options = {
@@ -184,7 +184,7 @@
                     top: 30,
                     right: 30,
                     bottom: 40,
-                }
+                },
             },
             // interaction: {
             //     mode: 'dataset',
@@ -241,7 +241,9 @@
             animation: useAnimation as false,
             plugins: {
                 legend: {
-                    display: false // 기본 레전드는 무조건 hide
+                    display: showCanvasLegend,
+                    position: canvasLegendPosition,
+                    align: 'start',
                 },
                 tooltip: {
                     // callbacks: {
@@ -332,6 +334,8 @@
         eventIndicators.forEach(( eventIndicator ) => {
             eventIndicator.isShow ? plugins.push( eventIndicator.plugin ) : null;
         });
+        let test = new CanvasLegendMargin();
+        plugins.push( test.plugin );
 
         // set chartjs config
         config = {
@@ -342,14 +346,16 @@
         };
 
         // set global line width
-        OntuneChartData.setAllDataByLineWidth( data, globalLineWidth );
-
+        OntuneChart.setAllDataByLineWidth( data, globalLineWidth );
         
         // make ontuneChart main instance
         ontuneChart = new OntuneChart( chartCanvas, config );
-        ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
+        let legendItems = ontuneChart.getLegendItems();
+        let legendData = getOntuneGridData( legendItems, ontuneChart.chart );
+        legendGridOptions = getOntuneGridOptions( legendData );
+        // ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
         ontuneChart.makeMinimap( minimapCanvas );
-        ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
+        // ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
 
         // set chart make after plugins
         minimapResizer = new MinimapResizer( ontuneChart );
@@ -362,16 +368,6 @@
         /**
          * component event binding
         */
-        // setting
-        settingButton.addEventListener('click', ( event: MouseEvent ) => {
-            blocker.style.display = 'block';
-            settingContainer.style.display = 'block';
-        });
-        settingCloseButton.addEventListener('click', ( event: MouseEvent ) => {
-            blocker.style.display = 'none';
-            settingContainer.style.display = 'none';
-        });
-
         // zoom
         zoomReset.addEventListener('click', ( event: MouseEvent ) => {
             ontuneChart.resetZoom();
@@ -381,34 +377,34 @@
         // resize
         resizeBar.addEventListener('mousedown', ontuneChartResizeBar.mouseDownHandler.bind( ontuneChartResizeBar ) );
 
-        // chart category input button
-        chartCategoryInput.value = chartCategorySelect.value;
-        chartCategoryInput.dataset.id = chartCategorySelect.value;
-        chartCategoryButton.addEventListener('click', () => {
-            let categoryId = chartCategoryInput.dataset.id;
-            let newCategoryName = chartCategoryInput.value;
-            let categoryIndex = chartCatetories.findIndex(( category ) => {
-                return category.id == categoryId;
-            });
+        // // chart category input button
+        // chartCategoryInput.value = chartCategorySelect.value;
+        // chartCategoryInput.dataset.id = chartCategorySelect.value;
+        // chartCategoryButton.addEventListener('click', () => {
+        //     let categoryId = chartCategoryInput.dataset.id;
+        //     let newCategoryName = chartCategoryInput.value;
+        //     let categoryIndex = chartCatetories.findIndex(( category ) => {
+        //         return category.id == categoryId;
+        //     });
 
-            chartCatetories[ categoryIndex ].name = newCategoryName;
-        });
+        //     chartCatetories[ categoryIndex ].name = newCategoryName;
+        // });
 
-        // chart category selectbox
-        chartCategorySelect.addEventListener('change', () => {
-            chartCategoryInput.value = chartCategorySelect.options[chartCategorySelect.selectedIndex].text;
-            chartCategoryInput.dataset.id = chartCategorySelect.value;
-            ontuneChart.destroyLegend( 'ontune_chart_legend_container' );
-            ontuneChart.destroy();
+        // // chart category selectbox
+        // chartCategorySelect.addEventListener('change', () => {
+        //     chartCategoryInput.value = chartCategorySelect.options[chartCategorySelect.selectedIndex].text;
+        //     chartCategoryInput.dataset.id = chartCategorySelect.value;
+        //     ontuneChart.destroyLegend( 'ontune_chart_legend_container' );
+        //     ontuneChart.destroy();
             
-            const labels = TestDataMaker.getTerm();
-            const hosts = TestDataMaker.getHost( globalLineWidth, lineTension );
-            config.data.labels = labels;
-            config.data.datasets = hosts;
+        //     const labels = TestDataMaker.getTerm();
+        //     const hosts = TestDataMaker.getHost( globalLineWidth, lineTension );
+        //     config.data.labels = labels;
+        //     config.data.datasets = hosts;
 
-            ontuneChart = new OntuneChart( chartCanvas, config );
-            ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
-        });
+        //     ontuneChart = new OntuneChart( chartCanvas, config );
+        //     ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
+        // });
 
         // document.getElementById('test').addEventListener('click', function(){
         //     showAodMaxTooltip = !showAodMaxTooltip;
@@ -416,43 +412,14 @@
 
         isMount = true;
     });
+
+
 </script>
 
 <div class="ontune_chart_component" style="width: {componentWidth}px; height: {componentHeight}px">
     <!-- <button id="test">showMaxValueTooltip</button> -->
-    <!-- setting 메뉴 -->
-    <div bind:this={settingContainer} class="ontune_chart_setting_container">
-        <div bind:this={settingCloseButton} class="ontune_chart_setting_close_button">
-            x &nbsp;
-        </div>
-        화면 하단 패널에 Controls 탭에서 옵션 변경 가능.
-        설정 패널의 구현은 컴포넌트 구조를 고민해보고 개발 예정.
-    </div>
-
     <!-- blocker -->
     <div bind:this={blocker} class="ontune_chart_block"></div>
-
-    <!-- title 영역 -->
-    <div class="ontune_chart_title_container">
-        <div class="ontune_chart_title">
-
-            타이틀 : 
-            <input bind:this={chartCategoryInput} class="ontune_chart_category_input" type="text">
-            <button bind:this={chartCategoryButton} class="ontune_chart_category_button">변경</button>
-            <select bind:this={chartCategorySelect} name="ontune_chart_category_select" class="ontune_chart_category_select">
-                {#each chartCatetories as category}
-                    {#if category.id == chartCategory.id}
-                        <option value="{category.id}" selected>{category.name}</option>
-                    {:else}
-                    <option value="{category.id}">{category.name}</option>
-                    {/if}
-                {/each}
-            </select>
-        </div>
-        <div bind:this={settingButton} class="ontune_chart_config">
-            설정
-        </div>
-    </div>
 
     <!-- 차트 영역 -->
     <div bind:this={chartContainer} class="ontune_chart_container" style="{ChartContainerStyle}">
@@ -483,6 +450,12 @@
         <!-- 레전드 영역 -->
         <div bind:this={legendConatiner} id="ontune_chart_legend_container" class="ontune_chart_legend_container" style="{LegendContainerStyle}">
             <div></div>
+            {#if legendGridOptions}
+                <OnTuneGrid
+                    options={ legendGridOptions }
+                    w={Number(legendConatiner.style.width)}
+                ></OnTuneGrid>
+            {/if}
             <!-- <div bind:this={serieseResizer} class="ontune_chart_seriese_resizer"></div> -->
         </div>
     </div>
@@ -516,73 +489,19 @@
         display: none;
         z-index: 5;
     }
-    
-    .ontune_chart_title_container {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        height: 50px;
-    }
 
     .ontune_chart_body {
         position: relative;
     }
     
-    .ontune_chart_title {
-        width: 270px;
-        height: 30px;
-        margin-left: 10px;
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .ontune_chart_category_input {
-        width: 50px;
-        /* display: inline-block; */
-    }
-    
-    .ontune_chart_category_select {
-        width: 100px;
-    }
-
-    .ontune_chart_category_button {
-        width: 50px;
-        height: 30px;
-    }
-    
-    .ontune_chart_config {
-        width: 50px;
-        height: 30px;
-        margin-right: 10px;
-        cursor: pointer;
-    }
-    
     .ontune_chart_container {
         display: flex;
         width: 100%;
-        height: calc(100% - 50px);
+        height: 100%;
     }
     
     .ontune_chart_legend_container {
         position: relative;
-    }
-
-    .ontune_chart_setting_container {
-        position: absolute;
-        width: 20%;
-        height: 100%;
-        background-color: aqua;
-        right: 0;
-        display: none;
-        z-index: 10;
-    }
-
-    .ontune_chart_setting_close_button {
-        text-align: end;
-        cursor: pointer;
-        height: 20px;
     }
     
     .ontune_chart_resize_bar {
@@ -619,9 +538,6 @@
     .ontune_chart_zoom_reset {
         display: none;
     }
-
-
-
 
     .chart_timeline {
         position: relative;
@@ -689,7 +605,4 @@
     .chart_timeline_rest_right {
         right: 0;
     }
-
-
-
 </style>
