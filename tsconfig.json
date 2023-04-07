@@ -14,6 +14,7 @@
      */
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
     "baseUrl": "/",
     "isolatedModules": true
   },
