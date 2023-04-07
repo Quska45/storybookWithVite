@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
+    "moduleResolution": "node",
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -13,33 +14,8 @@
      */
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
     "isolatedModules": true
   },
-  "include": [
-    "*.d.ts",
-    "src/**/*.d.ts",
-    "src/**/*.js",
-    "src/**/*.ts",
-    "src/**/*.svelte",
-    "src/**/*.d.ts",
-    "src/*.d.ts",
-    "src/**/**/**/*.ts"
-  ],
-  "exclude": [
-    ".routify/*",
-    "node_modules/*",
-    "dist/*",
-    ".svelte/*",
-    ".svelte-kit/*",
-    "build/*",
-    "coverage/*",
-    ".vercel_build_output/*",
-    "functions/*",
-    "static/*",
-    "scripts/*",
-    "storybook-static/*",
-    "vite.config.ts"
-  ],
+  "include": ["src/**/*.d.ts", "src/**/*.ts", "**/*.spec.ts", "src/**/*.js", "src/**/*.svelte"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
