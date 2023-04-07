@@ -22,7 +22,6 @@ import {} from 'chartjs-adapter-moment'
 import type { TLengendOptions } from './OntuneChartType';
 import { OntuneLegend } from './OntuneLegend/OntuneLegend';
 import { MiniMap } from './OntuneComponent/MiniMap/MiniMap';
-import { Chart } from 'svelte-chartjs';
 
 ChartJS.register(
     Title,
@@ -125,6 +124,10 @@ export class OntuneChart {
     };
 
     removePluginByPluginIndex( index: number ){
+        if( index < 0 ){
+            return;
+        };
+
         this.chart.config.plugins.splice( index, 1 );
         this.chart.update();
     };
@@ -136,7 +139,7 @@ export class OntuneChart {
             return _plugin === plugin;
         });
 
-        this.removePluginByPluginIndex( pluginIndex-1 );
+        this.removePluginByPluginIndex( pluginIndex );
     };
 
     removePlugins( plugins: Plugin[] ){

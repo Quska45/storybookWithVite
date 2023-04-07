@@ -4,12 +4,12 @@
     import { OntuneChart } from "./OntuneChart/OntuneChart";
     import { DefaultValue, Style, TestDataMaker } from "./OntuneChart/OntuneChartConst";
     import type { IEventIndicator, TAODMaxTooltipPostion, TEventIndicatorPosition, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
-    import { CrossHairLabel } from "./OntuneChart/OntuneChartPlugins/CrossHairLabel1";
+    import { CrossHairLabel } from "./OntuneChart/OntuneChartPlugins/CrossHairLabel"
     import { Indicator } from "./OntuneChart/OntuneChartPlugins/Indicator";
     import { MaxValueTooltip } from "./OntuneChart/OntuneChartPlugins/AodMaxValueTooltip/AodMaxValueTooltip";
     import { ResizeBars } from "./OntuneChart/OntuneComponent/ResizeBar";
     import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
-    import type { EventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/EventIndicator1";
+    import type { EventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/EventIndicator";
     import { EventIndicators } from "./OntuneChart/OntuneChartPlugins/EventIndicator";
     import ChartDataLels from 'chartjs-plugin-datalabels'
     import { YAxesUnit } from './OntuneChart/OntuneChartPlugins/YAxesUnit/YAxesUnit';
@@ -17,8 +17,8 @@
     import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/MinimapResizer";
     import { CanvasLegendMargin } from "./OntuneChart/OntuneChartPlugins/CanvasLegendMargin";
     import OnTuneGrid from "./onTuneGrid/OnTuneGrid.svelte";
-    import { getOntuneGridData, getOntuneGridOptions } from "./OntuneGridOptionMaker.svelte";
-    import "flowbite/dist/flowbite.css";
+    import { getOntuneGridData, getOntuneGridOptions, setOntuneChart } from "./OntuneGridOptionMaker.svelte";
+    import "tailwindcss/tailwind.css";
 
     // global
     let isMount = false;
@@ -351,11 +351,12 @@
         // make ontuneChart main instance
         ontuneChart = new OntuneChart( chartCanvas, config );
         let legendItems = ontuneChart.getLegendItems();
+        setOntuneChart( ontuneChart );
         let legendData = getOntuneGridData( legendItems, ontuneChart.chart );
-        legendGridOptions = getOntuneGridOptions( legendData );
+        legendGridOptions = getOntuneGridOptions( legendData, legendConatiner.style.height );
         // ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
         ontuneChart.makeMinimap( minimapCanvas );
-        // ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
+        ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
 
         // set chart make after plugins
         minimapResizer = new MinimapResizer( ontuneChart );

@@ -10,6 +10,9 @@
     import { v4 as uuid } from 'uuid';
     import type { Chart, LegendItem } from 'chart.js';
     import { OntuneChartColorUtil } from './OntuneChart/OntuneChartUtils';
+    import type { OntuneChart } from './OntuneChart/OntuneChart';
+
+    let ontuneChart: OntuneChart;
 
     function renderMyComponent(
         cell: CellComponent,
@@ -18,11 +21,10 @@
     ) {
         const wrapper = document.createElement('div');
         const cellData = cell.getData() as { [key: string]: any };
-        console.log('cellData', cellData);
         const app = new UiColorInput({
             target: wrapper,
             props: {
-                data: '',
+                data: cellData.name,
                 color: cellData.color,
                 id: cellData.id,
             },
@@ -33,7 +35,6 @@
         });
         return wrapper.innerHTML;
     }
-    let dataTmp;
 
     let columns: ColumnDefinition[] = [
         {
@@ -49,12 +50,18 @@
             },
         },
         {
-            title: '',
+            title: 'Name',
             formatter: renderMyComponent,
             width: 100,
             hozAlign: 'center',
-
-            cellClick: function (e: UIEvent, cell: CellComponent) {
+            cellMouseOver: ( e: UIEvent, cell: CellComponent )=>{
+                console.log('mouseover');
+            },
+            cellMouseLeave: ( e: UIEvent, cell: CellComponent ) => {
+                console.log('mouseleave');
+            },
+            cellClick: function ( e: UIEvent, cell: CellComponent ) {
+                console.log(cell.getData());
                 e.target?.addEventListener('input', () => {
                     if (
                         e.target &&
@@ -66,16 +73,14 @@
                         labelEl.style.background = (
                             e.target as UIEvent['target'] & { value: string }
                         ).value;
-                        console.log(dataTmp[0])
-                        console.log(cell.getData())
 
-                console.log(dataTmp[0]===cell.getData())
-
+                        // const itemData = ontuneChart.chart.data.datasets[  ]
                     }
                 });
             },
+
+            
         },
-        { title: 'Name', field: 'name', width: 150 },
         {
             title: 'Value',
             field: 'value',
@@ -84,6 +89,10 @@
 
     ];
     type ColumsType = typeof columns;
+
+    export let setOntuneChart = ( _ontuneChart: OntuneChart ) => {
+        ontuneChart = _ontuneChart;
+    };
 
     export let getOntuneGridData = ( legendItems: LegendItem[], chart: Chart ) => {
         const ontuneGridData = legendItems.reduce(( acc, cur ) => {
@@ -99,11 +108,9 @@
         return ontuneGridData;
     };
 
-    export let getOntuneGridOptions = ( gridData ) => {
-        dataTmp=gridData
-        console.log('gridData', gridData);
+    export let getOntuneGridOptions = ( gridData, height ) => {
         return {
-            height: 400,
+            height: height,
             rowHeight: 40,
             data: gridData, //load row data from array
             layout: 'fitColumns', //fit columns to width of table
