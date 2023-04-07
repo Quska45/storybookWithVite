@@ -4,8 +4,8 @@
     import { OntuneChart } from "./OntuneChart/OntuneChart";
     import { DefaultValue, Style } from "./OntuneChart/OntuneChartConst";
     import type { IEventIndicator, TAODMaxTooltipPostion, TEventIndicatorPosition, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
-    import { CrossHairLabel } from "./OntuneChart/OntuneChartPlugins/crossHairLabel.ts";
-    import { Indicator } from "./OntuneChart/OntuneChartPlugins/indicator.ts";
+    import { CrossHairLabel } from "./OntuneChart/OntuneChartPlugins/CrossHairLabel2";
+    import { Indicator } from "./OntuneChart/OntuneChartPlugins/indicator";
     import { MaxValueTooltip } from "./OntuneChart/OntuneChartPlugins/AodMaxValueTooltip/aodMaxValueTooltip";
     import { ResizeBars } from "./OntuneChart/OntuneComponent/ResizeBar";
     import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
