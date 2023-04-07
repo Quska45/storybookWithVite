@@ -1,5 +1,5 @@
-import { LeftEventIndicator } from "./LeftEventIndicator";
-import { RightEventIndicator } from "./RightEventIndicator";
+import { LeftEventIndicator } from "./leftEventIndicator";
+import { RightEventIndicator } from "./rightEventIndicator";
 
 export const EventIndicators = {
     left: LeftEventIndicator,

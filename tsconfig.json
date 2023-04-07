@@ -15,6 +15,6 @@
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true
   },
-  "include": ["src/**/*.d.ts", "src/**/*.ts", "**/*.spec.ts", "src/**/*.js", "src/**/*.svelte"],
+  "include": ["src/**/*.d.ts", "src/**/*.ts", "**/*.spec.ts", "src/**/*.js", "src/**/*.svelte", "src", "src/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

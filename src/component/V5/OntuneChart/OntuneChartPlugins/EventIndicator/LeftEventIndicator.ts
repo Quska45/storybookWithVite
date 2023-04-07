@@ -1,5 +1,5 @@
 import type { TEventIndicatorPosition } from "../../OntuneChartType";
-import { EventIndicator } from "./EventIndicator";
+import { EventIndicator } from "./eventIndicator";
 
 export class LeftEventIndicator extends EventIndicator {
     constructor( id: string, value: number, level: number, isShow: boolean, color: string, lineWidth: number, position: TEventIndicatorPosition ){

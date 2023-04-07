@@ -4,18 +4,18 @@
     import { OntuneChart } from "./OntuneChart/OntuneChart";
     import { DefaultValue, Style, TestDataMaker } from "./OntuneChart/OntuneChartConst";
     import type { IEventIndicator, TAODMaxTooltipPostion, TEventIndicatorPosition, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
-    import { CrossHairLabel } from "./OntuneChart/OntuneChartPlugins/CrossHairLabel"
-    import { Indicator } from "./OntuneChart/OntuneChartPlugins/Indicator";
+    import { CrossHairLabel } from "./OntuneChart/OntuneChartPlugins/crossHairLabel"
+    import { Indicator } from "./OntuneChart/OntuneChartPlugins/indicator";
     import { MaxValueTooltip } from "./OntuneChart/OntuneChartPlugins/AodMaxValueTooltip/AodMaxValueTooltip";
     import { ResizeBars } from "./OntuneChart/OntuneComponent/ResizeBar";
     import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
-    import type { EventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/EventIndicator";
+    import type { EventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/eventIndicator";
     import { EventIndicators } from "./OntuneChart/OntuneChartPlugins/EventIndicator";
     import ChartDataLels from 'chartjs-plugin-datalabels'
     import { YAxesUnit } from './OntuneChart/OntuneChartPlugins/YAxesUnit/YAxesUnit';
     import { MiniMap } from "./OntuneChart/OntuneComponent/MiniMap/MiniMap";
-    import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/MinimapResizer";
-    import { CanvasLegendMargin } from "./OntuneChart/OntuneChartPlugins/CanvasLegendMargin";
+    import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/minimapResizer";
+    import { CanvasLegendMargin } from "./OntuneChart/OntuneChartPlugins/canvasLegendMargin";
     import OnTuneGrid from "./onTuneGrid/OnTuneGrid.svelte";
     import { getOntuneGridData, getOntuneGridOptions, setOntuneChart } from "./OntuneGridOptionMaker.svelte";
     import "tailwindcss/tailwind.css";
