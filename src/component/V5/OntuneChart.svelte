@@ -14,7 +14,7 @@
     import ChartDataLels from 'chartjs-plugin-datalabels'
     import { YAxesUnit } from './OntuneChart/OntuneChartPlugins/YAxesUnit/YAxesUnit';
     import { MiniMap } from "./OntuneChart/OntuneComponent/MiniMap/MiniMap";
-    import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/minimapResizer";
+    import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/MinimapResizer2";
     import { CanvasLegendMargin } from "./OntuneChart/OntuneChartPlugins/canvasLegendMargin";
     import OnTuneGrid from "./onTuneGrid/OnTuneGrid.svelte";
     import { getOntuneGridData, getOntuneGridOptions, setOntuneChart } from "./OntuneGridOptionMaker.svelte";
