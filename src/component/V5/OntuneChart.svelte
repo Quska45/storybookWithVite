@@ -6,7 +6,7 @@
     import type { IEventIndicator, TAODMaxTooltipPostion, TEventIndicatorPosition, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
     import { CrossHairLabel } from "./OntuneChart/OntuneChartPlugins/CrossHairLabel2";
     import { Indicator } from "./OntuneChart/OntuneChartPlugins/indicator";
-    import { MaxValueTooltip } from "./OntuneChart/OntuneChartPlugins/AodMaxValueTooltip/aodMaxValueTooltip";
+    import { MaxValueTooltip } from "./OntuneChart/OntuneChartPlugins/AodMaxValueTooltip/AodMaxValueTooltip2";
     import { ResizeBars } from "./OntuneChart/OntuneComponent/ResizeBar";
     import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
     import type { EventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/eventIndicator";
