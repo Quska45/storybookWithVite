@@ -15,7 +15,7 @@
     import { YAxesUnit } from './OntuneChart/OntuneChartPlugins/YAxesUnit/YAxesUnit';
     import { MiniMap } from "./OntuneChart/OntuneComponent/MiniMap/MiniMap";
     import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/MinimapResizer2";
-    import { CanvasLegendMargin } from "./OntuneChart/OntuneChartPlugins/canvasLegendMargin";
+    import { CanvasLegendMargin } from "./OntuneChart/OntuneChartPlugins/CanvasLegendMargin2";
     import OnTuneGrid from "./onTuneGrid/OnTuneGrid.svelte";
     import { getOntuneGridData, getOntuneGridOptions, setOntuneChart } from "./OntuneGridOptionMaker.svelte";
     import "tailwindcss/tailwind.css";
