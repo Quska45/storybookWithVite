@@ -14,6 +14,7 @@
      */
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
+    "baseUrl": "/",
     "isolatedModules": true
   },
   "include": ["src/**/*.d.ts", "src/**/*.ts", "**/*.spec.ts", "src/**/*.js", "src/**/*.svelte"],
