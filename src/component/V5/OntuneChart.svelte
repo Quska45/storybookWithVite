@@ -9,7 +9,7 @@
     import { MaxValueTooltip } from "./OntuneChart/OntuneChartPlugins/AodMaxValueTooltip/AodMaxValueTooltip2";
     import { ResizeBars } from "./OntuneChart/OntuneComponent/ResizeBar";
     import type { ResizeBar } from "./OntuneChart/OntuneComponent/ResizeBar/ResizeBar";
-    import type { EventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/EventIndicator22";
+    import type { EventIndicator } from "./OntuneChart/OntuneChartPlugins/EventIndicator/EventIndicator2";
     import { EventIndicators } from "./OntuneChart/OntuneChartPlugins/EventIndicator";
     import ChartDataLels from 'chartjs-plugin-datalabels'
     import { YAxesUnit } from './OntuneChart/OntuneChartPlugins/YAxesUnit/YAxesUnit';
@@ -17,7 +17,7 @@
     import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/MinimapResizer2";
     import { CanvasLegendMargin } from "./OntuneChart/OntuneChartPlugins/CanvasLegendMargin2";
     import OnTuneGrid from "./onTuneGrid/OnTuneGrid.svelte";
-    import { getOntuneGridData, getOntuneGridOptions, setOntuneChart } from "./OntuneGridOptionMaker.svelte";
+    import { OntuneGridOptionsMaker } from "./OntuneGridOption/OntuneGridOptionMaker.svelte";
     import "tailwindcss/tailwind.css";
 
     // global
@@ -351,10 +351,14 @@
         // make ontuneChart main instance
         ontuneChart = new OntuneChart( chartCanvas, config );
         let legendItems = ontuneChart.getLegendItems();
-        setOntuneChart( ontuneChart );
-        let legendData = getOntuneGridData( legendItems, ontuneChart.chart );
-        legendGridOptions = getOntuneGridOptions( legendData, legendConatiner.style.height );
         // ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
+
+        // make OntuneGrid legend
+        OntuneGridOptionsMaker.setOntuneChart( ontuneChart );
+        let legendData = OntuneGridOptionsMaker.getOntuneGridData( legendItems, ontuneChart.chart );
+        legendGridOptions = OntuneGridOptionsMaker.getOntuneGridOptions( legendData, legendConatiner.style.height );
+
+        // make ontuneChart minimap
         ontuneChart.makeMinimap( minimapCanvas );
         ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
 
