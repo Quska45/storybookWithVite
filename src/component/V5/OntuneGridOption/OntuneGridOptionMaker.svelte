@@ -35,7 +35,7 @@
             props: {
                 data: cellData.name,
                 color: cellData.color,
-                id: cellData.id,
+                id: cellData.index
             },
         });
 
@@ -55,8 +55,8 @@
             headerSort: false,
             width: 60,
             cellClick: function (e: UIEvent, cell: CellComponent) {
-                console.log('cell.getRow().getIndex()', cell.getRow().getIndex())
-                console.log('cell.getRow()', cell.getRow())
+                // console.log('cell.getRow().getIndex()', cell.getRow().getIndex())
+                // console.log('cell.getRow()', cell.getRow())
                 cell.getRow().toggleSelect();
             },
         },
@@ -82,23 +82,22 @@
                 ontuneGridColorPicker.mouseLeave( chart, legendItem, event, cell );
             },
             cellClick: function ( e: UIEvent, cell: CellComponent ) {
+                const index = cell.getRow().getIndex()
                 e.target?.addEventListener('input', () => {
                     if (
                         e.target &&
                         (e.target as unknown as { parentNode: HTMLElement }).parentNode
                     ) {
-                        const index = cell.getRow().getIndex()
+                        const index = cell.getRow().getIndex();
                         const targetEl = e.target as HTMLInputElement & { parentNode: HTMLElement };
                         const parentEl = targetEl.parentNode as HTMLElement;
                         const labelEl = parentEl.querySelector('.color-chip') as HTMLLabelElement;
-                        labelEl.style.background = (
-                            e.target as UIEvent['target'] & { value: string }
-                        ).value;
+                        labelEl.style.background = ( e.target as UIEvent['target'] & { value: string } ).value;
 
                         const itemData = ontuneChart.chart.data.datasets[ index ];
                         itemData.borderColor = OntuneChartColorUtil.hexToRgb( targetEl.value );
                         ontuneChart.chart.update();
-                    }
+                    };
                 });
             },
 

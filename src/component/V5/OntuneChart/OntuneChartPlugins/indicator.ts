@@ -9,6 +9,11 @@ let click = {
     clickStartTime: null,
 };
 let clickStartTime = null;
+
+/**
+ * 차트의 지시선을 생성할 수 있도록 하는 plugin
+ * @type {Plugin} chart.js의 Plugin
+*/
 export const Indicator: Plugin = {
     id: 'indicator',
     afterRender( chart, args, options ) {

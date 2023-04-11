@@ -6,6 +6,10 @@ export class YAxesUnit {
     unit: string;
     plugin: Plugin;
 
+    /**
+     * 차트의 y축 상단에 단위 값을 표시해주는 Plugin
+     * @param {string} unit 화면에 표시될 단위 값
+     */
     constructor( unit: string ){
         this.id = 'yAxesUnit'
         this.unit = unit;
@@ -19,6 +23,15 @@ export class YAxesUnit {
 
     };
 
+    /**
+     * chartjs plugin의 beforeRender 콜백에 등록 되는 메서드.
+     * 개발자가 호출하면 안됨. chartjs가 this.plugin을 등록 받는 형태로 개발되어야 함.
+     *
+     * @param {Chart} chart
+     * @param {args} args
+     * @param {options} options
+     * @return {void}
+     */
     afterRender( chart: Chart, args: EmptyObject, options: AnyObject ){
         const { ctx, chartArea: { left, right, top, bottom } } = chart;
         const yLabelItems = chart.scales['y'].getLabelItems();

@@ -3,6 +3,11 @@ import type { TChartAreaInfo } from "../OntuneChartType";
 
 // crosshairLabel plugin block
 let crosshairInfos: TChartAreaInfo[];
+
+/**
+ * 마우스 포인터를 따라다니는 cross hair를 생성하는 plugin
+ * @type {Plugin} chart.js의 Plugin
+*/
 export const CrossHairLabel: Plugin = {
     id: 'crossHairLabel',
     // drawing part

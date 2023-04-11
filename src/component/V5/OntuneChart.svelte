@@ -13,12 +13,12 @@
     import { EventIndicators } from "./OntuneChart/OntuneChartPlugins/EventIndicator";
     import ChartDataLels from 'chartjs-plugin-datalabels'
     import { YAxesUnit } from './OntuneChart/OntuneChartPlugins/YAxesUnit/YAxesUnit';
-    import { MiniMap } from "./OntuneChart/OntuneComponent/MiniMap/MiniMap";
     import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/MinimapResizer2";
     import { CanvasLegendMargin } from "./OntuneChart/OntuneChartPlugins/CanvasLegendMargin2";
     import OnTuneGrid from "./onTuneGrid/OnTuneGrid.svelte";
     import { OntuneGridOptionsMaker } from "./OntuneGridOption/OntuneGridOptionMaker.svelte";
     import "tailwindcss/tailwind.css";
+    import type { MiniMap } from "./OntuneChart/OntuneComponent/MiniMap/MiniMap";
 
     // global
     let isMount = false;
@@ -96,6 +96,7 @@
     // class instance
     let ontuneChart: OntuneChart;
     let ontuneChartResizeBar: ResizeBar;
+    let minimap: MiniMap;
 
     // reactivity declaration
     $: ChartContainerStyle
@@ -112,10 +113,10 @@
         ontuneChart.addPlugin( yAxesUnitPlugin.plugin );
     };
     $: if( isMount && !showYAxesUnit ){
-        let maxValueTooltipIndex = plugins.findIndex(( plugin ) => {
+        let yAxesUnitPluginIndex = plugins.findIndex(( plugin ) => {
             return plugin === yAxesUnitPlugin.plugin;
         });
-        ontuneChart.removePluginByPluginIndex( maxValueTooltipIndex );
+        ontuneChart.removePluginByPluginIndex( yAxesUnitPluginIndex );
     };
     // useIndicator
     $: if( isMount && useIndicator ){
@@ -334,8 +335,8 @@
         eventIndicators.forEach(( eventIndicator ) => {
             eventIndicator.isShow ? plugins.push( eventIndicator.plugin ) : null;
         });
-        let test = new CanvasLegendMargin();
-        plugins.push( test.plugin );
+        let canvasLegendMargin = new CanvasLegendMargin();
+        plugins.push( canvasLegendMargin.plugin );
 
         // set chartjs config
         config = {
@@ -359,8 +360,9 @@
         legendGridOptions = OntuneGridOptionsMaker.getOntuneGridOptions( legendData, legendConatiner.style.height );
 
         // make ontuneChart minimap
-        ontuneChart.makeMinimap( minimapCanvas );
-        ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
+        // ontuneChart.makeMinimap( minimapCanvas );
+        // ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
+        // minimap = new MiniMap(  );
 
         // set chart make after plugins
         minimapResizer = new MinimapResizer( ontuneChart );

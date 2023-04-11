@@ -1,7 +1,10 @@
 import type { ChartTypeRegistry, Plugin, PointElement } from "chart.js";
 import type { AnyObject } from "chart.js/dist/types/basic";
 
-// 이거는 진짜 class 따로 만들어서 써야할듯.
+/**
+ * 현재 화면에 보이는 최대값에 툴팁을 띄워주는 plugin. class 형태로 리팩토링 필요함.
+ * @type {Plugin & { aodMaxTooltipPosition }} chart.js의 Plugin의 유니온 타입.
+ */
 export const MaxValueTooltip: Plugin & { aodMaxTooltipPosition } = {
     aodMaxTooltipPosition: null, // 차트 컴포넌트에서 받아오는 값. 어느 위치에 있는 툴팁이 보여 질지에 대한 값.
     id: 'maxValueTooltip',
