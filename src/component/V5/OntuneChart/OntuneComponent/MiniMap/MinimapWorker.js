@@ -25,10 +25,12 @@ Chart.register(
     Filler    
 );
 
-const chart = null;
+let chart = null;
 
 onmessage = function( event ){
     const { offScreenCanvas, config } = event.data;
     chart = new Chart( offScreenCanvas, config );
     chart.resize();
 };
+
+// postMessage();

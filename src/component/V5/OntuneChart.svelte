@@ -18,6 +18,7 @@
     import OnTuneGrid from "./onTuneGrid/OnTuneGrid.svelte";
     import { OntuneGridOptionsMaker } from "./OntuneGridOption/OntuneGridOptionMaker.svelte";
     import "tailwindcss/tailwind.css";
+    import MiniMap from "./OntuneChart/OntuneComponent/MiniMap/MiniMap.svelte";
 
     // global
     let isMount = false;
@@ -73,9 +74,7 @@
     const legendOptions: TLengendOptions = { position: legendPosition, showLegend: showLegend, showLegendValue: showLegendValue };
     let data: ChartData = { labels: labels, datasets: datasets };
     let options: ChartOptions = {};
-    let minimapOptions: ChartOptions = {};
     let config: ChartConfiguration;
-    let minimapConfig: ChartConfiguration;
     let plugins: Plugin[] = [];
     
     // dom element
@@ -301,31 +300,11 @@
                         modifierKey: 'ctrl',
                         threshold: 10,
                         onPan: () => {
+                            console.log( 'ontuneChart.minimap', ontuneChart.minimap );
                         }
                     },
                 }
             },
-        };
-
-        minimapOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    display: false
-                },
-                y: {
-                    display: false
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    enabled: false
-                }
-            }
         };
 
         MaxValueTooltip.aodMaxTooltipPosition = aodMaxTooltipPosition;
@@ -435,8 +414,17 @@
                 <div bind:this={zoomReset} class="ontune_chart_zoom_item ontune_chart_zoom_reset">zoom 원복</div>
             </div>
                 <canvas bind:this={chartCanvas} id="ontuneChart"></canvas>
-                <div class="chart_timeline">
-                    <canvas bind:this={minimapCanvas} class="chart_timeline_canvas" id="minimapChart"  style="width: 100%;"></canvas>
+                <div class="chart_minimap_container">
+                    <canvas bind:this={minimapCanvas} class="minimap_canvas" id="minimapChart"  style="width: 100%;"></canvas>
+                    <!-- <div class="minimap_controller_container">
+                        <div id="leftMinimapController" class="minimap_controller left">
+                            <div class="minimap_controller_item left"></div>
+                        </div>
+                        <div id="centerMinimapController" class="minimap_controller center"></div>
+                        <div id="rightMinimapController" class="minimap_controller right">
+                            <div class="minimap_controller_item right"></div>
+                        </div>
+                    </div> -->
                 </div>
         </div>
 
@@ -526,15 +514,58 @@
         display: none;
     }
 
-    .chart_timeline {
+    .chart_minimap_container {
         position: relative;
         height: 40px;
         border: 1px solid #ddd;
         border-radius: 6px;
         margin-top: -40px;
     }
-    .chart_timeline_canvas {
+    .minimap_canvas {
         height: 40px;
         border-radius: 5px;
+    }
+    .minimap_controller_container {
+        position: absolute;
+        top: 0;
+        height: 100%;
+    }
+    .minimap_controller {
+        position: relative;
+        display: inline-block;
+        width: 20px;
+        height: 100%;
+        padding: 0;
+        margin: 0 0 0 0;
+    }
+    .minimap_controller_item {
+        position: absolute;
+        height: 100%;
+        width: 10px;
+        cursor: pointer;
+    }
+    .minimap_controller_item.left {
+        right: 0px;
+    }
+    .minimap_controller_item.right {
+        left: 0px;
+    }
+    .minimap_controller_item.right::after,
+    .minimap_controller_item.left::before {
+        content: '';
+        position: absolute;
+        top: 15px;
+        bottom: 15px;
+        width: 5px;
+        height: 10px;
+        background: #fff;
+        border: 1px solid blue;
+    }
+    .minimap_controller.right,
+    .minimap_controller.left {
+        background: rgba(226, 238, 249, 0.5);
+    }
+    .minimap_controller.center {
+        cursor: ew-resize;
     }
 </style>
