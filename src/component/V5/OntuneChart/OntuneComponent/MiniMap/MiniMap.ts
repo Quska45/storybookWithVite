@@ -1,7 +1,6 @@
-import { Chart, type ChartConfiguration, type ChartData, type ChartOptions, type ChartTypeRegistry } from "chart.js";
+import type { ChartConfiguration, ChartData, ChartOptions, ChartTypeRegistry } from "chart.js";
 
 export class MiniMap {
-    chart: Chart;
     canvas: HTMLCanvasElement;
     config: ChartConfiguration;
     leftController: HTMLElement;
@@ -10,6 +9,7 @@ export class MiniMap {
     worker: Worker;
 
     private options: ChartOptions = {
+        responsive: true,
         maintainAspectRatio: false,
         scales: {
             x: {
@@ -37,10 +37,9 @@ export class MiniMap {
             options: this.options
         };
 
-        const offScreenCanvas = canvas.transferControlToOffscreen();
-
+        let offScreenCanvas = canvas.transferControlToOffscreen()
         this.worker = new Worker(new URL('./MinimapWorker.js', import.meta.url), {type: 'module'});
-        this.worker.postMessage({offScreenCanvas, config: this.config});
+        this.worker.postMessage({offScreenCanvas, config: this.config}, [offScreenCanvas]);
         // this.chart = new Chart( this.canvas, this.config );
     };
 

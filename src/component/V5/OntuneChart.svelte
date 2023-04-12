@@ -18,7 +18,6 @@
     import OnTuneGrid from "./onTuneGrid/OnTuneGrid.svelte";
     import { OntuneGridOptionsMaker } from "./OntuneGridOption/OntuneGridOptionMaker.svelte";
     import "tailwindcss/tailwind.css";
-    import type { MiniMap } from "./OntuneChart/OntuneComponent/MiniMap/MiniMap";
 
     // global
     let isMount = false;
@@ -96,7 +95,7 @@
     // class instance
     let ontuneChart: OntuneChart;
     let ontuneChartResizeBar: ResizeBar;
-    let minimap: MiniMap;
+    // let minimap: MiniMap;
 
     // reactivity declaration
     $: ChartContainerStyle
@@ -312,6 +311,7 @@
         };
 
         minimapOptions = {
+            responsive: true,
             maintainAspectRatio: false,
             scales: {
                 x: {
@@ -360,9 +360,8 @@
         legendGridOptions = OntuneGridOptionsMaker.getOntuneGridOptions( legendData, legendConatiner.style.height );
 
         // make ontuneChart minimap
-        // ontuneChart.makeMinimap( minimapCanvas );
-        // ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
-        // minimap = new MiniMap(  );
+        ontuneChart.makeMinimap( minimapCanvas );
+        ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
 
         // set chart make after plugins
         minimapResizer = new MinimapResizer( ontuneChart );
@@ -441,7 +440,7 @@
             </div>
                 <canvas bind:this={chartCanvas} id="ontuneChart"></canvas>
                 <div class="chart_timeline">
-                    <canvas bind:this={minimapCanvas} class="chart_timeline_canvas" id="minimapChart" height="40"></canvas>
+                    <canvas bind:this={minimapCanvas} class="chart_timeline_canvas" id="minimapChart"  style="width: 100%;"></canvas>
             
                     <div bind:this={minimapLeft} id="left" class="chart_timeline_rest_left" style="width: 0%;"></div>
                     <div bind:this={minimapCenter} id="center" class="chart_timeline_handle" style="left: 0%; right: 0%;">
@@ -463,7 +462,6 @@
                     w={Number(legendConatiner.style.width)}
                 ></OnTuneGrid>
             {/if}
-            <!-- <div bind:this={serieseResizer} class="ontune_chart_seriese_resizer"></div> -->
         </div>
     </div>
 </div>
@@ -533,15 +531,7 @@
     .ontune_chart_zoom_item:active {
         color: red;
     }
-    .ontune_chart_seriese_resizer {
-        width: 70px;
-        height: 30px;
-        position: absolute;
-        left: 0;
-        top: 0;
-        border: 1px solid red;
-    }
-
+    
     .ontune_chart_zoom_reset {
         display: none;
     }
