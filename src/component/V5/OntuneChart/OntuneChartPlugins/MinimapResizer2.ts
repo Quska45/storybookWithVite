@@ -34,6 +34,5 @@ export class MinimapResizer {
      * @return {void}
      */
     afterRender( chart: Chart, args: EmptyObject, options: AnyObject ){
-        this.ontuneChart.resizeMinimapController();
     };
 };

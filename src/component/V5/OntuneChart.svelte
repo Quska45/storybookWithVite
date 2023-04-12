@@ -435,6 +435,9 @@
                 <div bind:this={zoomReset} class="ontune_chart_zoom_item ontune_chart_zoom_reset">zoom 원복</div>
             </div>
                 <canvas bind:this={chartCanvas} id="ontuneChart"></canvas>
+                <div class="chart_timeline">
+                    <canvas bind:this={minimapCanvas} class="chart_timeline_canvas" id="minimapChart"  style="width: 100%;"></canvas>
+                </div>
         </div>
 
         <!-- chartjs영역과 레전드 영역의 resizebar -->
@@ -523,4 +526,15 @@
         display: none;
     }
 
-    </style>
+    .chart_timeline {
+        position: relative;
+        height: 40px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        margin-top: -40px;
+    }
+    .chart_timeline_canvas {
+        height: 40px;
+        border-radius: 5px;
+    }
+</style>
