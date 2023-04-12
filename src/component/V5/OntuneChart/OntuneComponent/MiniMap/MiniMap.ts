@@ -42,17 +42,4 @@ export class MiniMap {
         this.worker.postMessage({offScreenCanvas, config: this.config}, [offScreenCanvas]);
         // this.chart = new Chart( this.canvas, this.config );
     };
-
-    setController( left: HTMLElement, center: HTMLElement, right: HTMLElement ){
-        this.leftController = left;
-        this.centerController = center;
-        this.rightController = right;
-    };
-
-    resizeMinimapController( left: number, right: number ){
-        this.leftController.style.width = `${left}%`;
-        this.centerController.style.left = `${left}%`;
-        this.centerController.style.width = `${right-left}%`;
-        this.rightController.style.width = `${100-right}%`;
-    };
 };

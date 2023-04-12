@@ -99,42 +99,6 @@ export class OntuneChart {
     };
 
     /**
-     * 미니맵을 제어할 수 있는 컨트롤러에 대한 setter
-     * @param {HTMLElement} left 왼쪽 컨트롤러
-     * @param {HTMLElement} center 중앙 컨트롤러
-     * @param {HTMLElement} right 오른쪽 컨트롤러
-     */
-    setMinimapController( left: HTMLElement, center: HTMLElement, right: HTMLElement ){
-        this.minimap.setController( left, center, right );
-    }
-
-    /**
-     * 이거는 안쓸듯. 다른 식으로 개발 필요
-     * @returns {void}
-     */
-    resizeMinimapController(){
-        const chart = this.chart;
-
-        const xScale = chart.scales[ 'x' ];
-        const oXScale = chart.getInitialScaleBounds().x;
-        if( !oXScale.min ){
-            oXScale.max = xScale.max;    
-        }
-        oXScale.min = 0;
-
-        const left = ( xScale.min - oXScale.min ) / ( oXScale.max - oXScale.min ) * 100;
-        const right = ( xScale.max - oXScale.min ) / ( oXScale.max - oXScale.min ) * 100;
-        
-        const l = left > 0 ? (left > 98 ? 98 : left) : 0;
-        const r = right < 100 ? (right < 2 ? 2 : right) : 100;
-
-        if( !this.minimap ){
-            return;
-        };
-        this.minimap.resizeMinimapController( l, r );
-    };
-
-    /**
      * 레전드의 목록 조회 메서드
      * @returns {LegendItem[]}
      */

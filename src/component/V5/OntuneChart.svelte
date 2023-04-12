@@ -293,8 +293,6 @@
                         onZoom: function(){
                             zoomContainer.style.display = 'flex';
                             zoomReset.style.display = 'block';
-
-                            ontuneChart.resizeMinimapController.bind( ontuneChart )();
                         },
                     },
                     pan: {
@@ -303,7 +301,6 @@
                         modifierKey: 'ctrl',
                         threshold: 10,
                         onPan: () => {
-                            ontuneChart.resizeMinimapController.bind( ontuneChart )();
                         }
                     },
                 }
@@ -361,7 +358,6 @@
 
         // make ontuneChart minimap
         ontuneChart.makeMinimap( minimapCanvas );
-        ontuneChart.setMinimapController( minimapLeft, minimapCenter, minimapRight );
 
         // set chart make after plugins
         minimapResizer = new MinimapResizer( ontuneChart );
@@ -439,15 +435,6 @@
                 <div bind:this={zoomReset} class="ontune_chart_zoom_item ontune_chart_zoom_reset">zoom 원복</div>
             </div>
                 <canvas bind:this={chartCanvas} id="ontuneChart"></canvas>
-                <div class="chart_timeline">
-                    <canvas bind:this={minimapCanvas} class="chart_timeline_canvas" id="minimapChart"  style="width: 100%;"></canvas>
-            
-                    <div bind:this={minimapLeft} id="left" class="chart_timeline_rest_left" style="width: 0%;"></div>
-                    <div bind:this={minimapCenter} id="center" class="chart_timeline_handle" style="left: 0%; right: 0%;">
-                      <div class="chart_timeline_handle_touch_area"></div>
-                    </div>
-                    <div bind:this={minimapRight} id="right" class="chart_timeline_rest_right" style="width: 0%;"></div>
-                </div>
         </div>
 
         <!-- chartjs영역과 레전드 영역의 resizebar -->
@@ -536,70 +523,4 @@
         display: none;
     }
 
-    .chart_timeline {
-        position: relative;
-        height: 40px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        margin-top: -40px;
-    }
-    .chart_timeline_canvas {
-        height: 40px;
-        border-radius: 5px;
-    }
-
-    .chart_timeline_handle {
-        cursor: ew-resize;
-        z-index: 1;
-        position: absolute;
-        top: -1px;
-        bottom: -1px;
-        right: 0;
-        border: #C0D1E1 solid;
-        border-width: 1px 10px;
-        border-radius: 5px;
-        box-sizing: border-box;
-        box-shadow: 0 0 0 1px #fff, inset 1px 0 0 0 #fff, inset -1px 0 0 0 #fff;
-        /*   cursor: pointer; */
-        touch-action: pan-x;
-        user-select: none;
-        -webkit-tap-highlight-color: rgba(0,0,0,0);
-    }
-    .chart_timeline_handle_touch_area {
-        position: absolute;
-        height: 100%;
-        left: -20px;
-        right: -20px;
-        border: none;
-    }
-    .chart_timeline_handle::before,
-    .chart_timeline_handle::after {
-        content: '';
-        position: absolute;
-        left: -6px;
-        top: 15px;
-        bottom: 15px;
-        width: 2px;
-        background: #fff;
-        border-radius: 2px;
-    }
-    .chart_timeline_handle:after {
-        left: auto;
-        right: -6px;
-    }
-    .chart_timeline_rest_left,
-    .chart_timeline_rest_right {
-        position: absolute;
-        top: 0;
-        background: rgba(226, 238, 249, 0.5);
-        height: 100%;
-        padding: 0 5px;
-        border-radius: 5px;
-    }
-    .chart_timeline_rest_left {
-        left: 0;
-    }
-    .chart_timeline_rest_right {
-        right: 0;
-    }
-</style>
+    </style>
