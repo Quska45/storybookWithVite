@@ -216,7 +216,9 @@ export const TestDataMaker = {
                 // tension: false,
                 stepped: 0,
                 borderDash: [],
-                hoverBorderWidth: (globalLineWidth * 2)
+                hoverBorderWidth: (globalLineWidth * 2),
+                hidden: false,
+
                 // yAxisID: 
                 //     i < 10
                 //     ? 'y'

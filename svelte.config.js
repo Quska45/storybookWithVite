@@ -7,7 +7,7 @@ export default {
   preprocess: [
     vitePreprocess(),
     preprocess({
-      postcss: true,
+      postcss: true
     }),
   ],
 };

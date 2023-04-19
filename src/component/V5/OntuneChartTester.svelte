@@ -5,6 +5,10 @@
 
     const labels = TestDataMaker.getTerm();
     const datasets = TestDataMaker.getHost( 1, 0 );
+    
+    const labels2 = TestDataMaker.getTerm();
+    const datasets2 = TestDataMaker.getHost( 1, 0 );
+
     onMount(() => {
     });
 </script>
@@ -14,8 +18,17 @@
         <div id="title"></div>
     </div>
     <OntuneChart
+        uuid = {'123'}
         labels = {labels}
         datasets = {datasets}
+        componentWidth = {700}
+        componentHeight = {400}
+    ></OntuneChart>
+
+    <OntuneChart
+        uuid = {'345'}
+        labels = {labels2}
+        datasets = {datasets2}
         componentWidth = {700}
         componentHeight = {400}
     ></OntuneChart>

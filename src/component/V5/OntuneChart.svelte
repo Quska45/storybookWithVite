@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import { OntuneChart } from "./OntuneChart/OntuneChart";
     import { DefaultValue, Style } from "./OntuneChart/OntuneChartConst";
-    import type { IEventIndicator, TAODMaxTooltipPostion, TEventIndicatorPosition, TLengendOptions, TYAxesPosition } from "./OntuneChart/OntuneChartType";
+    import { OntuneChartProps, type IEventIndicator, type TAODMaxTooltipPostion, type TEventIndicatorPosition, type TLengendOptions, type TOntuneChartProps, type TYAxesPosition } from "./OntuneChart/OntuneChartType";
     import { CrossHairLabel } from "./OntuneChart/OntuneChartPlugins/CrossHairLabel2";
     import { Indicator } from "./OntuneChart/OntuneChartPlugins/indicator";
     import { MaxValueTooltip } from "./OntuneChart/OntuneChartPlugins/AodMaxValueTooltip/AodMaxValueTooltip2";
@@ -16,59 +16,64 @@
     import { MinimapResizer } from "./OntuneChart/OntuneChartPlugins/MinimapResizer2";
     import { CanvasLegendMargin } from "./OntuneChart/OntuneChartPlugins/CanvasLegendMargin2";
     import OnTuneGrid from "./onTuneGrid/OnTuneGrid.svelte";
-    import { OntuneGridOptionsMaker } from "./OntuneGridOption/OntuneGridOptionMaker.svelte";
+    import { OntuneGridOptionsMaker, makeColums } from "./OntuneGridOption/OntuneGridOptionMaker.svelte";
     import "tailwindcss/tailwind.css";
     import MiniMap from "./OntuneChart/OntuneComponent/MiniMap/MiniMap.svelte";
 
     // global
     let isMount = false;
+    let ocp: OntuneChartProps;
+    const defaultValue = {...DefaultValue};
 
     // props
-    export let componentWidth: number = DefaultValue.COMPONENT_WIDTH;
-    export let componentHeight: number = DefaultValue.COMPONENT_HEIGHT;
-    export let chartType: keyof ChartTypeRegistry = DefaultValue.CHART_TYPE as keyof ChartTypeRegistry;
-    export let showLegend: boolean = DefaultValue.SHOW_LEGEND;
-    export let legendPosition: LayoutPosition = DefaultValue.LEGEND_POSITION as LayoutPosition;
-    export let showCanvasLegend: boolean = DefaultValue.SHOW_CANVAS_LEGEND;
-    export let canvasLegendPosition: LayoutPosition = DefaultValue.CANVAS_LEGEND_POSITION as LayoutPosition;
-    export let leftYAxesMin: number = DefaultValue.LEFT_Y_AXES_MIN;
-    export let leftYAxesMax: number = DefaultValue.LEFT_Y_AXES_MAX;
-    export let rightYAxesMin: number = DefaultValue.RIGHT_Y_AXES_MIN;
-    export let rightYAxesMax: number = DefaultValue.RIGHT_Y_AXES_MAX;
-    export let yAxesPosition: TYAxesPosition = DefaultValue.Y_AXES_POSITION as TYAxesPosition;
-    export let showLegendValue: boolean = DefaultValue.SHOW_LEGEND_VALUE;
-    export let globalLineWidth: number = DefaultValue.GLOBAL_LINE_WIDTH;
-    export let showCrossHair: boolean = DefaultValue.SHOW_CROSS_HAIR;
-    export let useIndicator: boolean = DefaultValue.USE_INDICATOR;
-    export let useAnimation: boolean = DefaultValue.USE_ANIMATION;
-    export let aodMaxTooltipPosition: TAODMaxTooltipPostion = DefaultValue.AOD_MAX_TOOLTIP_POSITION as TAODMaxTooltipPostion;
-    export let showAodMaxTooltip: boolean = DefaultValue.SHOW_AOD_MAX_TOOLTIP;
-    export let showLevel1Event: boolean = DefaultValue.SHOW_LEVEL_1_EVENT;
-    export let showLevel2Event: boolean = DefaultValue.SHOW_LEVEL_2_EVENT;
-    export let showLevel3Event: boolean = DefaultValue.SHOW_LEVEL_3_EVENT;
-    export let showLevel4Event: boolean = DefaultValue.SHOW_LEVEL_4_EVENT;
-    export let showLevel5Event: boolean = DefaultValue.SHOW_LEVEL_5_EVENT;
-    export let level1EventValue: number = DefaultValue.LEVEL_1_EVENT_VALUE;
-    export let level2EventValue: number = DefaultValue.LEVEL_2_EVENT_VALUE;
-    export let level3EventValue: number = DefaultValue.LEVEL_3_EVENT_VALUE;
-    export let level4EventValue: number = DefaultValue.LEVEL_4_EVENT_VALUE;
-    export let level5EventValue: number = DefaultValue.LEVEL_5_EVENT_VALUE;
-    export let level1EventLineWidth: number = DefaultValue.LEVEL_1_EVENT_LINE_WIDTH;
-    export let level2EventLineWidth: number = DefaultValue.LEVEL_2_EVENT_LINE_WIDTH;
-    export let level3EventLineWidth: number = DefaultValue.LEVEL_3_EVENT_LINE_WIDTH;
-    export let level4EventLineWidth: number = DefaultValue.LEVEL_4_EVENT_LINE_WIDTH;
-    export let level5EventLineWidth: number = DefaultValue.LEVEL_5_EVENT_LINE_WIDTH;
-    export let level1EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_1_EVENT_POSITION as TEventIndicatorPosition;
-    export let level2EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_2_EVENT_POSITION as TEventIndicatorPosition;
-    export let level3EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_3_EVENT_POSITION as TEventIndicatorPosition;
-    export let level4EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_4_EVENT_POSITION as TEventIndicatorPosition;
-    export let level5EventPosition: TEventIndicatorPosition = DefaultValue.LEVEL_5_EVENT_POSITION as TEventIndicatorPosition;
-    export let yAxesUnit: string = DefaultValue.Y_AXES_UNIT;
-    export let showYAxesUnit: boolean = DefaultValue.SHOW_Y_AXES_UNIT;
-    export let lineTension: number = DefaultValue.LINE_TENSION;
-    export let showDataValueTooltip: boolean = DefaultValue.SHOW_DATA_VALUE_TOOLTIP;
+    export let uuid: string;
+    export let componentWidth: number = defaultValue.COMPONENT_WIDTH;
+    export let componentHeight: number = defaultValue.COMPONENT_HEIGHT;
+    export let chartType: keyof ChartTypeRegistry = defaultValue.CHART_TYPE as keyof ChartTypeRegistry;
+    export let showLegend: boolean = defaultValue.SHOW_LEGEND;
+    export let legendPosition: LayoutPosition = defaultValue.LEGEND_POSITION as LayoutPosition;
+    export let showCanvasLegend: boolean = defaultValue.SHOW_CANVAS_LEGEND;
+    export let canvasLegendPosition: LayoutPosition = defaultValue.CANVAS_LEGEND_POSITION as LayoutPosition;
+    export let leftYAxesMin: number = defaultValue.LEFT_Y_AXES_MIN;
+    export let leftYAxesMax: number = defaultValue.LEFT_Y_AXES_MAX;
+    export let rightYAxesMin: number = defaultValue.RIGHT_Y_AXES_MIN;
+    export let rightYAxesMax: number = defaultValue.RIGHT_Y_AXES_MAX;
+    export let yAxesPosition: TYAxesPosition = defaultValue.Y_AXES_POSITION as TYAxesPosition;
+    export let showLegendValue: boolean = defaultValue.SHOW_LEGEND_VALUE;
+    export let globalLineWidth: number = defaultValue.GLOBAL_LINE_WIDTH;
+    export let showCrossHair: boolean = defaultValue.SHOW_CROSS_HAIR;
+    export let useIndicator: boolean = defaultValue.USE_INDICATOR;
+    export let useAnimation: boolean = defaultValue.USE_ANIMATION;
+    export let aodMaxTooltipPosition: TAODMaxTooltipPostion = defaultValue.AOD_MAX_TOOLTIP_POSITION as TAODMaxTooltipPostion;
+    export let showAodMaxTooltip: boolean = defaultValue.SHOW_AOD_MAX_TOOLTIP;
+    export let showLevel1Event: boolean = defaultValue.SHOW_LEVEL_1_EVENT;
+    export let showLevel2Event: boolean = defaultValue.SHOW_LEVEL_2_EVENT;
+    export let showLevel3Event: boolean = defaultValue.SHOW_LEVEL_3_EVENT;
+    export let showLevel4Event: boolean = defaultValue.SHOW_LEVEL_4_EVENT;
+    export let showLevel5Event: boolean = defaultValue.SHOW_LEVEL_5_EVENT;
+    export let level1EventValue: number = defaultValue.LEVEL_1_EVENT_VALUE;
+    export let level2EventValue: number = defaultValue.LEVEL_2_EVENT_VALUE;
+    export let level3EventValue: number = defaultValue.LEVEL_3_EVENT_VALUE;
+    export let level4EventValue: number = defaultValue.LEVEL_4_EVENT_VALUE;
+    export let level5EventValue: number = defaultValue.LEVEL_5_EVENT_VALUE;
+    export let level1EventLineWidth: number = defaultValue.LEVEL_1_EVENT_LINE_WIDTH;
+    export let level2EventLineWidth: number = defaultValue.LEVEL_2_EVENT_LINE_WIDTH;
+    export let level3EventLineWidth: number = defaultValue.LEVEL_3_EVENT_LINE_WIDTH;
+    export let level4EventLineWidth: number = defaultValue.LEVEL_4_EVENT_LINE_WIDTH;
+    export let level5EventLineWidth: number = defaultValue.LEVEL_5_EVENT_LINE_WIDTH;
+    export let level1EventPosition: TEventIndicatorPosition = defaultValue.LEVEL_1_EVENT_POSITION as TEventIndicatorPosition;
+    export let level2EventPosition: TEventIndicatorPosition = defaultValue.LEVEL_2_EVENT_POSITION as TEventIndicatorPosition;
+    export let level3EventPosition: TEventIndicatorPosition = defaultValue.LEVEL_3_EVENT_POSITION as TEventIndicatorPosition;
+    export let level4EventPosition: TEventIndicatorPosition = defaultValue.LEVEL_4_EVENT_POSITION as TEventIndicatorPosition;
+    export let level5EventPosition: TEventIndicatorPosition = defaultValue.LEVEL_5_EVENT_POSITION as TEventIndicatorPosition;
+    export let yAxesUnit: string = defaultValue.Y_AXES_UNIT;
+    export let showYAxesUnit: boolean = defaultValue.SHOW_Y_AXES_UNIT;
+    export let lineTension: number = defaultValue.LINE_TENSION;
+    export let showDataValueTooltip: boolean = defaultValue.SHOW_DATA_VALUE_TOOLTIP;
     export let labels: unknown[] = [];
     export let datasets: ChartDataset[] = [];
+
+    ocp = new OntuneChartProps({componentWidth, componentHeight, chartType, showLegend, legendPosition, showCanvasLegend, canvasLegendPosition, leftYAxesMin, leftYAxesMax, rightYAxesMin, rightYAxesMax, yAxesPosition, showLegendValue, globalLineWidth, showCrossHair, useIndicator, useAnimation, aodMaxTooltipPosition, showAodMaxTooltip, showLevel1Event, showLevel2Event, showLevel3Event, showLevel4Event, showLevel5Event, level1EventValue, level2EventValue, level3EventValue, level4EventValue, level5EventValue, level1EventLineWidth, level2EventLineWidth, level3EventLineWidth, level4EventLineWidth, level5EventLineWidth, level1EventPosition, level2EventPosition, level3EventPosition, level4EventPosition, level5EventPosition, yAxesUnit, showYAxesUnit, lineTension, showDataValueTooltip, labels, datasets});
 
     // data object
     const legendOptions: TLengendOptions = { position: legendPosition, showLegend: showLegend, showLegendValue: showLegendValue };
@@ -87,9 +92,6 @@
     let zoomReset: HTMLElement;
     let resizeBar: HTMLElement;
     let minimapCanvas: HTMLCanvasElement;
-    let minimapLeft: HTMLElement;
-    let minimapCenter: HTMLElement;
-    let minimapRight: HTMLElement;
     
     // class instance
     let ontuneChart: OntuneChart;
@@ -178,11 +180,12 @@
         options = {
             responsive: true,
             maintainAspectRatio: false,
+            resizeDelay: 50,
             layout: {
                 padding: {
                     top: 30,
                     right: 30,
-                    bottom: 40,
+                    // bottom: 40,
                 },
             },
             // interaction: {
@@ -292,6 +295,9 @@
                         onZoom: function(){
                             zoomContainer.style.display = 'flex';
                             zoomReset.style.display = 'block';
+
+                            const { scales: {x} } = ontuneChart.chart;
+                            ontuneChart.minimap.zoomBox( x.min, x.max );
                         },
                     },
                     pan: {
@@ -328,12 +334,12 @@
         // make ontuneChart main instance
         ontuneChart = new OntuneChart( chartCanvas, config );
         let legendItems = ontuneChart.getLegendItems();
-        // ontuneChart.makeLegend( 'ontune_chart_legend_container', legendOptions );
 
         // make OntuneGrid legend
-        OntuneGridOptionsMaker.setOntuneChart( ontuneChart );
-        let legendData = OntuneGridOptionsMaker.getOntuneGridData( legendItems, ontuneChart.chart );
-        legendGridOptions = OntuneGridOptionsMaker.getOntuneGridOptions( legendData, legendConatiner.style.height );
+        let optionsMaker = OntuneGridOptionsMaker.getOntuneGridOptionsMaker( ontuneChart );
+        let columns = makeColums( optionsMaker.ontuneChart, optionsMaker.ontuneGridColorPicker );
+        let legendData = optionsMaker.getOntuneGridData( legendItems, ontuneChart.chart );
+        legendGridOptions = optionsMaker.getOntuneGridOptions( legendData, legendConatiner.style.height, columns );
 
         // make ontuneChart minimap
         ontuneChart.makeMinimap( minimapCanvas );
@@ -353,6 +359,9 @@
         zoomReset.addEventListener('click', ( event: MouseEvent ) => {
             ontuneChart.resetZoom();
             zoomContainer.style.display = 'none';
+
+            const { scales: {x} } = ontuneChart.chart;
+            ontuneChart.minimap.zoomBox( x.min, x.max );
         });
 
         // resize
@@ -394,10 +403,14 @@
         isMount = true;
     });
 
-
+    // class Test{
+    //     test: number;
+    // }
 </script>
 
-<div class="ontune_chart_component" style="width: {componentWidth}px; height: {componentHeight}px">
+<!-- <div class="ontune_chart_component" style="width: {componentWidth}px; height: {componentHeight}px"> -->
+<div style="width: 800px; height: 500px;">
+<div class="ontune_chart_component" style="width: 100%; height: 100%">
     <!-- <button id="test">showMaxValueTooltip</button> -->
     <!-- blocker -->
     <div bind:this={blocker} class="ontune_chart_block"></div>
@@ -413,10 +426,12 @@
                 <!-- <div class="ontune_chart_zoom_item">zoom start</div> -->
                 <div bind:this={zoomReset} class="ontune_chart_zoom_item ontune_chart_zoom_reset">zoom 원복</div>
             </div>
+            <div style="height: calc(100% - 40px);">
                 <canvas bind:this={chartCanvas} id="ontuneChart"></canvas>
-                <div class="chart_minimap_container">
-                    <canvas bind:this={minimapCanvas} class="minimap_canvas" id="minimapChart"  style="width: 100%;"></canvas>
-                </div>
+            </div>
+            <div class="chart_minimap_container">
+                <canvas bind:this={minimapCanvas} class="minimap_canvas" id="minimapChart"  style="width: 100%;"></canvas>
+            </div>
         </div>
 
         <!-- chartjs영역과 레전드 영역의 resizebar -->
@@ -434,18 +449,14 @@
         </div>
     </div>
 </div>
+</div>
 
 <style>
     @import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
     div {
-        border: 1px solid black;
         margin: 0;
         padding: 0;
-    }
-
-    canvas {
-        border: 1px solid red;
     }
     
     .ontune_chart_component {
@@ -510,7 +521,7 @@
         height: 40px;
         border: 1px solid #ddd;
         border-radius: 6px;
-        margin-top: -40px;
+        /* margin-top: -40px; */
     }
     .minimap_canvas {
         height: 40px;

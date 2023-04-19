@@ -1,3 +1,7 @@
+export class OntuneProps {
+    
+};
+
 export const OntuneChartDateUtil = {
     getAddZeroValue( time: number | string ){
         if( time < 10 ){

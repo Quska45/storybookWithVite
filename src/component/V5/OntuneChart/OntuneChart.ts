@@ -94,8 +94,10 @@ export class OntuneChart {
      */
     makeMinimap( minimapCanvas: HTMLCanvasElement ){
         const chart = this.chart;
+        const mainChartXscale = chart.scales[ 'x' ];
 
         this.minimap = new MiniMap( minimapCanvas, chart.config.type, chart.config.data );
+        this.minimap.zoomBox( mainChartXscale.min, mainChartXscale.max );
     };
 
     /**
@@ -187,6 +189,13 @@ export class OntuneChart {
         });
         
         this.chart.update();
+    };
+
+    /**
+     * 현재 차트의 상태와 관련된 데이터를 리턴하는 메서드
+     */
+    exportChartData(){
+        
     };
 
     /**

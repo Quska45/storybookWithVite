@@ -23,7 +23,7 @@ export class OntuneGridColorPicker {
 
         this.index = datasetIndex;
         this.originalLineWidth = dataset[ datasetIndex ].borderWidth as number;
-
+        
         dataset[ datasetIndex ].borderWidth = (dataset[ datasetIndex ].borderWidth as number) * 2;
         chart.update();
     };
